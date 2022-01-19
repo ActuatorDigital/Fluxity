@@ -1,0 +1,16 @@
+{
+    "name": "AIR.Fluxity",
+    "rootNamespace": "",
+    "references": [
+        "AIR.Flume"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
