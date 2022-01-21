@@ -2,7 +2,7 @@
 
 namespace AIR.Fluxity
 {
-    public static class FluxityFlumeExt
+    public static class FlumeServiceContainerExt
     {
         public static FlumeServiceContainer RegisterFluxity(this FlumeServiceContainer self)
             => self

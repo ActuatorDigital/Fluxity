@@ -1,9 +1,8 @@
-using AIR.Flume;
 using System;
 
 namespace AIR.Fluxity
 {
-    public abstract class Reducer<TState, TCommand> : IReducer<TState,TCommand>
+    public abstract class Reducer<TState, TCommand> : IReducer<TState, TCommand>
         where TState : struct
         where TCommand : ICommand
     {

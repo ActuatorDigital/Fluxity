@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace AIR.Fluxity
 {
-    public class Feature<TState> : Dependent, IFeature<TState> 
+    public class Feature<TState> : Dependent, IFeature<TState>
         where TState : struct
     {
         private readonly Dictionary<Type, List<IReducer<TState>>> _reducers = new Dictionary<Type, List<IReducer<TState>>>();

@@ -7,10 +7,8 @@
         public void Inject(IDispatcher dispatcher)
             => _dispatcher = dispatcher;
 
-        public void Dispatch<TCommand>(TCommand command) 
-            where TCommand : ICommand
-        {
-            _dispatcher.Dispatch(command);
-        }
+        public void Dispatch<TCommand>(TCommand command)
+            where TCommand : ICommand 
+            => _dispatcher.Dispatch(command);
     }
 }

@@ -15,8 +15,9 @@ namespace AIR.Fluxity
         }
 
         public abstract void Display();
+
         public abstract void CreateBindings();
-        
+
         public IStatePresenterBinding<TState> Bind<TState>()
             where TState : struct
         {

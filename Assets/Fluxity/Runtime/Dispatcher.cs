@@ -6,7 +6,7 @@ namespace AIR.Fluxity
 {
     public class Dispatcher : Dependent, IDispatcher
     {
-        private Dictionary<Type, List<IEffect>> _effects = new Dictionary<Type, List<IEffect>>();
+        private readonly Dictionary<Type, List<IEffect>> _effects = new Dictionary<Type, List<IEffect>>();
         private bool _isReducing;
         private IStore _store;
 
@@ -33,7 +33,7 @@ namespace AIR.Fluxity
             _isReducing = true;
             _store.ProcessCommand(command);
             _isReducing = false;
-            
+
             ProcessEffects(command);
         }
 

@@ -17,9 +17,7 @@ namespace AIR.Fluxity
             Initialise();
         }
 
-        protected abstract void Initialise();
-
-        public IReducer CreateReducer<TState, TCommand>(IReducer.Reduce<TState, TCommand> pureFunctionReducer)
+        public IReducer CreateReducer<TState, TCommand>(IReducer<TState, TCommand>.ReduceDelegate pureFunctionReducer)
             where TState : struct
             where TCommand : ICommand
             => _store.CreateAndRegister(pureFunctionReducer);
@@ -28,5 +26,7 @@ namespace AIR.Fluxity
                where TEffect : Effect<TCommand>
                where TCommand : ICommand
             => _dispatcher.CreateAndRegisterEffect<TEffect, TCommand>();
+
+        protected abstract void Initialise();
     }
 }

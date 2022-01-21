@@ -6,6 +6,8 @@ namespace AIR.Fluxity
         where TState : struct
         where TCommand : ICommand
     {
+        public delegate TState ReduceDelegate(TState state, TCommand command);
+
         TState Reduce(TState state, TCommand command);
     }
 
@@ -17,10 +19,6 @@ namespace AIR.Fluxity
 
     public interface IReducer
     {
-        public delegate TState Reduce<TState, TCommand>(TState state, TCommand command)
-            where TState : struct
-            where TCommand : ICommand;
-
         Type GetCommandType { get; }
         Type GetStateType { get; }
     }

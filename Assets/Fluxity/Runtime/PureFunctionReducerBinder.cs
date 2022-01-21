@@ -7,17 +7,17 @@ namespace AIR.Fluxity
         where TCommand : ICommand
     {
         private const int REDUCER_ARGUMENT_COUNT = 2;
-        private readonly IReducer.Reduce<TState, TCommand> _function;
+        private readonly IReducer<TState, TCommand>.ReduceDelegate _function;
 
         public PureFunctionReducerBinder(MethodInfo pureFunctionMethod)
         {
             ValidateMethod(pureFunctionMethod);
 
-            _function = (IReducer.Reduce<TState, TCommand>)pureFunctionMethod.CreateDelegate(typeof(IReducer.Reduce<TState, TCommand>));
+            _function = (IReducer<TState, TCommand>.ReduceDelegate)pureFunctionMethod.CreateDelegate(typeof(IReducer<TState, TCommand>.ReduceDelegate));
         }
 
-        public PureFunctionReducerBinder(IReducer.Reduce<TState, TCommand> reducerDelegate)
-            :this(reducerDelegate.Method)
+        public PureFunctionReducerBinder(IReducer<TState, TCommand>.ReduceDelegate reducerDelegate)
+            : this(reducerDelegate.Method)
         {
         }
 
@@ -39,7 +39,7 @@ namespace AIR.Fluxity
                 throw new ReducerException($"Expected '{REDUCER_ARGUMENT_COUNT}' but got '{reducerArgCount}'. Invalid argument count on reducer '{pureFunctionMethod.Name}'.");
 
             var reducerArg0 = reducerArgs[0].ParameterType;
-            if(reducerArg0 != typeof(TState))
+            if (reducerArg0 != typeof(TState))
                 throw new ReducerException($"Expected '{typeof(TState)}' but got '{reducerArg0}'. Invalid state arg type on reducer '{pureFunctionMethod.Name}'.");
 
             var reducerArg1 = reducerArgs[1].ParameterType;

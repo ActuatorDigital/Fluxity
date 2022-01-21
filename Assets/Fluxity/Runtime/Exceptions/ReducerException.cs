@@ -5,6 +5,8 @@ namespace AIR.Fluxity
     [Serializable]
     public class ReducerException : Exception
     {
-        public ReducerException(string message) : base(message) { }
+        public ReducerException(string message) : base(message)
+        {
+        }
     }
 }
