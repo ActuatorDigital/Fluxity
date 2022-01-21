@@ -1,6 +1,6 @@
-using AIR.Flume;
 using System;
 using System.Collections.Generic;
+using AIR.Flume;
 
 namespace AIR.Fluxity
 {
@@ -21,6 +21,7 @@ namespace AIR.Fluxity
                 extantEffects.Add(effect);
                 return;
             }
+
             _effects.Add(typeof(TCommand), new List<IEffect>() { effect });
         }
 

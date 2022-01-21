@@ -5,13 +5,13 @@ namespace AIR.Fluxity
     public sealed class StatePresenterBinding<TState> : Dependent, IStatePresenterBinding<TState>
         where TState : struct
     {
+        private readonly IPresenter _drawer;
         private IFeature<TState> _feature;
-        private readonly IPresenter drawer;
-
-        public TState CurrentState { get => _feature.State; }
 
         public StatePresenterBinding(IPresenter presenter)
-            => drawer = presenter;
+            => _drawer = presenter;
+
+        public TState CurrentState { get => _feature.State; }
 
         public void Inject(IFeature<TState> feature)
         {
@@ -29,6 +29,6 @@ namespace AIR.Fluxity
         }
 
         private void OnStateChanged(TState state)
-            => drawer.Display();
+            => _drawer.Display();
     }
 }

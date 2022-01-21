@@ -1,6 +1,6 @@
-using AIR.Flume;
 using System;
 using System.Collections.Generic;
+using AIR.Flume;
 
 namespace AIR.Fluxity
 {
@@ -31,6 +31,7 @@ namespace AIR.Fluxity
                 extantReducers.Add(reducer);
                 return;
             }
+
             _reducers.Add(reducer.GetCommandType, new List<IReducer<TState>>() { reducer });
         }
 
@@ -44,6 +45,7 @@ namespace AIR.Fluxity
                 {
                     state = reducer.Reduce(state, command);
                 }
+
                 SetState(state);
             }
         }

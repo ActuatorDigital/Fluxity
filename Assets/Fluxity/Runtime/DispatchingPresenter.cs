@@ -8,7 +8,7 @@
             => _dispatcher = dispatcher;
 
         public void Dispatch<TCommand>(TCommand command)
-            where TCommand : ICommand 
+            where TCommand : ICommand
             => _dispatcher.Dispatch(command);
     }
 }

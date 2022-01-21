@@ -2,9 +2,11 @@
 {
     public interface IStore
     {
-        void ProcessCommand<TCommand>(TCommand command) where TCommand : ICommand;
+        void ProcessCommand<TCommand>(TCommand command)
+            where TCommand : ICommand;
 
-        void AddFeature<TState>(IFeature<TState> feature) where TState : struct;
+        void AddFeature<TState>(IFeature<TState> feature)
+            where TState : struct;
 
         void Register<TState, TCommand>(IReducer<TState, TCommand> reducer)
             where TState : struct

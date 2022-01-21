@@ -1,8 +1,8 @@
-﻿using AIR.Flume;
+﻿using System.Collections;
+using AIR.Flume;
 using AIR.Fluxity;
 using AIR.Fluxity.Tests.DummyTypes;
 using NUnit.Framework;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -85,7 +85,7 @@ public class PresenterFlumeIntegrationUnityTests
     {
         private IDummyService _dummyService;
 
-        public DummyCommandEffect(IDispatcher dispatcher) 
+        public DummyCommandEffect(IDispatcher dispatcher)
             : base(dispatcher)
         {
         }
@@ -104,7 +104,7 @@ public class PresenterFlumeIntegrationUnityTests
         _rootGameObject = new GameObject(nameof(PresenterFlumeIntegrationUnityTests));
         _rootGameObject.AddComponent<DummyFlumeServiceInstaller>();
         _rootGameObject.AddComponent<DummyFluxityInitializer>();
-        
+
         _dipatcherHandle = new DispatcherHandle();
     }
 
@@ -120,7 +120,7 @@ public class PresenterFlumeIntegrationUnityTests
         const int PAYLOAD = 5;
         var EXPECTED = PAYLOAD.ToString();
         _presenter = _rootGameObject.AddComponent<DummyFlumePresenter>();
-        yield return null;  //give frame so start can be called
+        yield return null; //< give frame so start can be called
 
         _dipatcherHandle.Dispatch(new DummyCommand() { payload = PAYLOAD });
         var result = _presenter.TextContent;
@@ -133,7 +133,7 @@ public class PresenterFlumeIntegrationUnityTests
     {
         const int EXPECTED = 5;
         var dummyServiceHandle = new DummyServiceHandle();
-        yield return null;  //give frame so start can be called
+        yield return null; //< give frame so start can be called
 
         _dipatcherHandle.Dispatch(new DummyCommand() { payload = EXPECTED });
         var result = dummyServiceHandle.DummySerivce.LastSignal;

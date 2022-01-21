@@ -21,9 +21,6 @@ namespace AIR.Fluxity
         {
         }
 
-        public override TState Reduce(TState state, TCommand command)
-            => _function(state, command);
-
         public static void ValidateMethod(MethodInfo pureFunctionMethod)
         {
             if (!pureFunctionMethod.IsStatic)
@@ -46,5 +43,8 @@ namespace AIR.Fluxity
             if (reducerArg1 != typeof(TCommand))
                 throw new ReducerException($"Expected '{typeof(TCommand)}' but got '{reducerArg1}'. Invalid command arg type on reducer '{pureFunctionMethod.Name}'.");
         }
+
+        public override TState Reduce(TState state, TCommand command)
+            => _function(state, command);
     }
 }

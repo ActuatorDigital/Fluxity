@@ -14,10 +14,11 @@ namespace AIR.Fluxity
 
     public interface IFeature
     {
+        Type GetStateType { get; }
+
         void Register(IReducer reducer);
 
-        void ProcessReducers<TCommand>(TCommand command) where TCommand : ICommand;
-
-        Type GetStateType { get; }
+        void ProcessReducers<TCommand>(TCommand command)
+            where TCommand : ICommand;
     }
 }
