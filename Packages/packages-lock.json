@@ -10,6 +10,16 @@
       },
       "hash": "130b0c511b24d538f7aa88744cc8e7c988bb6e2d"
     },
+    "com.air.fluxity": {
+      "version": "file:Fluxity",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.air.flume": "0.0.4",
+        "com.unity.test-framework": "1.0.13",
+        "com.unity.ext.nunit": "1.0.0"
+      }
+    },
     "com.air.nsubstitute": {
       "version": "https://github.com/AnImaginedReality/NSubstitute.Package.git",
       "depth": 0,
