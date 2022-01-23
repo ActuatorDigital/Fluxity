@@ -10,13 +10,14 @@ public class IncrementButtonView : DependentBehaviour
     private IDispatcher _dispatcher;
 
     public void Inject(IDispatcher dispatcher)
+        => _dispatcher = dispatcher;
+
+    public void Start()
     {
-        _dispatcher = dispatcher;
-        
         _button.onClick.AddListener(() => _dispatcher.Dispatch(new IncrementCountCommand()));
     }
 
-    private void OnDestroy()
+    public void OnDestroy()
     {
         _button.onClick.RemoveAllListeners();
     }

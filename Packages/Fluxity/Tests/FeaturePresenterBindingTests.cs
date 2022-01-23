@@ -3,7 +3,7 @@ using AIR.Fluxity.Tests.DummyTypes;
 using NSubstitute;
 using NUnit.Framework;
 
-public class StatePresenterBindingTests
+public class FeaturePresenterBindingTests
 {
     private IFeature<DummyState> _feature;
 
@@ -17,13 +17,13 @@ public class StatePresenterBindingTests
     public void CurrentState_WhenFeatureStateUpdates_ShouldInvoke()
     {
         const int EXPECTED = 5;
-        using (var statePresenterBinding = new StatePresenterBinding<DummyState>(Substitute.For<IPresenter>()))
+        using (var featurePresenterBinding = new FeaturePresenterBinding<DummyState>(Substitute.For<IPresenter>()))
         {
-            statePresenterBinding.Inject(_feature);
+            featurePresenterBinding.Inject(_feature);
 
             _feature.SetState(new DummyState() { value = EXPECTED});
 
-            Assert.AreEqual(EXPECTED, statePresenterBinding.CurrentState.value);
+            Assert.AreEqual(EXPECTED, featurePresenterBinding.CurrentState.value);
         }
     }
 
@@ -31,9 +31,9 @@ public class StatePresenterBindingTests
     public void Display_WhenFeatureStateUpdates_ShouldInvoke()
     {
         var presenterSubstitute = Substitute.For<IPresenter>();
-        using (var statePresenterBinding = new StatePresenterBinding<DummyState>(presenterSubstitute))
+        using (var featurePresenterBinding = new FeaturePresenterBinding<DummyState>(presenterSubstitute))
         {
-            statePresenterBinding.Inject(_feature);
+            featurePresenterBinding.Inject(_feature);
 
             _feature.SetState(new DummyState());
 
@@ -45,9 +45,9 @@ public class StatePresenterBindingTests
     public void Display_WhenDisposed_ShouldNotInvoke()
     {
         var presenterSubstitute = Substitute.For<IPresenter>();
-        using (var statePresenterBinding = new StatePresenterBinding<DummyState>(presenterSubstitute))
+        using (var featurePresenterBinding = new FeaturePresenterBinding<DummyState>(presenterSubstitute))
         {
-            statePresenterBinding.Inject(_feature);
+            featurePresenterBinding.Inject(_feature);
         }
 
         _feature.SetState(new DummyState());

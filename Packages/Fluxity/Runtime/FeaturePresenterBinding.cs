@@ -2,13 +2,13 @@
 
 namespace AIR.Fluxity
 {
-    public sealed class StatePresenterBinding<TState> : Dependent, IStatePresenterBinding<TState>
+    public sealed class FeaturePresenterBinding<TState> : Dependent, IFeaturePresenterBinding<TState>
         where TState : struct
     {
         private readonly IPresenter _drawer;
         private IFeature<TState> _feature;
 
-        public StatePresenterBinding(IPresenter presenter)
+        public FeaturePresenterBinding(IPresenter presenter)
             => _drawer = presenter;
 
         public TState CurrentState { get => _feature.State; }

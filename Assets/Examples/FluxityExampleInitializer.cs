@@ -1,6 +1,6 @@
 using AIR.Fluxity;
 
-public class Initializer : FluxityInitializer
+public class FluxityExampleInitializer : FluxityInitializer
 {
     protected override void Initialise()
     {

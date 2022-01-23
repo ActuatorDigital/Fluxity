@@ -2,10 +2,10 @@ using AIR.Fluxity;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CounterView : Presenter
+public class CounterPresenter : Presenter
 {
     [SerializeField] private Text _text;
-    private IStatePresenterBinding<CounterState> _counterStateBinding;
+    private IFeaturePresenterBinding<CounterState> _counterStateBinding;
     
     public override void CreateBindings()
     {
