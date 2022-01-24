@@ -44,7 +44,7 @@ public class PresenterFlumeIntegrationUnityTests
 
     public class DummyFluxityInitializer : FluxityInitializer
     {
-        protected override void Initialise()
+        protected override void Initialize()
         {
             CreateReducer<DummyState, DummyCommand>(DummyPureFunctionReducer.Reduce);
             CreateEffect<DummyCommandEffect, DummyCommand>();

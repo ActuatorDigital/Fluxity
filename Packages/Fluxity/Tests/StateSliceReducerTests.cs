@@ -15,7 +15,7 @@ public class StateSliceReducerTests
 
     private class LargeStateCommand : ICommand { public int response; }
 
-    private class LargetStateRespReducer : Reducer<LargeState, LargeStateCommand>
+    private class LargeStateRespReducer : Reducer<LargeState, LargeStateCommand>
     {
         public override LargeState Reduce(LargeState state, LargeStateCommand command)
         {
@@ -23,7 +23,7 @@ public class StateSliceReducerTests
             return state;
         }
     }
-    private class LargetStateMessageReducer : Reducer<LargeState, LargeStateCommand>
+    private class LargeStateMessageReducer : Reducer<LargeState, LargeStateCommand>
     {
         public override LargeState Reduce(LargeState state, LargeStateCommand command)
         {
@@ -31,7 +31,7 @@ public class StateSliceReducerTests
             return state;
         }
     }
-    private class LargetStateExecutionCountReducer : Reducer<LargeState, LargeStateCommand>
+    private class LargeStateExecutionCountReducer : Reducer<LargeState, LargeStateCommand>
     {
         public override LargeState Reduce(LargeState state, LargeStateCommand command)
         {
@@ -50,11 +50,11 @@ public class StateSliceReducerTests
         store.AddFeature(feature);
         var payloadVal = 3;
         var command = new LargeStateCommand() { response = payloadVal };
-        var respReducer = new LargetStateRespReducer();
+        var respReducer = new LargeStateRespReducer();
         feature.Register(respReducer);
-        var msgReduer = new LargetStateMessageReducer();
+        var msgReduer = new LargeStateMessageReducer();
         feature.Register(msgReduer);
-        var exeCountReduer = new LargetStateExecutionCountReducer();
+        var exeCountReduer = new LargeStateExecutionCountReducer();
         feature.Register(exeCountReduer);
 
         dispatcher.Dispatch(command);
@@ -76,11 +76,11 @@ public class StateSliceReducerTests
         store.AddFeature(feature);
         var payloadVal = 3;
         var command = new LargeStateCommand() { response = payloadVal };
-        var respReducer = new LargetStateRespReducer();
+        var respReducer = new LargeStateRespReducer();
         feature.Register(respReducer);
-        var msgReduer = new LargetStateMessageReducer();
+        var msgReduer = new LargeStateMessageReducer();
         feature.Register(msgReduer);
-        var exeCountReduer = new LargetStateExecutionCountReducer();
+        var exeCountReduer = new LargeStateExecutionCountReducer();
         feature.Register(exeCountReduer);
 
         dispatcher.Dispatch(command);

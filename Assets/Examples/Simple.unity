@@ -549,6 +549,7 @@ GameObject:
   - component: {fileID: 1584147310}
   - component: {fileID: 1584147309}
   - component: {fileID: 1584147308}
+  - component: {fileID: 1584147312}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -589,6 +590,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _button: {fileID: 1584147309}
+  _text: {fileID: 1797526180}
 --- !u!114 &1584147309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -671,6 +673,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1584147306}
   m_CullTransparentMesh: 1
+--- !u!114 &1584147312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1584147306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f56427f4875e694bbf3392c4a49acc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _incrementButtonView: {fileID: 1584147308}
 --- !u!1 &1797526178
 GameObject:
   m_ObjectHideFlags: 0
@@ -741,7 +756,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Increment
+  m_Text: some button
 --- !u!222 &1797526181
 CanvasRenderer:
   m_ObjectHideFlags: 0

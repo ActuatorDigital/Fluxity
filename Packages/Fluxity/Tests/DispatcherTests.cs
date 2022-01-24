@@ -60,7 +60,7 @@ public class DispatcherTests
         var payloadVal = 3;
         var command = new DummyCommand() { payload = payloadVal };
         var effect = new DummyEffect(_dispatcher);
-        _dispatcher.Register(effect);
+        _dispatcher.RegisterEffect(effect);
 
         _dispatcher.Dispatch(command);
 
@@ -72,7 +72,7 @@ public class DispatcherTests
     {
         var payloadVal = 3;
         var command = new DummyCommand() { payload = payloadVal };
-        var effect = _dispatcher.CreateAndRegisterEffect<DummyEffect, DummyCommand>();
+        var effect = _dispatcher.CreateAndRegister<DummyEffect, DummyCommand>();
 
         _dispatcher.Dispatch(command);
 
@@ -84,7 +84,7 @@ public class DispatcherTests
     {
         var command = new OtherDummyCommand();
         var effect = new DummyEffect(_dispatcher);
-        _dispatcher.Register(effect);
+        _dispatcher.RegisterEffect(effect);
 
         _dispatcher.Dispatch(command);
 
@@ -97,11 +97,11 @@ public class DispatcherTests
         var state = new DummyState() { value = 1 };
         _feature.SetState(state);
         var reducer = new DummyReducer();
-        _store.Register(reducer);
+        _store.RegisterReducer(reducer);
         var payloadVal = 2;
         var command = new DummyCommand() { payload = payloadVal };
         var effect = new DummyEffect(_dispatcher);
-        _dispatcher.Register(effect);
+        _dispatcher.RegisterEffect(effect);
 
         _dispatcher.Dispatch(command);
 
@@ -116,14 +116,14 @@ public class DispatcherTests
         _feature.SetState(state);
         var reducer = new DummyReducer();
         //two of the same reducer
-        _store.Register(reducer);
-        _store.Register(reducer);
+        _store.RegisterReducer(reducer);
+        _store.RegisterReducer(reducer);
         var payloadVal = 1;
         var command = new DummyCommand() { payload = payloadVal };
         var effect = new DummyEffect(_dispatcher);
         //two of the same effect
-        _dispatcher.Register(effect);
-        _dispatcher.Register(effect);
+        _dispatcher.RegisterEffect(effect);
+        _dispatcher.RegisterEffect(effect);
 
         _dispatcher.Dispatch(command);
 
@@ -149,7 +149,7 @@ public class DispatcherTests
         var effect = new DummyDelegateEffect(
             () => _dispatcher.Dispatch(new OtherDummyCommand()),
             _dispatcher);
-        _dispatcher.Register(effect);
+        _dispatcher.RegisterEffect(effect);
 
         void Act() => _dispatcher.Dispatch(new DummyCommand());
         

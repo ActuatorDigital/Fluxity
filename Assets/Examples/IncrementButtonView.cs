@@ -1,24 +1,31 @@
-using AIR.Flume;
-using AIR.Fluxity;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class IncrementButtonView : DependentBehaviour
+public class IncrementButtonView : MonoBehaviour
 {
+    private Action onClicked;
+
     [SerializeField] private Button _button;
+    [SerializeField] private Text _text;
 
-    private IDispatcher _dispatcher;
-
-    public void Inject(IDispatcher dispatcher)
-        => _dispatcher = dispatcher;
+    public void SetOnClickedCallback(Action onClicked)
+        => this.onClicked = onClicked;
+    public void SetButtonText(string text)
+        => _text.text = text;
 
     public void Start()
     {
-        _button.onClick.AddListener(() => _dispatcher.Dispatch(new IncrementCountCommand()));
+        _button.onClick.AddListener(OnClick);
     }
 
     public void OnDestroy()
     {
-        _button.onClick.RemoveAllListeners();
+        _button.onClick.RemoveListener(OnClick);
+    }
+
+    private void OnClick()
+    {
+        onClicked.Invoke();
     }
 }

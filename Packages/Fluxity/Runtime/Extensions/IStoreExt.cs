@@ -9,7 +9,7 @@
             where TCommand : ICommand
         {
             var reducer = new PureFunctionReducerBinder<TState, TCommand>(pureFunctionReducer);
-            self.Register(reducer);
+            self.RegisterReducer(reducer);
             return reducer;
         }
     }

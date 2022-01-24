@@ -1,9 +1,9 @@
 namespace AIR.Fluxity
 {
-    public interface IEffect<T> : IEffect
-        where T : ICommand
+    public interface IEffect<TCommand> : IEffect
+        where TCommand : ICommand
     {
-        void DoEffect(T command);
+        void DoEffect(TCommand command);
     }
 
     public interface IEffect

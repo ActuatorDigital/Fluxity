@@ -13,7 +13,7 @@ namespace AIR.Fluxity
             _features[feature.GetStateType] = feature;
         }
 
-        public void Register<TState, TCommand>(IReducer<TState, TCommand> reducer)
+        public void RegisterReducer<TState, TCommand>(IReducer<TState, TCommand> reducer)
             where TState : struct
             where TCommand : ICommand
         {

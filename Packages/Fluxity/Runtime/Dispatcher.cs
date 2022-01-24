@@ -13,7 +13,7 @@ namespace AIR.Fluxity
         public void Inject(IStore store)
             => _store = store;
 
-        public void Register<TCommand>(IEffect<TCommand> effect)
+        public void RegisterEffect<TCommand>(IEffect<TCommand> effect)
             where TCommand : ICommand
         {
             if (_effects.TryGetValue(typeof(TCommand), out var extantEffects))

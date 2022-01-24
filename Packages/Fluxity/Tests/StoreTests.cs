@@ -35,18 +35,18 @@ public class StoreTests
     }
 
     [Test]
-    public void Register_WhenNoMatchingFeaturesRegistered_ShouldThrow()
+    public void RegisterReducer_WhenNoMatchingFeaturesRegistered_ShouldThrow()
     {
         var substituteReducer = Substitute.For<IReducer<DummyState, DummyCommand>>();
         substituteReducer.GetStateType.Returns(typeof(DummyState));
 
-        void Act() => _store.Register(substituteReducer);
+        void Act() => _store.RegisterReducer(substituteReducer);
 
         Assert.Throws<KeyNotFoundException>(Act);
     }
 
     [Test]
-    public void Register_WhenHasMatchingFeaturesRegistered_ShouldNotThrow()
+    public void RegisterReducer_WhenHasMatchingFeaturesRegistered_ShouldNotThrow()
     {
         var featureSubstitute = Substitute.For<IFeature<DummyState>>();
         featureSubstitute.GetStateType.Returns(typeof(DummyState));
@@ -54,7 +54,7 @@ public class StoreTests
         var substituteReducer = Substitute.For<IReducer<DummyState, DummyCommand>>();
         substituteReducer.GetStateType.Returns(typeof(DummyState));
 
-        void Act() => _store.Register(substituteReducer);
+        void Act() => _store.RegisterReducer(substituteReducer);
 
         Assert.DoesNotThrow(Act);
     }
