@@ -1,0 +1,12 @@
+bin/
+obj/Debug/
+.idea/
+Temp/
+Library/
+Logs/
+*.csproj
+*.sln
+UserSettings/
+.vs
+.vsconfig
+CodeCoverage
