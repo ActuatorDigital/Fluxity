@@ -11,6 +11,7 @@ namespace AIR.Fluxity
         public virtual void Start()
         {
             CreateBindings();
+            SetUp();
             Display();
         }
 
@@ -26,8 +27,13 @@ namespace AIR.Fluxity
             return newBinding;
         }
 
-        public virtual void OnDestroy()
+        protected virtual void SetUp() { }
+
+        protected virtual void TearDown() { }
+
+        private void OnDestroy()
         {
+            TearDown();
             foreach (var item in _bindings)
             {
                 item.Dispose();
