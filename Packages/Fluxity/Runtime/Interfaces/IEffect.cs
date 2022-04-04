@@ -1,13 +1,15 @@
+using System.Threading.Tasks;
+
 namespace AIR.Fluxity
 {
     public interface IEffect<TCommand> : IEffect
         where TCommand : ICommand
     {
-        void DoEffect(TCommand command);
+        Task DoEffect(TCommand command);
     }
 
     public interface IEffect
     {
-        void DoEffect(ICommand command);
+        Task DoEffect(ICommand command);
     }
 }

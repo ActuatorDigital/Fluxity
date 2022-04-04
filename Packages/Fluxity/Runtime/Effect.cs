@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using AIR.Flume;
 
 namespace AIR.Fluxity
@@ -10,9 +11,9 @@ namespace AIR.Fluxity
 
         protected IDispatcher Dispatcher { get; private set; }
 
-        public abstract void DoEffect(TCommand command);
+        public abstract Task DoEffect(TCommand command);
 
-        public void DoEffect(ICommand command)
+        public Task DoEffect(ICommand command)
             => DoEffect((TCommand)command);
     }
 }

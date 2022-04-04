@@ -12,6 +12,6 @@ namespace AIR.Fluxity
         public static FlumeServiceContainer RegisterFeature<TState>(this FlumeServiceContainer self)
             where TState : struct
             => self
-                .Register<IFeature<TState>, Feature<TState>>();
+                .Register<IFeature<TState>>(new Feature<TState>());
     }
 }

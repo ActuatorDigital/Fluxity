@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Threading.Tasks;
 using AIR.Flume;
 using AIR.Fluxity;
 using AIR.Fluxity.Tests.DummyTypes;
@@ -92,9 +93,10 @@ public class PresenterFlumeIntegrationUnityTests
 
         public void Inject(IDummyService dummyService) => _dummyService = dummyService;
 
-        public override void DoEffect(DummyCommand command)
+        public override Task DoEffect(DummyCommand command)
         {
             _dummyService.LastSignal = command.payload;
+            return Task.CompletedTask;
         }
     }
 
