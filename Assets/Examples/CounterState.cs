@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using AIR.Fluxity;
 using UnityEngine;
 
@@ -31,8 +32,9 @@ public class CounterEffect : Effect<IncrementCountCommand>
 {
     public CounterEffect(IDispatcher dispatcher) : base(dispatcher) { }
 
-    public override void DoEffect(IncrementCountCommand command)
+    public override Task DoEffect(IncrementCountCommand command)
     {
         Debug.Log("Increment Command made.");
+        return Task.CompletedTask;
     }
 }

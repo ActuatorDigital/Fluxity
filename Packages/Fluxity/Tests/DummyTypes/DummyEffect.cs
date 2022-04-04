@@ -1,4 +1,6 @@
-﻿namespace AIR.Fluxity.Tests.DummyTypes
+﻿using System.Threading.Tasks;
+
+namespace AIR.Fluxity.Tests.DummyTypes
 {
     internal class DummyEffect : Effect<DummyCommand>
     {
@@ -9,9 +11,10 @@
         {
         }
 
-        public override void DoEffect(DummyCommand command)
+        public override Task DoEffect(DummyCommand command)
         {
             accumPayload += command.payload;
+            return Task.CompletedTask;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace AIR.Fluxity.Tests.DummyTypes
 {
@@ -12,9 +13,10 @@ namespace AIR.Fluxity.Tests.DummyTypes
             _customAction = customAction;
         }
 
-        public override void DoEffect(DummyCommand command)
+        public override Task DoEffect(DummyCommand command)
         {
             _customAction?.Invoke();
+            return Task.CompletedTask;
         }
     }
 }

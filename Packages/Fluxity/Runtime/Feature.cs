@@ -35,10 +35,12 @@ namespace AIR.Fluxity
             _reducers.Add(reducer.GetCommandType, new List<IReducer<TState>>() { reducer });
         }
 
-        public void ProcessReducers<TCommand>(TCommand command)
-            where TCommand : ICommand
+        public void Register(IReducer reducer)
+            => Register((IReducer<TState>)reducer);
+
+        public void ProcessReducers(ICommand command)
         {
-            if (_reducers.TryGetValue(typeof(TCommand), out var extantReducers))
+            if (_reducers.TryGetValue(command.GetType(), out var extantReducers))
             {
                 var state = State;
                 foreach (var reducer in extantReducers)
@@ -49,8 +51,5 @@ namespace AIR.Fluxity
                 SetState(state);
             }
         }
-
-        public void Register(IReducer reducer)
-            => Register((IReducer<TState>)reducer);
     }
 }

@@ -18,7 +18,6 @@ namespace AIR.Fluxity
 
         void Register(IReducer reducer);
 
-        void ProcessReducers<TCommand>(TCommand command)
-            where TCommand : ICommand;
+        void ProcessReducers(ICommand command);
     }
 }
