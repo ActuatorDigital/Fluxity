@@ -2,7 +2,7 @@
 using Examples.Shared;
 using UnityEngine;
 
-namespace Examples.Counter
+namespace Examples.Simple
 {
     public class IncrementButtonPresenter : DispatchingPresenter
     {

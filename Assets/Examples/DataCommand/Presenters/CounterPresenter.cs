@@ -1,13 +1,16 @@
 using AIR.Fluxity;
+using Examples.Shared;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Examples.Simple
+namespace Examples.DataCommand
 {
-    public class CounterPresenter : Presenter
+    public class CounterPresenter : DispatchingPresenter
     {
         [SerializeField] private Text uLabelText;
         [SerializeField] private Text uCountText;
+        [SerializeField] private InputField uInputField;
+        [SerializeField] private ButtonView uButtonView;
 
         private IFeaturePresenterBinding<CounterState> _counterStateBinding;
 
@@ -24,6 +27,16 @@ namespace Examples.Simple
         protected override void SetUp()
         {
             uLabelText.text = "Current Count:";
+            uButtonView.SetButtonText("Change Count");
+            uButtonView.SetOnClickedCallback(OnButtonClick);
+            uInputField.contentType = InputField.ContentType.IntegerNumber;
+            uInputField.text = "1";
+        }
+
+        private void OnButtonClick()
+        {
+            var command = new ChangeCountCommand { Delta = int.Parse(uInputField.text) };
+            Dispatch(command);
         }
     }
 }

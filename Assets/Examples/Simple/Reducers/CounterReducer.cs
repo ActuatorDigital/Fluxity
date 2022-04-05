@@ -1,4 +1,4 @@
-namespace Examples.Counter
+namespace Examples.Simple
 {
     public static class CounterReducer
     {

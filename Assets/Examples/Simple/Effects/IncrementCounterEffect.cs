@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using AIR.Fluxity;
 using UnityEngine;
 
-namespace Examples.Counter
+namespace Examples.Simple
 {
     public class IncrementCounterEffect : Effect<IncrementCountCommand>
     {

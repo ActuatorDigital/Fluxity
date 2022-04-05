@@ -1,6 +1,6 @@
 using AIR.Fluxity;
 
-namespace Examples.Counter
+namespace Examples.Simple
 {
     public class DecrementCountCommand : ICommand
     {

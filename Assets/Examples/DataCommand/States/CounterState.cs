@@ -1,4 +1,4 @@
-namespace Examples.Simple
+namespace Examples.DataCommand
 {
     public struct CounterState
     {

@@ -2,7 +2,7 @@ using AIR.Flume;
 using AIR.Fluxity;
 using UnityEngine;
 
-namespace Examples.Simple
+namespace Examples.DataCommand
 {
     [DefaultExecutionOrder(-1)]
     public class FluxityExampleServiceInstaller : ServiceInstaller
