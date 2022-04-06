@@ -15,6 +15,7 @@ namespace AIR.Fluxity
             _dispatcher = dispatcher;
 
             Initialize();
+            PostInitialize(_dispatcher);
         }
 
         public IReducer CreateReducer<TState, TCommand>(IReducer<TState, TCommand>.ReduceDelegate pureFunctionReducer)
@@ -28,5 +29,7 @@ namespace AIR.Fluxity
             => _dispatcher.CreateAndRegister<TEffect, TCommand>();
 
         protected abstract void Initialize();
+
+        protected virtual void PostInitialize(IDispatcher dispatcher) { }
     }
 }
