@@ -1,6 +1,8 @@
-﻿namespace AIR.Fluxity
+using AIR.Flume;
+
+namespace AIR.Fluxity
 {
-    public abstract class DispatchingPresenter : Presenter
+    public class DispatcherHandle : Dependent
     {
         private IDispatcher _dispatcher;
 
