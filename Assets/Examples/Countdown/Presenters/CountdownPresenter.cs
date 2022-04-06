@@ -27,7 +27,7 @@ namespace Examples.Countdown
                 _isRunning = false;
             }
             else {
-                _secondsRemaining = currentState.CountdownSeconds;
+                _secondsRemaining = currentState.CountdownDurationSeconds;
                 _isRunning = true;
             }
         }

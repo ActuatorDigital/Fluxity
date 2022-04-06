@@ -2,7 +2,7 @@ namespace Examples.Countdown
 {
     public struct CountdownState
     {
-        public float CountdownSeconds;
+        public float CountdownDurationSeconds;
         public bool IsRunning;
     }
 }

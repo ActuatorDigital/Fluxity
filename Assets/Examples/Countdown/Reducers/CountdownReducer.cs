@@ -5,7 +5,7 @@ namespace Examples.Countdown
         public static CountdownState StartCountDown(CountdownState state, StartCountdownCommand command)
         {
             return new CountdownState {
-                CountdownSeconds = command.Seconds,
+                CountdownDurationSeconds = command.Seconds,
                 IsRunning = true,
             };
         }
