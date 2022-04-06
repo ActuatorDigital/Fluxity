@@ -11,6 +11,8 @@ namespace Examples.Simple
             CreateReducer<CounterState, IncrementCountCommand>(CounterReducer.Increment);
             CreateReducer<CounterState, DecrementCountCommand>(CounterReducer.Decrement);
 
+            // NOTE: You don't need to make an effect for every command, we're doing so here
+            // purely for example purposes.
             CreateEffect<IncrementCounterEffect, IncrementCountCommand>();
             CreateEffect<DecrementCounterEffect, DecrementCountCommand>();
         }
