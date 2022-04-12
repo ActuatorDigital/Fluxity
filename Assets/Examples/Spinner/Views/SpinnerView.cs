@@ -6,6 +6,7 @@ namespace Examples.Spinner
     {
         private bool _isSpinning = false;
         private float _degreesPerSecond = 0;
+
         public void Update()
         {
             if (!_isSpinning)

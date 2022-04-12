@@ -1,0 +1,4 @@
+<linker>
+  <assembly fullname="AIR.Flume" preserve="all"></assembly>
+  <assembly fullname="AIR.Fluxity" preserve="all"></assembly>
+</linker>

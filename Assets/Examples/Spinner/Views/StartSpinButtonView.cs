@@ -10,6 +10,7 @@ namespace Examples.Spinner
         [SerializeField] private Button uButton;
         [SerializeField] private float uDegreesPerSecond = 90f;
         private DispatcherHandle _dispatcherHandle;
+
         public void Start()
         {
             _dispatcherHandle = new DispatcherHandle();

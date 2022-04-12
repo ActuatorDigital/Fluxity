@@ -9,6 +9,7 @@ namespace Examples.Spinner
         [SerializeField] private Text uButtonText;
         [SerializeField] private Button uButton;
         private DispatcherHandle _dispatcherHandle;
+
         public void Start()
         {
             _dispatcherHandle = new DispatcherHandle();

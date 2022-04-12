@@ -7,6 +7,7 @@ namespace Examples.Spinner
     {
         [SerializeField] private SpinnerView uSpinnerView;
         private IFeaturePresenterBinding<SpinState> _spinStateBinding;
+
         public override void CreateBindings()
         {
             _spinStateBinding = Bind<SpinState>();

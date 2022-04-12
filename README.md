@@ -72,6 +72,17 @@ Any additional Flux content can be added simply after this:
 3. Create commands, effects, reducers
 4. Create bindings for reducers/effects in the Initializer
 
+### IL2CPP builds
+
+Requires Flume and Fluxity need to be referenced in a link.xml file
+
+```xml
+<linker>
+  <assembly fullname="AIR.Flume" preserve="all"></assembly>
+  <assembly fullname="AIR.Fluxity" preserve="all"></assembly>
+</linker>
+```
+
 ## Code Example
 
 In this example we'll give a quick show of code required to control the spinning of a 3D object from a UI via Fluxity.
