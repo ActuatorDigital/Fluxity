@@ -93,10 +93,9 @@ public class PresenterFlumeIntegrationUnityTests
 
         public void Inject(IDummyService dummyService) => _dummyService = dummyService;
 
-        public override Task DoEffect(DummyCommand command)
+        public override void DoEffect(DummyCommand command)
         {
             _dummyService.LastSignal = command.payload;
-            return Task.CompletedTask;
         }
     }
 

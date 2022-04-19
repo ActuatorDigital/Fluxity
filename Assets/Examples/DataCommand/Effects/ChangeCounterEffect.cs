@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using AIR.Fluxity;
 using UnityEngine;
 
@@ -11,10 +10,9 @@ namespace Examples.DataCommand
         {
         }
 
-        public override Task DoEffect(ChangeCountCommand command)
+        public override void DoEffect(ChangeCountCommand command)
         {
             Debug.Log($"Count changed by {command.Delta}.");
-            return Task.CompletedTask;
         }
     }
 }
