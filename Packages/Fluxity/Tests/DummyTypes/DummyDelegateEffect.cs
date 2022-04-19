@@ -13,10 +13,9 @@ namespace AIR.Fluxity.Tests.DummyTypes
             _customAction = customAction;
         }
 
-        public override Task DoEffect(DummyCommand command)
+        public override void DoEffect(DummyCommand command)
         {
             _customAction?.Invoke();
-            return Task.CompletedTask;
         }
     }
 }
