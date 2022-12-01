@@ -56,7 +56,9 @@ The required library is distributed as a git package ([How to install package fr
 
 ### Git URL
 
-`https://github.com/ActuatorDigital/Fluxity.git?path=Packages/Fluxity`
+```
+https://github.com/ActuatorDigital/Fluxity.git?path=Packages/Fluxity
+```
 
 The minimum required to install and use Fluxity in a scene is laid out in the following simple steps:
 
