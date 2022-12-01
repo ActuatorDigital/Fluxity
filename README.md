@@ -1,6 +1,6 @@
 # Fluxity
 
-<img src="https://img.shields.io/badge/unity-2020.3-green.svg?style=flat-square" alt="unity 2020.3">
+<img src="https://img.shields.io/badge/unity-2021.3-green.svg?style=flat-square" alt="unity 2021.3">
 
 AIR's Flux pattern implementation for Unity.
 
@@ -52,12 +52,16 @@ object being used; this hands-off approach to the pattern implementation allows 
 
 ## Installation / Minimum required Setup
 
-The library distributed as a git package ([How to install package from git URL](https://docs.unity3d.com/Manual/upm-ui-giturl.html))
+The required library is distributed as a git package ([How to install package from git URL](https://docs.unity3d.com/Manual/upm-ui-giturl.html))
+
+### Git URL
+
+`https://github.com/ActuatorDigital/Fluxity.git?path=Packages/Fluxity`
 
 The minimum required to install and use Fluxity in a scene is laid out in the following simple steps:
 
 1. Ensure Flume package is installed via Package Manager
-2. Install library via Package Manager
+2. Install library via Package Manager -> Git URL
 3. Create State, commands, effects, and reducers for that state
 4. Create/open scene
 5. Set up Flume service container/installer
@@ -264,3 +268,5 @@ public class StopSpinButtonView : MonoBehaviour
     }
 }
 ```
+
+Additional examples, including for features such as Effects, can be found in the folder `Assets/Examples`.
