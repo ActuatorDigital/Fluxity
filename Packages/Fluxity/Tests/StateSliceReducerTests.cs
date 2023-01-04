@@ -11,7 +11,13 @@ public class StateSliceReducerTests
         public int executionCount;
     }
 
-    private class LargeStateFeature : Feature<LargeState> { }
+    private class LargeStateFeature : Feature<LargeState>
+    {
+        public LargeStateFeature(LargeState state)
+            : base(state)
+        {
+        }
+    }
 
     private class LargeStateCommand : ICommand { public int response; }
 
@@ -46,7 +52,7 @@ public class StateSliceReducerTests
         var dispatcher = new Dispatcher();
         var store = new Store();
         dispatcher.Inject(store);
-        var feature = new LargeStateFeature();
+        var feature = new LargeStateFeature(default);
         store.AddFeature(feature);
         var payloadVal = 3;
         var command = new LargeStateCommand() { response = payloadVal };
@@ -71,8 +77,8 @@ public class StateSliceReducerTests
         var dispatcher = new Dispatcher();
         var store = new Store();
         dispatcher.Inject(store);
-        var feature = new LargeStateFeature();
-        feature.OnStateChanged += (x) => changeCount++; 
+        var feature = new LargeStateFeature(default);
+        feature.OnStateChanged += (x) => changeCount++;
         store.AddFeature(feature);
         var payloadVal = 3;
         var command = new LargeStateCommand() { response = payloadVal };

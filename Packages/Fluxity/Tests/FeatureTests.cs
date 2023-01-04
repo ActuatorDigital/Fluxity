@@ -10,7 +10,7 @@ public class FeatureTests
     [SetUp]
     public void SetUp()
     {
-        _feature = new Feature<DummyState>();
+        _feature = new Feature<DummyState>(default);
     }
 
     [Test]

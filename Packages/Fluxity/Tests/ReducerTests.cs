@@ -39,7 +39,7 @@ public class ReducerTests
     public void ProcessReducers_WhenGivenCorrectType_ShouldCallWithExpectedPayloadValue()
     {
         var state = new DummyState() { value = 1 };
-        var feature = new DummyFeature();
+        var feature = new DummyFeature(default);
         feature.SetState(state);
         var payloadVal = 3;
         var correctCommandType = new DummyCommand() { payload = payloadVal };
@@ -57,7 +57,7 @@ public class ReducerTests
         var expected = 8;
         var payloadVal = 3;
         var state = new DummyState() { value = initial };
-        var feature = new DummyFeature();
+        var feature = new DummyFeature(default);
         feature.SetState(state);
         var correctCommandType = new DummyCommand() { payload = payloadVal };
         feature.Register(_reducer);
@@ -75,7 +75,7 @@ public class ReducerTests
         var expected = 5;
         var payloadVal = 3;
         var state = new DummyState() { value = initial };
-        var feature = new DummyFeature();
+        var feature = new DummyFeature(default);
         feature.SetState(state);
         var correctCommandType = new DummyCommand() { payload = payloadVal };
         feature.Register(_doubleReducer);

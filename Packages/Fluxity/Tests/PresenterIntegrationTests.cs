@@ -17,7 +17,7 @@ public class PresenterIntegrationTests
     {
         _store = new Store();
         _dispatcher = new Dispatcher();
-        _feature = new Feature<DummyState>();
+        _feature = new Feature<DummyState>(default);
         _rootGameObject = new GameObject(nameof(PresenterIntegrationTests));
 
         _dispatcher.Inject(_store);
