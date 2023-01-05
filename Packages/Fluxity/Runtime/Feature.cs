@@ -9,6 +9,11 @@ namespace AIR.Fluxity
     {
         private readonly Dictionary<Type, List<IReducer<TState>>> _reducers = new Dictionary<Type, List<IReducer<TState>>>();
 
+        public Feature(TState state)
+        {
+            State = state;
+        }
+
         public event Action<TState> OnStateChanged;
 
         public TState State { get; private set; }

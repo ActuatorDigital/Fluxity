@@ -56,7 +56,7 @@ public class PureFunctionReducerTests
     {
         _reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(typeof(DummyPureFunctionReducer).GetMethod("Reduce"));
         var state = new DummyState() { value = 1 };
-        var feature = new DummyFeature();
+        var feature = new DummyFeature(default);
         feature.SetState(state);
         var payloadVal = 3;
         var correctCommandType = new DummyCommand() { payload = payloadVal };
@@ -72,7 +72,7 @@ public class PureFunctionReducerTests
     {
         _reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyPureFunctionReducer.Reduce);
         var state = new DummyState() { value = 1 };
-        var feature = new DummyFeature();
+        var feature = new DummyFeature(default);
         feature.SetState(state);
         var payloadVal = 3;
         var correctCommandType = new DummyCommand() { payload = payloadVal };

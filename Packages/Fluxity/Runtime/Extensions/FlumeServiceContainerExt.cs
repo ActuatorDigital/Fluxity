@@ -9,9 +9,13 @@ namespace AIR.Fluxity
                 .Register<IStore, Store>()
                 .Register<IDispatcher, Dispatcher>();
 
-        public static FlumeServiceContainer RegisterFeature<TState>(this FlumeServiceContainer self)
+        public static FlumeServiceContainer RegisterFeature<TState>(this FlumeServiceContainer self, TState startingValue)
             where TState : struct
             => self
-                .Register<IFeature<TState>>(new Feature<TState>());
+                .Register<IFeature<TState>>(new Feature<TState>(startingValue));
+
+        public static FlumeServiceContainer RegisterFeature<TState>(this FlumeServiceContainer self)
+            where TState : struct
+            => RegisterFeature(self, default(TState));
     }
 }

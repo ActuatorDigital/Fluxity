@@ -17,7 +17,7 @@ public class PresenterTests
     [SetUp]
     public void SetUp()
     {
-        _feature = new Feature<DummyState>();
+        _feature = new Feature<DummyState>(default);
         _rootGameObject = new GameObject(nameof(PresenterTests));
      
         var presenterGO = new GameObject("PresenterNoDi");
