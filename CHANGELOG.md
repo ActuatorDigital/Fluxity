@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Ability to set starting State of a feature, during `RegisterFeature`.
+- ObjectData sample, uses reference type in it's state and is initialised during `RegisterFeature`.
+
 ## [0.1.0]
 
 ### Added
 
-Initial public release.
+- Initial public release
