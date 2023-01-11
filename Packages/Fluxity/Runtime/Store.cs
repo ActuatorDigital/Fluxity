@@ -7,6 +7,11 @@ namespace AIR.Fluxity
     {
         private readonly Dictionary<Type, IFeature> _features = new Dictionary<Type, IFeature>();
 
+        public IReadOnlyCollection<IFeature> GetAllFeatures()
+        {
+            return _features.Values;
+        }
+
         public void AddFeature<TState>(IFeature<TState> feature)
             where TState : struct
         {

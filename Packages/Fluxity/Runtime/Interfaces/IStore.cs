@@ -1,7 +1,10 @@
-﻿namespace AIR.Fluxity
+﻿using System.Collections.Generic;
+
+namespace AIR.Fluxity
 {
     public interface IStore
     {
+        IReadOnlyCollection<IFeature> GetAllFeatures();
         void ProcessCommand<TCommand>(TCommand command)
             where TCommand : ICommand;
 
