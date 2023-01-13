@@ -71,12 +71,7 @@ namespace AIR.Fluxity.Editor
             }
             else if (value is ICollection collection)
             {
-                var currentlyFoldedOut = curLevel < AutoFoldOutIndent;
-                if (_foldoutStatus.TryGetValue(collection, out var val))
-                    currentlyFoldedOut = val;
-
-                currentlyFoldedOut = PrintFoldout(name, collection.Count, curLevel, currentlyFoldedOut);
-                _foldoutStatus[collection] = currentlyFoldedOut;
+                var currentlyFoldedOut = DealWithFoldout(name, curLevel, collection, collection.Count.ToString());
 
                 if (currentlyFoldedOut)
                 {
@@ -90,15 +85,29 @@ namespace AIR.Fluxity.Editor
             }
             else
             {
-                Print(name, value, curLevel);
-                DrawObject(value);
+                var currentlyFoldedOut = DealWithFoldout(name, curLevel, value, value.GetType().Name);
+                if (currentlyFoldedOut)
+                {
+                    DrawObject(value);
+                }
             }
         }
 
-        private bool PrintFoldout(string name, int count, int curLevel, bool currentlyFoldedOut)
+        private bool DealWithFoldout(string name, int curLevel, object obj, string info)
+        {
+            var currentlyFoldedOut = curLevel < AutoFoldOutIndent;
+            if (_foldoutStatus.TryGetValue(obj, out var val))
+                currentlyFoldedOut = val;
+
+            currentlyFoldedOut = PrintCollectionFoldout(name, info, curLevel, currentlyFoldedOut);
+            _foldoutStatus[obj] = currentlyFoldedOut;
+            return currentlyFoldedOut;
+        }
+
+        private bool PrintCollectionFoldout(string name, string info, int curLevel, bool currentlyFoldedOut)
         {
             EditorGUI.indentLevel = curLevel;
-            return EditorGUILayout.Foldout(currentlyFoldedOut, $"{name}({count})", true);
+            return EditorGUILayout.Foldout(currentlyFoldedOut, $"{name}({info})", true);
         }
 
         private void Print(string prefix, object val, int curLevel)
@@ -123,7 +132,6 @@ namespace AIR.Fluxity.Editor
             case Vector3:
             case Vector4:
                 return true;
-                
             default:
                 return false;
             }
