@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ability to set starting State of a feature, during `RegisterFeature`.
 - ObjectData sample, uses reference type in it's state and is initialised during `RegisterFeature`.
+- Fluxity->Stores editor window. View the values in stores at runtime.
+- StoresWindow example, has a number of sample cases (Features) for the Stores window to demonstrate.
 
 ## [0.1.0]
 
