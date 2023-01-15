@@ -22,12 +22,12 @@ namespace AIR.Fluxity.Editor
         private string _currentlyShowingName;
         private FeatureStateDrawer _featureDrawer;
 
-        [MenuItem("Window/Fluxity/Stores")]
+        [MenuItem("Window/Fluxity/Runtime Stores")]
         public static void ShowWindow()
         {
             // Get existing open window or if none, make a new one:
             var window = GetWindow<StoreWindow>();
-            window.titleContent = new GUIContent("Fluxity Stores");
+            window.titleContent = new GUIContent("Fluxity Runtime Stores");
             window.Show();
         }
 
@@ -43,35 +43,15 @@ namespace AIR.Fluxity.Editor
 
         public void OnGUI()
         {
-            DoStoreSelectPanel();
-            DoSelectedStore();
-        }
-
-        private void DoSelectedStore()
-        {
-            GUILayout.BeginArea(new Rect(LeftPanelRightWall, 0, position.width- LeftPanelRightWall, position.height));
+            if (!EditorApplication.isPlayingOrWillChangePlaymode)
             {
-                _rightPanelScrollViewPos = EditorGUILayout.BeginScrollView(
-                    _rightPanelScrollViewPos,
-                    GUILayout.Height(position.height));
-                {
-                    var drawer = GetObjectDrawerForTarget();
-
-                    if (drawer == null)
-                    {
-                        EditorGUILayout.LabelField("No feature selected");
-                    }
-                    else
-                    {
-                        EditorGUILayout.LabelField($"Values of {_currentlyShowingName}", EditorStyles.boldLabel);
-                        DrawHorLine(Color.grey);
-
-                        drawer.Draw();
-                    }
-                }
-                EditorGUILayout.EndScrollView();
+                GUILayout.Label("Not in play mode.");
             }
-            GUILayout.EndArea();
+            else
+            {
+                DoStoreSelectPanel();
+                DoSelectedStore();
+            }
         }
 
         private void DoStoreSelectPanel()
@@ -87,7 +67,7 @@ namespace AIR.Fluxity.Editor
                     {
                         Refresh();
                     }
-                    
+
                     var store = GetStore();
                     if (store == null)
                     {
@@ -105,6 +85,33 @@ namespace AIR.Fluxity.Editor
                                 _currentlyShowingName = name;
                             }
                         }
+                    }
+                }
+                EditorGUILayout.EndScrollView();
+            }
+            GUILayout.EndArea();
+        }
+
+        private void DoSelectedStore()
+        {
+            GUILayout.BeginArea(new Rect(LeftPanelRightWall, 0, position.width - LeftPanelRightWall, position.height));
+            {
+                _rightPanelScrollViewPos = EditorGUILayout.BeginScrollView(
+                    _rightPanelScrollViewPos,
+                    GUILayout.Height(position.height));
+                {
+                    var drawer = GetObjectDrawerForTarget();
+
+                    if (drawer == null)
+                    {
+                        EditorGUILayout.LabelField("No feature selected");
+                    }
+                    else
+                    {
+                        EditorGUILayout.LabelField($"Values of {_currentlyShowingName}", EditorStyles.boldLabel);
+                        DrawHorLine(Color.grey);
+
+                        drawer.Draw();
                     }
                 }
                 EditorGUILayout.EndScrollView();
