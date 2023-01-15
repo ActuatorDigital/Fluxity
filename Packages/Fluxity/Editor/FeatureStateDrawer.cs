@@ -131,6 +131,7 @@ namespace AIR.Fluxity.Editor
             case Vector2:
             case Vector3:
             case Vector4:
+            case System.Guid:
                 return true;
             default:
                 return false;

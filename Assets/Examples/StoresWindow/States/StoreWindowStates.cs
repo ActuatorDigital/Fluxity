@@ -41,8 +41,9 @@ namespace Examples.StoresWindow
         public class SomeObject
         {
             public string name;
-            public SomeObject child;
             public Transform[] transforms;
+            public System.Guid guid;
+            public SomeObject child;
         }
 
         public static CustomObjectCyclicState CreateDefault()
@@ -50,20 +51,24 @@ namespace Examples.StoresWindow
             var obj = new SomeObject
             {
                 name = "Root",
+                guid = System.Guid.NewGuid(),
                 transforms = Object.FindObjectsOfType<Transform>(),
             };
 
             obj.child = new SomeObject
             {
                 name = "Child",
+                guid = System.Guid.NewGuid(),
                 transforms = Object.FindObjectsOfType<Transform>(),
                 child = new SomeObject
                 {
                     name = "GrandChild",
+                    guid = System.Guid.NewGuid(),
                     transforms = Object.FindObjectsOfType<Transform>(),
                     child = new SomeObject
                     {
                         name = "Cycle",
+                        guid = System.Guid.NewGuid(),
                         transforms = Object.FindObjectsOfType<Transform>(),
                         child = obj,
                     },
