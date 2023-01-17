@@ -94,4 +94,11 @@ namespace Examples.StoresWindow
 
         public SomeObject someObject;
     }
+
+    public struct DicOfStringTransformState
+    {
+        public static DicOfStringTransformState CreateDefault() => new DicOfStringTransformState { keyValuePairs = Object.FindObjectsOfType<Transform>().ToDictionary(t => t.name, t => t) };
+
+        public Dictionary<string, Transform> keyValuePairs;
+    }
 }

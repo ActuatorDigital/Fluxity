@@ -69,6 +69,18 @@ namespace AIR.Fluxity.Editor
             {
                 Print(name, value, curLevel);
             }
+            else if (value is IDictionary dictionary)
+            {
+                var currentlyFoldedOut = DealWithFoldout(name, curLevel, dictionary, dictionary.Count.ToString());
+
+                if (currentlyFoldedOut)
+                {
+                    foreach (DictionaryEntry item in dictionary)
+                    {
+                        DoNameAndValue(item.Key.ToString(), item.Value, curLevel + 1);
+                    }
+                }
+            }
             else if (value is ICollection collection)
             {
                 var currentlyFoldedOut = DealWithFoldout(name, curLevel, collection, collection.Count.ToString());
