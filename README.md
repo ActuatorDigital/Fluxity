@@ -93,6 +93,8 @@ Requires Flume and Fluxity need to be referenced in a link.xml file
 
 In this example we'll give a quick show of code required to control the spinning of a 3D object from a UI via Fluxity.
 
+<details>
+<summary>Show code sample</summary>
 ### State used
 
 ```cs
@@ -271,4 +273,24 @@ public class StopSpinButtonView : MonoBehaviour
 }
 ```
 
+</details>
 Additional examples, including for features such as Effects, can be found in the folder `Assets/Examples`.
+
+## Editor
+
+Fluxity provides an editor window to aid in debugging.
+
+### Fluxity Runtime Stores
+
+This window gives a readonly view of the current state in the stores. Located via Window->Fluxity->Runtime Stores.
+This is runtime only.
+
+![No Stores can be shown when not playing](img/Stores-Not-Runtime.png?raw=true "No Stores can be shown when not playing.")
+
+With stores registered, the window shows all available stores.
+
+![When playing all registered shows show in left panel](img/Stores-Many-Avail.png?raw=true "When playing all registered shows show in left panel.")
+
+Clicking a store in the left panel shows its values on the right.
+
+![With a Feature selected we see a readonly view of its value(s)](img/Feature-Complex-Recursive.png?raw=true "With a Feature selected we see a readonly view of its value(s).")
