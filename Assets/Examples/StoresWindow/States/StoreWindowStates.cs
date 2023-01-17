@@ -29,6 +29,20 @@ namespace Examples.StoresWindow
         public Vector3 valueV3;
     }
 
+    public struct CommonTypesState
+    {
+        public static CommonTypesState CreateDefault() => new CommonTypesState
+        {
+            dateTime = System.DateTime.Now,
+            guid = System.Guid.NewGuid(),
+            timeSpan = System.TimeSpan.FromMinutes(5),
+        };
+
+        public System.Guid guid;
+        public System.DateTime dateTime;
+        public System.TimeSpan timeSpan;
+    }
+
     public struct TransformsState
     {
         public static TransformsState CreateDefault() => new TransformsState { transforms = Object.FindObjectsOfType<Transform>() };
@@ -72,7 +86,7 @@ namespace Examples.StoresWindow
                         transforms = Object.FindObjectsOfType<Transform>(),
                         child = obj,
                     },
-                }
+                },
             };
 
             return new CustomObjectCyclicState { someObject = obj };

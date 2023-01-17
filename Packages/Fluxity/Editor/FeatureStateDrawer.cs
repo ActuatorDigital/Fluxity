@@ -132,6 +132,8 @@ namespace AIR.Fluxity.Editor
             case Vector3:
             case Vector4:
             case System.Guid:
+            case System.DateTime:
+            case System.TimeSpan:
                 return true;
             default:
                 return false;
