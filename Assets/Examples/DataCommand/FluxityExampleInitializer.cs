@@ -10,7 +10,8 @@ namespace Examples.DataCommand
         {
             CreateReducer<CounterState, ChangeCountCommand>(CounterReducer.Change);
 
-            CreateEffect<ChangeCounterEffect, ChangeCountCommand>();
+            var changeCounterEffect = new ChangeCounterEffect();
+            CreateEffect<ChangeCountCommand>(changeCounterEffect.DoEffect);
         }
     }
 }

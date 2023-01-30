@@ -59,12 +59,13 @@ public class DispatcherTests
     {
         var payloadVal = 3;
         var command = new DummyCommand() { payload = payloadVal };
-        var effect = new DummyEffect(_dispatcher);
+        var dummyEffect = new DummyEffect();
+        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
         _dispatcher.RegisterEffect(effect);
 
         _dispatcher.Dispatch(command);
 
-        Assert.AreEqual(payloadVal, effect.accumPayload);
+        Assert.AreEqual(payloadVal, dummyEffect.accumPayload);
     }
 
     [Test]
@@ -72,23 +73,26 @@ public class DispatcherTests
     {
         var payloadVal = 3;
         var command = new DummyCommand() { payload = payloadVal };
-        var effect = _dispatcher.CreateAndRegister<DummyEffect, DummyCommand>();
+        var dummyEffect = new DummyEffect();
+        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
+        _dispatcher.RegisterEffect(effect);
 
         _dispatcher.Dispatch(command);
 
-        Assert.AreEqual(payloadVal, effect.accumPayload);
+        Assert.AreEqual(payloadVal, dummyEffect.accumPayload);
     }
 
     [Test]
     public void Dispatch_WhenNonMatchingEffectRegistered_ShouldNotInvoke()
     {
         var command = new OtherDummyCommand();
-        var effect = new DummyEffect(_dispatcher);
+        var dummyEffect = new DummyEffect();
+        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
         _dispatcher.RegisterEffect(effect);
 
         _dispatcher.Dispatch(command);
 
-        Assert.AreEqual(0, effect.accumPayload);
+        Assert.AreEqual(0, dummyEffect.accumPayload);
     }
 
     [Test]
@@ -100,13 +104,14 @@ public class DispatcherTests
         _store.RegisterReducer(reducer);
         var payloadVal = 2;
         var command = new DummyCommand() { payload = payloadVal };
-        var effect = new DummyEffect(_dispatcher);
+        var dummyEffect = new DummyEffect();
+        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
         _dispatcher.RegisterEffect(effect);
 
         _dispatcher.Dispatch(command);
 
         Assert.AreEqual(3, _feature.State.value);
-        Assert.AreEqual(payloadVal, effect.accumPayload);
+        Assert.AreEqual(payloadVal, dummyEffect.accumPayload);
     }
 
     [Test]
@@ -120,7 +125,8 @@ public class DispatcherTests
         _store.RegisterReducer(reducer);
         var payloadVal = 1;
         var command = new DummyCommand() { payload = payloadVal };
-        var effect = new DummyEffect(_dispatcher);
+        var dummyEffect = new DummyEffect();
+        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
         //two of the same effect
         _dispatcher.RegisterEffect(effect);
         _dispatcher.RegisterEffect(effect);
@@ -128,7 +134,7 @@ public class DispatcherTests
         _dispatcher.Dispatch(command);
 
         Assert.AreEqual(3, _feature.State.value);
-        Assert.AreEqual(payloadVal * 2, effect.accumPayload);
+        Assert.AreEqual(payloadVal * 2, dummyEffect.accumPayload);
     }
 
     [Test]
@@ -146,13 +152,11 @@ public class DispatcherTests
     [Test]
     public void Dispatch_WhenEffectDispatches_ShouldNotThrow()
     {
-        var effect = new DummyDelegateEffect(
-            () => _dispatcher.Dispatch(new OtherDummyCommand()),
-            _dispatcher);
+        var effect = new EffectBinding<DummyCommand>((DummyCommand dc, IDispatcher dispatcher) => _dispatcher.Dispatch(new OtherDummyCommand()));
         _dispatcher.RegisterEffect(effect);
 
         void Act() => _dispatcher.Dispatch(new DummyCommand());
-        
+
         Assert.DoesNotThrow(Act);
     }
 }

@@ -46,16 +46,23 @@ public class StoreTests
     }
 
     [Test]
-    public void RegisterReducer_WhenHasMatchingFeaturesRegistered_ShouldNotThrow()
+    public void GetAllFeatures_When2Registered_ShouldReturnBothItems()
     {
         var featureSubstitute = Substitute.For<IFeature<DummyState>>();
         featureSubstitute.GetStateType.Returns(typeof(DummyState));
         _store.AddFeature(featureSubstitute);
+        var featureSubstitute2 = Substitute.For<IFeature<OtherDummyState>>();
+        featureSubstitute2.GetStateType.Returns(typeof(OtherDummyState));
+        _store.AddFeature(featureSubstitute2);
         var substituteReducer = Substitute.For<IReducer<DummyState, DummyCommand>>();
         substituteReducer.GetStateType.Returns(typeof(DummyState));
 
-        void Act() => _store.RegisterReducer(substituteReducer);
+        var res = _store.GetAllFeatures();
 
-        Assert.DoesNotThrow(Act);
+        Assert.IsNotNull(res);
+        CollectionAssert.IsNotEmpty(res);
+        Assert.AreEqual(2, res.Count);
+        CollectionAssert.Contains(res, featureSubstitute);
+        CollectionAssert.Contains(res, featureSubstitute2);
     }
 }

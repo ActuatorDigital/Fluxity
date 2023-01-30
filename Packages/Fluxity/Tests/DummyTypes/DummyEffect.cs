@@ -1,15 +1,10 @@
 ﻿namespace AIR.Fluxity.Tests.DummyTypes
 {
-    internal class DummyEffect : Effect<DummyCommand>
+    internal class DummyEffect
     {
         public int accumPayload;
 
-        public DummyEffect(IDispatcher dispatcher)
-            : base(dispatcher)
-        {
-        }
-
-        public override void DoEffect(DummyCommand command)
+        public void DoEffect(DummyCommand command, IDispatcher dispatcher)
         {
             accumPayload += command.payload;
         }

@@ -3,11 +3,13 @@ namespace AIR.Fluxity
     public interface IEffect<TCommand> : IEffect
         where TCommand : ICommand
     {
-        void DoEffect(TCommand command);
+        public delegate void EffectDelegate(TCommand command, IDispatcher dispatcher);
+
+        void DoEffect(TCommand command, IDispatcher dispatcher);
     }
 
     public interface IEffect
     {
-        void DoEffect(ICommand command);
+        void DoEffect(ICommand command, IDispatcher dispatcher);
     }
 }
