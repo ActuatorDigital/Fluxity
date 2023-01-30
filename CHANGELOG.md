@@ -14,6 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fluxity->Stores editor window. View the values in stores at runtime.
 - StoresWindow example, has a number of sample cases (Features) for the Stores window to demonstrate.
 
+### Changed
+
+- Effects are now bound via internal mechanism during CreateEffect.
+
+### Removed
+
+- EffectT, replaced by internal binding done by EffectBinding.
+
 ## [0.1.0]
 
 ### Added
