@@ -45,7 +45,7 @@ namespace AIR.Fluxity
                 return;
 
             foreach (var effect in extantEffects)
-                effect.DoEffect(command);
+                effect.DoEffect(command, this);
         }
     }
 }

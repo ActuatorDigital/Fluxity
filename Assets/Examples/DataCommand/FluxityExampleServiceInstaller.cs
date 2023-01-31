@@ -12,6 +12,7 @@ namespace Examples.DataCommand
             container
                 .RegisterFluxity()
                 .RegisterFeature<CounterState>()
+                .Register<ISomeService, SomeService>()
                 ;
         }
     }

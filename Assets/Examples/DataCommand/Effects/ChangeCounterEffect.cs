@@ -1,18 +1,20 @@
+using AIR.Flume;
 using AIR.Fluxity;
-using UnityEngine;
 
 namespace Examples.DataCommand
 {
-    public class ChangeCounterEffect : Effect<ChangeCountCommand>
+    public class ChangeCounterEffect : Dependent
     {
-        public ChangeCounterEffect(IDispatcher dispatcher)
-            : base(dispatcher)
+        private ISomeService _someService;
+
+        public void Inject(ISomeService someService)
         {
+            _someService = someService;
         }
 
-        public override void DoEffect(ChangeCountCommand command)
+        public void DoEffect(ChangeCountCommand command, IDispatcher dispatcher)
         {
-            Debug.Log($"Count changed by {command.Delta}.");
+            _someService.DoSomething($"Count changed by {command.Delta}.");
         }
     }
 }

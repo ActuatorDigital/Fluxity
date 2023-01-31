@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Threading.Tasks;
 using AIR.Flume;
 using AIR.Fluxity;
 using AIR.Fluxity.Tests.DummyTypes;
@@ -48,7 +47,8 @@ public class PresenterFlumeIntegrationUnityTests
         protected override void Initialize()
         {
             CreateReducer<DummyState, DummyCommand>(DummyPureFunctionReducer.Reduce);
-            CreateEffect<DummyCommandEffect, DummyCommand>();
+            var dummyCommandEffect = new DummyCommandEffect();
+            CreateEffect<DummyCommand>(dummyCommandEffect.DoEffect);
         }
     }
 
@@ -82,18 +82,13 @@ public class PresenterFlumeIntegrationUnityTests
         public void Inject(IDummyService dummyService) => DummySerivce = dummyService;
     }
 
-    public class DummyCommandEffect : Effect<DummyCommand>
+    public class DummyCommandEffect : Dependent
     {
         private IDummyService _dummyService;
 
-        public DummyCommandEffect(IDispatcher dispatcher)
-            : base(dispatcher)
-        {
-        }
-
         public void Inject(IDummyService dummyService) => _dummyService = dummyService;
 
-        public override void DoEffect(DummyCommand command)
+        public void DoEffect(DummyCommand command, IDispatcher dispatcher)
         {
             _dummyService.LastSignal = command.payload;
         }
