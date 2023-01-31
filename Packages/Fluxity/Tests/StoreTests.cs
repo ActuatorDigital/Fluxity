@@ -46,6 +46,20 @@ public class StoreTests
     }
 
     [Test]
+    public void RegisterReducer_WhenHasMatchingFeaturesRegistered_ShouldNotThrow()
+    {
+        var featureSubstitute = Substitute.For<IFeature<DummyState>>();
+        featureSubstitute.GetStateType.Returns(typeof(DummyState));
+        _store.AddFeature(featureSubstitute);
+        var substituteReducer = Substitute.For<IReducer<DummyState, DummyCommand>>();
+        substituteReducer.GetStateType.Returns(typeof(DummyState));
+
+        void Act() => _store.RegisterReducer(substituteReducer);
+
+        Assert.DoesNotThrow(Act);
+    }
+
+    [Test]
     public void GetAllFeatures_When2Registered_ShouldReturnBothItems()
     {
         var featureSubstitute = Substitute.For<IFeature<DummyState>>();
