@@ -101,4 +101,59 @@ namespace Examples.StoresWindow
 
         public Dictionary<string, Transform> keyValuePairs;
     }
+
+    public enum SomeEnum
+    {
+        Unknown,
+        A,
+        B,
+        C
+    }
+
+    public struct Datum
+    {
+        public float Time;
+        public SomeEnum e;
+    }
+
+    public struct SomeDatumStateWithEnum
+    {
+        public List<Datum> Data;
+
+        public static SomeDatumStateWithEnum CreateDefault()
+        {
+            return new SomeDatumStateWithEnum()
+            {
+                Data = new List<Datum>()
+                {
+                    new Datum
+                    {
+                        Time = 0,
+                        e = SomeEnum.A,
+                    },
+                    new Datum
+                    {
+                        Time = 1,
+                        e = SomeEnum.B,
+                    },
+                    new Datum
+                    {
+                        Time = 2,
+                        e = SomeEnum.C,
+                    },
+                },
+            };
+        }
+    }
+
+    public struct SomeNullDatumState
+    {
+        public bool isActive;
+        public List<Datum> Data;
+
+        public static SomeNullDatumState CreateDefault()
+        {
+            return default;
+        }
+    }
 }
