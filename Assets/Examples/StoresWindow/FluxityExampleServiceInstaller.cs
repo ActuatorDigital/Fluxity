@@ -17,6 +17,8 @@ namespace Examples.StoresWindow
                 .RegisterFeature(CustomObjectCyclicState.CreateDefault())
                 .RegisterFeature(CommonTypesState.CreateDefault())
                 .RegisterFeature(DicOfStringTransformState.CreateDefault())
+                .RegisterFeature(SomeDatumStateWithEnum.CreateDefault())
+                .RegisterFeature(SomeNullDatumState.CreateDefault())
             ;
         }
     }

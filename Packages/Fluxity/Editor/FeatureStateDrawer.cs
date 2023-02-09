@@ -11,30 +11,25 @@ namespace AIR.Fluxity.Editor
         private const int MaxLevel = 15;
         private const string CyclicReferenceName = "CYCLIC";
         private const int AutoFoldOutIndent = 2;
-        private int _level = 0;
         private List<object> _cache = new List<object>();
         private Dictionary<object, bool> _foldoutStatus = new Dictionary<object, bool>();
 
         public void Prepare()
         {
             _cache.Clear();
-            _level = 0;
         }
 
-        public void DrawObject(object obj)
+        public void DrawObject(object obj, int curLevel)
         {
-            var curLevel = _level;
-            _level++;
-
             if (_cache.Contains(obj))
             {
-                Print(CyclicReferenceName, obj, _level);
+                Print(CyclicReferenceName, obj, curLevel);
                 return;
             }
 
             _cache.Add(obj);
 
-            if (_level > MaxLevel)
+            if (curLevel > MaxLevel)
             {
                 Debug.Log($"{nameof(ObjectWalker)} reached '{MaxLevel}', when {nameof(DrawObject)} '{obj}'.");
                 return;
@@ -100,7 +95,7 @@ namespace AIR.Fluxity.Editor
                 var currentlyFoldedOut = DealWithFoldout(name, curLevel, value, value.GetType().Name);
                 if (currentlyFoldedOut)
                 {
-                    DrawObject(value);
+                    DrawObject(value, curLevel + 1);
                 }
             }
         }
@@ -128,12 +123,13 @@ namespace AIR.Fluxity.Editor
             if (val is UnityEngine.Object unityObject)
                 EditorGUILayout.ObjectField(prefix, unityObject, unityObject.GetType(), true);
             else
-                EditorGUILayout.LabelField(prefix, val.ToString());
+                EditorGUILayout.LabelField(prefix, val?.ToString() ?? "null");
         }
 
         private bool IsLeafType(object obj)
         {
             if (obj.GetType().IsPrimitive
+                || obj.GetType().IsEnum
                 || obj is UnityEngine.Object)
                 return true;
 
@@ -174,7 +170,7 @@ namespace AIR.Fluxity.Editor
             var actualState = _stateGetter.GetValue(_targetFeature);
             _walker.Prepare();
             EditorGUI.BeginDisabledGroup(true);
-            _walker.DrawObject(actualState);
+            _walker.DrawObject(actualState, 0);
             EditorGUI.EndDisabledGroup();
         }
     }
