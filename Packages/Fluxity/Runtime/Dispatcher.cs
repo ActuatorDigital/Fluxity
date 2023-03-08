@@ -6,6 +6,8 @@ namespace AIR.Fluxity
 {
     public class Dispatcher : Dependent, IDispatcher
     {
+        public event Action<ICommand> OnDispatch;
+
         private readonly Dictionary<Type, List<IEffect>> _effects = new Dictionary<Type, List<IEffect>>();
         private bool _isReducing;
         private IStore _store;
@@ -28,6 +30,7 @@ namespace AIR.Fluxity
         public void Dispatch<TCommand>(TCommand command)
             where TCommand : ICommand
         {
+            OnDispatch?.Invoke(command);
             if (_isReducing)
                 throw new DispatcherException($"Attempted to dispatch '{command.GetType()}' during an existing {nameof(Dispatch)}.");
 
