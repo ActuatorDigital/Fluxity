@@ -294,3 +294,11 @@ With stores registered, the window shows all available stores.
 Clicking a store in the left panel shows its values on the right.
 
 ![With a Feature selected we see a readonly view of its value(s)](img/Feature-Complex-Recursive.png?raw=true "With a Feature selected we see a readonly view of its value(s).")
+
+### Fluxity Runtime History
+
+This window shows a time-stamped log of the most recent Commands dispatched by the Dispatcher. Located via Window->Fluxity->Runtime History.
+
+![Shows the most recent Commands](img/dispatch-history.png?raw=true "Shows the most recent Commands.")
+
+The 30 most recent Commands are displayed; clearing when either Play Mode is entered, or the 'Flush History' button is clicked.

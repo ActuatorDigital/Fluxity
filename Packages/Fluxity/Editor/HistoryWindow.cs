@@ -5,14 +5,12 @@ using UnityEngine;
 
 namespace AIR.Fluxity.Editor
 {
-    class HistoryWindow : FluxityRuntimeEditorWindow
+    internal class HistoryWindow : FluxityRuntimeEditorWindow
     {
         private const int RECENT_CAPACITY = 30;
         private const string TIME_FORMAT = "HH:mm:ss.fff";
         private readonly Queue<DispatchData> _recentDispatchHistory = new Queue<DispatchData>(RECENT_CAPACITY);
         private Vector2 _panelScrollViewPos;
-        private bool _subscribed = false;
-        private IDispatcher _dispatcher;
 
         [MenuItem("Window/Fluxity/Runtime History")]
         public static void ShowWindow()
@@ -23,49 +21,44 @@ namespace AIR.Fluxity.Editor
             window.Show();
         }
 
-        public void Update()
-        {
-            if (!EditorApplication.isPlaying && _subscribed)
-            {
-                _subscribed = false;
-            }
-
-            if (EditorApplication.isPlaying && !_subscribed)
-            {
-                _dispatcher = GetDispatcher();
-                if (_dispatcher == null) return;
-                _dispatcher.OnDispatch += OnReceivedDispatch;
-                _subscribed = true;
-            }
-        }
-
         public void OnGUI()
         {
-            if (!EditorApplication.isPlayingOrWillChangePlaymode)
+            DoCommandRecentHistory();
+        }
+
+        protected override void OnPlayModeStateChanged(PlayModeStateChange state)
+        {
+            Refresh();
+            if (state == PlayModeStateChange.EnteredPlayMode)
             {
-                GUILayout.Label("Not in play mode.");
+                var dispatcher = GetDispatcher();
+                if (dispatcher == null) return;
+                dispatcher.OnDispatch += OnReceivedDispatch;
             }
-            else
+            else if (state == PlayModeStateChange.ExitingPlayMode)
             {
-                if (_subscribed)
-                    DoCommandRecentHistory();
+                var dispatcher = GetDispatcher();
+                if (dispatcher == null) return;
+                dispatcher.OnDispatch -= OnReceivedDispatch;
             }
+
+            Repaint();
         }
 
         private void DoCommandRecentHistory()
         {
             GUILayout.BeginArea(new Rect(0, 0, position.width, position.height));
             {
-                if (GUILayout.Button("Flush History"))
-                {
-                    Flush();
-                }
-
                 _panelScrollViewPos = EditorGUILayout.BeginScrollView(
                     _panelScrollViewPos,
                     GUILayout.Height(position.height),
                     GUILayout.Width(position.width));
                 {
+                    if (GUILayout.Button("Flush History"))
+                    {
+                        Flush();
+                    }
+
                     foreach (var dispatch in _recentDispatchHistory)
                     {
                         DoPaintDispatchEntry(dispatch);
