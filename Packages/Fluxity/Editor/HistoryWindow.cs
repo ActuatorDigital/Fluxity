@@ -26,23 +26,45 @@ namespace AIR.Fluxity.Editor
             DoCommandRecentHistory();
         }
 
+        public override void OnEnable()
+        {
+            base.OnEnable();
+            TrySubscribe();
+        }
+
+        public override void OnDisable()
+        {
+            base.OnDisable();
+            TryUnsubscribe();
+        }
+
         protected override void OnPlayModeStateChanged(PlayModeStateChange state)
         {
             Refresh();
             if (state == PlayModeStateChange.EnteredPlayMode)
             {
-                var dispatcher = GetDispatcher();
-                if (dispatcher == null) return;
-                dispatcher.OnDispatch += OnReceivedDispatch;
+                TrySubscribe();
             }
             else if (state == PlayModeStateChange.ExitingPlayMode)
             {
-                var dispatcher = GetDispatcher();
-                if (dispatcher == null) return;
-                dispatcher.OnDispatch -= OnReceivedDispatch;
+                TryUnsubscribe();
             }
 
             Repaint();
+        }
+
+        private void TrySubscribe()
+        {
+            var dispatcher = GetDispatcher();
+            if (dispatcher == null) return;
+            dispatcher.OnDispatch += OnReceivedDispatch;
+        }
+
+        private void TryUnsubscribe()
+        {
+            var dispatcher = GetDispatcher();
+            if (dispatcher == null) return;
+            dispatcher.OnDispatch -= OnReceivedDispatch;
         }
 
         private void DoCommandRecentHistory()
