@@ -2,6 +2,7 @@
 using AIR.Fluxity.Tests.DummyTypes;
 using NSubstitute;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 
 public class StoreTests
@@ -34,13 +35,24 @@ public class StoreTests
         Assert.DoesNotThrow(Act);
     }
 
+    internal class DummyReducer : IReducer<DummyState, DummyCommand>
+    {
+        public Type CommandType => typeof(DummyCommand);
+
+        public DummyState Reduce(DummyState state, DummyCommand command)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DummyState Reduce(DummyState state, ICommand command) => Reduce(state, (DummyCommand)command);
+    }
+
     [Test]
     public void RegisterReducer_WhenNoMatchingFeaturesRegistered_ShouldThrow()
     {
-        var substituteReducer = Substitute.For<IReducer<DummyState, DummyCommand>>();
-        substituteReducer.GetStateType.Returns(typeof(DummyState));
+        var dummyReducer = new DummyReducer();
 
-        void Act() => _store.RegisterReducer(substituteReducer);
+        void Act() => _store.RegisterReducer(dummyReducer);
 
         Assert.Throws<KeyNotFoundException>(Act);
     }
@@ -51,10 +63,9 @@ public class StoreTests
         var featureSubstitute = Substitute.For<IFeature<DummyState>>();
         featureSubstitute.GetStateType.Returns(typeof(DummyState));
         _store.AddFeature(featureSubstitute);
-        var substituteReducer = Substitute.For<IReducer<DummyState, DummyCommand>>();
-        substituteReducer.GetStateType.Returns(typeof(DummyState));
+        var dummyReducer = new DummyReducer();
 
-        void Act() => _store.RegisterReducer(substituteReducer);
+        void Act() => _store.RegisterReducer(dummyReducer);
 
         Assert.DoesNotThrow(Act);
     }
@@ -68,8 +79,6 @@ public class StoreTests
         var featureSubstitute2 = Substitute.For<IFeature<OtherDummyState>>();
         featureSubstitute2.GetStateType.Returns(typeof(OtherDummyState));
         _store.AddFeature(featureSubstitute2);
-        var substituteReducer = Substitute.For<IReducer<DummyState, DummyCommand>>();
-        substituteReducer.GetStateType.Returns(typeof(DummyState));
 
         var res = _store.GetAllFeatures();
 

@@ -19,7 +19,6 @@ namespace AIR.Fluxity
 
     public interface IReducer
     {
-        Type GetCommandType { get; }
-        Type GetStateType { get; }
+        Type CommandType { get; }
     }
 }

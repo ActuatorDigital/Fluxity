@@ -6,9 +6,7 @@ namespace AIR.Fluxity
         where TState : struct
         where TCommand : ICommand
     {
-        public Type GetCommandType => typeof(TCommand);
-
-        public Type GetStateType => typeof(TState);
+        public Type CommandType => typeof(TCommand);
 
         public abstract TState Reduce(TState state, TCommand command);
 
