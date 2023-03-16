@@ -41,6 +41,12 @@ namespace AIR.Fluxity
             ProcessEffects(command);
         }
 
+        public IReadOnlyCollection<Type> GetAllEffectCommandTypes()
+            => _effects.Keys;
+        
+        public IReadOnlyCollection<IEffect> GetAllEffectsForCommandType(Type commandType)
+            => _effects[commandType].AsReadOnly();
+
         private void ProcessEffects<TCommand>(TCommand command)
             where TCommand : ICommand
         {

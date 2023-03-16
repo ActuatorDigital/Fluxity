@@ -1,4 +1,5 @@
-﻿using AIR.Fluxity;
+﻿using System.Linq;
+using AIR.Fluxity;
 using AIR.Fluxity.Tests.DummyTypes;
 using NUnit.Framework;
 
@@ -158,5 +159,27 @@ public class DispatcherTests
         void Act() => _dispatcher.Dispatch(new DummyCommand());
 
         Assert.DoesNotThrow(Act);
+    }
+
+    [Test]
+    public void Dispatch_WhenEffectRegistered_ShouldReturn1()
+    {
+        var dummyEffect = new DummyEffect();
+        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
+        _dispatcher.RegisterEffect(effect);
+
+        var res =_dispatcher.GetAllEffectCommandTypes();
+        var innerRes = _dispatcher.GetAllEffectsForCommandType(res.First());
+
+        Assert.AreEqual(1, res.Count);
+        Assert.AreEqual(1, innerRes.Count);
+    }
+
+    [Test]
+    public void Dispatch_WhenNoEffecstRegistered_ShouldReturn0()
+    {
+        var res = _dispatcher.GetAllEffectCommandTypes();
+
+        Assert.AreEqual(0, res.Count);
     }
 }

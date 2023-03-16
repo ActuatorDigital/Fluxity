@@ -1,6 +1,7 @@
 ﻿using AIR.Fluxity;
 using NUnit.Framework;
 using System;
+using System.Reflection;
 
 public class StateSliceReducerTests
 {
@@ -28,7 +29,13 @@ public class StateSliceReducerTests
             state.lastResp = command.response;
             return state;
         }
+
+        public override MethodInfo ReducerBindingInfo()
+        {
+            throw new NotImplementedException();
+        }
     }
+
     private class LargeStateMessageReducer : Reducer<LargeState, LargeStateCommand>
     {
         public override LargeState Reduce(LargeState state, LargeStateCommand command)
@@ -36,13 +43,24 @@ public class StateSliceReducerTests
             state.msg = Guid.Empty.ToString();
             return state;
         }
+
+        public override MethodInfo ReducerBindingInfo()
+        {
+            throw new NotImplementedException();
+        }
     }
+    
     private class LargeStateExecutionCountReducer : Reducer<LargeState, LargeStateCommand>
     {
         public override LargeState Reduce(LargeState state, LargeStateCommand command)
         {
             state.executionCount++;
             return state;
+        }
+
+        public override MethodInfo ReducerBindingInfo()
+        {
+            throw new NotImplementedException();
         }
     }
 

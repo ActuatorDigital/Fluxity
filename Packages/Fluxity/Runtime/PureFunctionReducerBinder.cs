@@ -46,5 +46,8 @@ namespace AIR.Fluxity
 
         public override TState Reduce(TState state, TCommand command)
             => _function(state, command);
+
+        public override MethodInfo ReducerBindingInfo()
+            => _function?.Method ?? null;
     }
 }

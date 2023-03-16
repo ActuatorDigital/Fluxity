@@ -4,6 +4,7 @@ using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 public class StoreTests
 {
@@ -45,6 +46,11 @@ public class StoreTests
         }
 
         public DummyState Reduce(DummyState state, ICommand command) => Reduce(state, (DummyCommand)command);
+
+        public MethodInfo ReducerBindingInfo()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     [Test]
