@@ -1,9 +1,11 @@
 ﻿using AIR.Flume;
+using NSubstitute;
 using UnityEditor;
+using UnityEngine;
 
 namespace AIR.Fluxity.Editor
 {
-    internal class FluxityRuntimeEditorWindow : EditorWindow
+    internal class FluxityRuntimeEditorWindow : EditorWindow, IHasCustomMenu
     {
         internal class FluxityHandle : Dependent
         {
@@ -31,6 +33,12 @@ namespace AIR.Fluxity.Editor
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
         }
 
+        public void AddItemsToMenu(GenericMenu menu)
+        {
+            GUIContent content = new GUIContent("Refresh");
+            menu.AddItem(content, false, Refresh);
+        }
+        
         protected virtual void Refresh()
         {
             _fluxityHandle = null;

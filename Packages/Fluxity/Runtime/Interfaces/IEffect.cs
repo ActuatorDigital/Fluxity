@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace AIR.Fluxity
 {
     public interface IEffect<TCommand> : IEffect
@@ -11,5 +13,6 @@ namespace AIR.Fluxity
     public interface IEffect
     {
         void DoEffect(ICommand command, IDispatcher dispatcher);
+        MethodInfo EffectBindingInfo();
     }
 }

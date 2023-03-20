@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace AIR.Fluxity
 {
@@ -19,5 +20,7 @@ namespace AIR.Fluxity
         void Register(IReducer reducer);
 
         void ProcessReducers(ICommand command);
+        IReadOnlyCollection<Type> GetAllHandledCommandTypes();
+        IReadOnlyCollection<IReducer> GetAllReducersForCommand(Type commandType);
     }
 }

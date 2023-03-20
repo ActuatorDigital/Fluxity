@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace AIR.Fluxity.Tests.DummyTypes
 {
@@ -15,6 +16,11 @@ namespace AIR.Fluxity.Tests.DummyTypes
         {
             _customAction?.Invoke();
             return state;
+        }
+
+        public override MethodInfo ReducerBindingInfo()
+        {
+            throw new NotImplementedException();
         }
     }
 }

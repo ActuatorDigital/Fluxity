@@ -22,7 +22,7 @@ namespace AIR.Fluxity
             where TState : struct
             where TCommand : ICommand
         {
-            _features[reducer.GetStateType].Register(reducer);
+            _features[typeof(TState)].Register(reducer);
         }
 
         public void ProcessCommand<TCommand>(TCommand command)

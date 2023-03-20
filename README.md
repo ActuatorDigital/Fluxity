@@ -95,6 +95,7 @@ In this example we'll give a quick show of code required to control the spinning
 
 <details>
 <summary>Show code sample</summary>
+
 ### State used
 
 ```cs
@@ -295,10 +296,8 @@ Clicking a store in the left panel shows its values on the right.
 
 ![With a Feature selected we see a readonly view of its value(s)](img/Feature-Complex-Recursive.png?raw=true "With a Feature selected we see a readonly view of its value(s).")
 
-### Fluxity Runtime History
+### Fluxity Runtime Bindings
 
-This window shows a time-stamped log of the most recent Commands dispatched by the Dispatcher. Located via Window->Fluxity->Runtime History.
+This window shows a table of all currently bound reducers and effects. This will be empty when not in playmode. The Column headers can be clicked to sort the table.
 
-![Shows the most recent Commands](img/dispatch-history.png?raw=true "Shows the most recent Commands.")
-
-The 30 most recent Commands are displayed; clearing when either Play Mode is entered, or the 'Flush History' button is clicked.
+!["Reducer and Effect binding, showing during play mode."](img/runtine-bindings-window.png?raw=true "Reducer and Effect binding, showing during play mode.")

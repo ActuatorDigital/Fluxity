@@ -2,6 +2,7 @@
 using AIR.Fluxity.Tests.DummyTypes;
 using NUnit.Framework;
 using System;
+using System.Linq;
 
 public class FeatureTests
 {
@@ -93,5 +94,29 @@ public class FeatureTests
         _feature.SetState(sent);
 
         Assert.AreEqual(returned, sent);
+    }
+
+    [Test]
+    public void GetHandled_WhenOneBound_ShouldReturnExpectedOne()
+    {
+        var reducer = new DummyReducer();
+        _feature.Register(reducer);
+
+        var res = _feature.GetAllHandledCommandTypes();
+        var resInner = _feature.GetAllReducersForCommand(res.First());
+        var innerBindingInfo = resInner.First().ReducerBindingInfo();
+
+        Assert.AreEqual(1, res.Count);
+        StringAssert.AreEqualIgnoringCase(nameof(DummyCommand), res.First().Name);
+        StringAssert.AreEqualIgnoringCase(nameof(DummyReducer.Reduce), innerBindingInfo.Name);
+        StringAssert.AreEqualIgnoringCase(nameof(DummyReducer), innerBindingInfo.DeclaringType.Name);
+    }
+
+    [Test]
+    public void GetHandled_WhenNoneBound_ShouldReturnZero()
+    {
+        var res = _feature.GetAllHandledCommandTypes();
+
+        Assert.AreEqual(0, res.Count);
     }
 }

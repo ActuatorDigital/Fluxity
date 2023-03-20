@@ -20,6 +20,11 @@ namespace AIR.Fluxity
 
         public Type GetStateType => typeof(TState);
 
+        public IReadOnlyCollection<Type> GetAllHandledCommandTypes() => _reducers.Keys;
+
+        public IReadOnlyCollection<IReducer> GetAllReducersForCommand(Type commandType) => _reducers[commandType].AsReadOnly();
+
+
         public void Inject(IStore store)
             => store.AddFeature(this);
 
@@ -31,13 +36,13 @@ namespace AIR.Fluxity
 
         public void Register(IReducer<TState> reducer)
         {
-            if (_reducers.TryGetValue(reducer.GetCommandType, out var extantReducers))
+            if (_reducers.TryGetValue(reducer.CommandType, out var extantReducers))
             {
                 extantReducers.Add(reducer);
                 return;
             }
 
-            _reducers.Add(reducer.GetCommandType, new List<IReducer<TState>>() { reducer });
+            _reducers.Add(reducer.CommandType, new List<IReducer<TState>>() { reducer });
         }
 
         public void Register(IReducer reducer)

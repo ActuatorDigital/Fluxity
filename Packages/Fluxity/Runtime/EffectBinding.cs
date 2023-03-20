@@ -1,4 +1,6 @@
-﻿namespace AIR.Fluxity
+﻿using System.Reflection;
+
+namespace AIR.Fluxity
 {
     public class EffectBinding<TCommand> : IEffect<TCommand>
         where TCommand : ICommand
@@ -15,5 +17,8 @@
 
         public void DoEffect(ICommand command, IDispatcher dispatcher)
             => DoEffect((TCommand)command, dispatcher);
+
+        public MethodInfo EffectBindingInfo()
+            => _effectDel?.Method ?? null;
     }
 }

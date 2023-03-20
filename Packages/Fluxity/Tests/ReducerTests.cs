@@ -1,4 +1,5 @@
-﻿using AIR.Fluxity;
+﻿using System.Reflection;
+using AIR.Fluxity;
 using AIR.Fluxity.Tests.DummyTypes;
 using NUnit.Framework;
 
@@ -12,6 +13,11 @@ public class ReducerTests
         public override DummyState Reduce(DummyState state, DummyCommand command)
         {
             return new DummyState() { value = state.value * 2 };
+        }
+
+        public override MethodInfo ReducerBindingInfo()
+        {
+            throw new System.NotImplementedException();
         }
     }
 

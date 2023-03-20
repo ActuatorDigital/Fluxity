@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 namespace AIR.Fluxity
 {
@@ -19,7 +20,7 @@ namespace AIR.Fluxity
 
     public interface IReducer
     {
-        Type GetCommandType { get; }
-        Type GetStateType { get; }
+        Type CommandType { get; }
+        MethodInfo ReducerBindingInfo();
     }
 }
