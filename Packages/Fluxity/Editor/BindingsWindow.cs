@@ -10,6 +10,7 @@ namespace AIR.Fluxity.Editor
 {
     internal class BindingsWindow : FluxityRuntimeEditorWindow
     {
+        private const string V = "N/A";
         private readonly Color _lighterColor = Color.white * 0.3f;
         private readonly Color _darkerColor = Color.white * 0.1f;
 
@@ -21,7 +22,7 @@ namespace AIR.Fluxity.Editor
         private Action<object, Rect>[] _dataColumnDrawers;
         private MultiColumnHeaderState.Column[] _columns;
         private List<Binding> _cachedBindings = new List<Binding>();
-
+        private Vector2 _scrollPosition;
 
         [MenuItem("Window/Fluxity/Runtime Bindings")]
         public static void ShowWindow()
@@ -59,8 +60,8 @@ namespace AIR.Fluxity.Editor
             _dataColumnDrawers = new Action<object, Rect>[]
             {
                 (x, r) => EditorGUI.LabelField(r, ((Binding.BindingElementType)x).ToString()),
-                (x, r) => EditorGUI.LabelField(r, ((Type)x)?.Name ?? "N/A"),
-                (x, r) => EditorGUI.LabelField(r, ((Type)x)?.Name ?? "N/A"),
+                (x, r) => EditorGUI.LabelField(r, ((Type)x)?.Name ?? V),
+                (x, r) => EditorGUI.LabelField(r, ((Type)x)?.Name ?? V),
                 (x, r) => EditorGUI.LabelField(r, $"{((MethodInfo)x).DeclaringType.Name}.{((MethodInfo)x).Name}"),
             };
 
@@ -77,42 +78,52 @@ namespace AIR.Fluxity.Editor
 
         private void DrawBindings()
         {
-            GUILayout.BeginArea(new Rect(0, 0, position.width, position.height));
+            var totalArea = new Rect(0, 0, position.width, position.height);
+            GUILayout.BeginArea(totalArea);
             {
-                _scrollViewPos = EditorGUILayout.BeginScrollView(
-                    _scrollViewPos,
-                    GUILayout.Height(position.height),
-                    GUILayout.Width(position.width));
+                var store = GetStore();
+                if (store == null)
                 {
                     if (GUILayout.Button("Refresh"))
                     {
                         Refresh();
                     }
 
-                    var store = GetStore();
-                    if (store == null)
+                    EditorGUILayout.LabelField("No store found");
+                }
+                else
+                {
+                    GUILayout.FlexibleSpace();
+                    var windowRect = GUILayoutUtility.GetLastRect();
+
+                    windowRect.width = position.width;
+                    windowRect.height = position.height;
+                    var columnHeight = EditorGUIUtility.singleLineHeight;
+
+                    if (_multiColumnHeader == null)
                     {
-                        EditorGUILayout.LabelField("No store found");
+                        Initialize();
                     }
-                    else
+
+                    var columnRectPrototype = new Rect(windowRect)
                     {
-                        if (_multiColumnHeader == null)
-                        {
-                            Initialize();
-                        }
+                        height = columnHeight,
+                    };
 
-                        GUILayout.FlexibleSpace();
-                        var windowRect = GUILayoutUtility.GetLastRect();
+                    var viewRect = new Rect(source: windowRect)
+                    {
+                        width = _multiColumnHeaderState.widthOfAllVisibleColumns,
+                        height = columnHeight * (_cachedBindings.Count + 1),
+                    };
 
-                        windowRect.width = position.width;
-                        windowRect.height = position.height;
-                        var columnHeight = EditorGUIUtility.singleLineHeight;
-
-                        var columnRectPrototype = new Rect(windowRect)
-                        {
-                            height = columnHeight,
-                        };
-
+                    _scrollPosition = GUI.BeginScrollView(
+                        windowRect,
+                        scrollPosition: _scrollPosition,
+                        viewRect,
+                        true,
+                        true
+                    );
+                    {
                         _multiColumnHeader.OnGUI(columnRectPrototype, 0.0f);
 
                         for (int i = 0; i < _cachedBindings.Count; i++)
@@ -138,8 +149,8 @@ namespace AIR.Fluxity.Editor
                             }
                         }
                     }
+                    GUI.EndScrollView(true);
                 }
-                EditorGUILayout.EndScrollView();
             }
             GUILayout.EndArea();
         }
@@ -149,7 +160,7 @@ namespace AIR.Fluxity.Editor
             var columnIndex = multiColumnHeader.sortedColumnIndex;
             var isAscending = multiColumnHeader.IsSortedAscending(columnIndex);
             var propertyInfo = _dataColumnMapping[columnIndex];
-            Func<Binding, object> sortFunction = x => propertyInfo.GetValue(x)?.ToString() ?? "N/A";
+            Func<Binding, object> sortFunction = x => propertyInfo.GetValue(x)?.ToString() ?? V;
 
             _cachedBindings = isAscending
                 ? _cachedBindings.OrderBy(sortFunction).ToList()
