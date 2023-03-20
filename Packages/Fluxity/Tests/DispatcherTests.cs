@@ -176,7 +176,7 @@ public class DispatcherTests
     }
 
     [Test]
-    public void Dispatch_WhenNoEffecstRegistered_ShouldReturn0()
+    public void Dispatch_WhenNoEffectsRegistered_ShouldReturn0()
     {
         var res = _dispatcher.GetAllEffectCommandTypes();
 

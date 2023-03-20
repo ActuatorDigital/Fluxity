@@ -5,7 +5,7 @@ using NUnit.Framework;
 public class PureFunctionReducerBinderTests
 {
     [Test]
-    public void ReducerBindi_WhenConstructedFromFuncAndGivenCorrectType_ShouldCallWithExpectedPayloadValue()
+    public void ReducerBindingInfo_WhenConstructedFromFuncAndGivenCorrectType_ShouldCallWithExpectedPayloadValue()
     {
         var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyPureFunctionReducer.Reduce);
 

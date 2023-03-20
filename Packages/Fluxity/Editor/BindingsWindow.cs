@@ -10,7 +10,7 @@ namespace AIR.Fluxity.Editor
 {
     internal class BindingsWindow : FluxityRuntimeEditorWindow
     {
-        private const string V = "N/A";
+        private const string NA_STRING = "N/A";
         private readonly Color _lighterColor = Color.white * 0.3f;
         private readonly Color _darkerColor = Color.white * 0.1f;
 
@@ -60,8 +60,8 @@ namespace AIR.Fluxity.Editor
             _dataColumnDrawers = new Action<object, Rect>[]
             {
                 (x, r) => EditorGUI.LabelField(r, ((Binding.BindingElementType)x).ToString()),
-                (x, r) => EditorGUI.LabelField(r, ((Type)x)?.Name ?? V),
-                (x, r) => EditorGUI.LabelField(r, ((Type)x)?.Name ?? V),
+                (x, r) => EditorGUI.LabelField(r, ((Type)x)?.Name ?? NA_STRING),
+                (x, r) => EditorGUI.LabelField(r, ((Type)x)?.Name ?? NA_STRING),
                 (x, r) => EditorGUI.LabelField(r, $"{((MethodInfo)x).DeclaringType.Name}.{((MethodInfo)x).Name}"),
             };
 
@@ -160,7 +160,7 @@ namespace AIR.Fluxity.Editor
             var columnIndex = multiColumnHeader.sortedColumnIndex;
             var isAscending = multiColumnHeader.IsSortedAscending(columnIndex);
             var propertyInfo = _dataColumnMapping[columnIndex];
-            Func<Binding, object> sortFunction = x => propertyInfo.GetValue(x)?.ToString() ?? V;
+            Func<Binding, object> sortFunction = x => propertyInfo.GetValue(x)?.ToString() ?? NA_STRING;
 
             _cachedBindings = isAscending
                 ? _cachedBindings.OrderBy(sortFunction).ToList()
