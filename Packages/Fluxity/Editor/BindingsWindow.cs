@@ -19,10 +19,12 @@ namespace AIR.Fluxity.Editor
         private MultiColumnHeaderState _multiColumnHeaderState;
         private MultiColumnHeader _multiColumnHeader;
         private PropertyInfo[] _dataColumnMapping;
-        private Action<object, Rect>[] _dataColumnDrawers;
+        private Func<object, string>[] _dataMapperStringifiers;
         private MultiColumnHeaderState.Column[] _columns;
         private List<Binding> _cachedBindings = new List<Binding>();
         private Vector2 _scrollPosition;
+        private SearchField _searchField;
+        private string _searchText = string.Empty;
 
         [MenuItem("Window/Fluxity/Runtime Bindings")]
         public static void ShowWindow()
@@ -56,13 +58,13 @@ namespace AIR.Fluxity.Editor
         private void Initialize()
         {
             // include internals as we are the thing messing with it
-            _dataColumnMapping = typeof(Binding).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
-            _dataColumnDrawers = new Action<object, Rect>[]
+            _dataColumnMapping = typeof(Binding).GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
+            _dataMapperStringifiers = new Func<object, string>[]
             {
-                (x, r) => EditorGUI.LabelField(r, ((Binding.BindingElementType)x).ToString()),
-                (x, r) => EditorGUI.LabelField(r, ((Type)x)?.Name ?? NA_STRING),
-                (x, r) => EditorGUI.LabelField(r, ((Type)x)?.Name ?? NA_STRING),
-                (x, r) => EditorGUI.LabelField(r, $"{((MethodInfo)x).DeclaringType.Name}.{((MethodInfo)x).Name}"),
+                (x) => ((Binding.BindingElementType)x).ToString(),
+                (x) => ((Type)x)?.Name ?? NA_STRING,
+                (x) => ((Type)x)?.Name ?? NA_STRING,
+                (x) => $"{((MethodInfo)x).DeclaringType.Name}.{((MethodInfo)x).Name}",
             };
 
             _columns = _dataColumnMapping
@@ -74,11 +76,14 @@ namespace AIR.Fluxity.Editor
             _multiColumnHeader.visibleColumnsChanged += (multiColumnHeader) => multiColumnHeader.ResizeToFit();
             _multiColumnHeader.sortingChanged += (multiColumnHeader) => { SortData(multiColumnHeader); Repaint(); };
             _multiColumnHeader.ResizeToFit();
+
+            _searchField = new SearchField();
         }
 
         private void DrawBindings()
         {
-            var totalArea = new Rect(0, 0, position.width, position.height);
+            var pad = 0;
+            var totalArea = new Rect(pad, pad, position.width-pad*2, position.height - pad * 2);
             GUILayout.BeginArea(totalArea);
             {
                 var store = GetStore();
@@ -93,17 +98,22 @@ namespace AIR.Fluxity.Editor
                 }
                 else
                 {
-                    GUILayout.FlexibleSpace();
-                    var windowRect = GUILayoutUtility.GetLastRect();
-
-                    windowRect.width = position.width;
-                    windowRect.height = position.height;
-                    var columnHeight = EditorGUIUtility.singleLineHeight;
-
                     if (_multiColumnHeader == null)
                     {
                         Initialize();
                     }
+
+                    var prevSearchText = _searchText;
+                    _searchText = _searchField.OnGUI(_searchText);
+                    if (_searchText != prevSearchText)
+                        UpdateFilteredResults();
+                    
+                    GUILayout.FlexibleSpace();
+                    var windowRect = GUILayoutUtility.GetLastRect();
+
+                    windowRect.width = position.width;
+                    windowRect.height = position.height - EditorGUIUtility.singleLineHeight;
+                    var columnHeight = EditorGUIUtility.singleLineHeight;
 
                     var columnRectPrototype = new Rect(windowRect)
                     {
@@ -125,27 +135,32 @@ namespace AIR.Fluxity.Editor
                     );
                     {
                         _multiColumnHeader.OnGUI(columnRectPrototype, 0.0f);
+                        var rowRect = new Rect(columnRectPrototype);
+                        int drawnCount = 0;
 
                         for (int i = 0; i < _cachedBindings.Count; i++)
                         {
                             var item = _cachedBindings[i];
-                            var rowRect = new Rect(columnRectPrototype);
+                            if (!item.MeetsFilter)
+                                continue;
 
-                            rowRect.y += columnHeight * (i + 1);
+                            rowRect.y += columnHeight;
 
-                            EditorGUI.DrawRect(rowRect, i % 2 == 0 ? _darkerColor : _lighterColor);
+                            EditorGUI.DrawRect(rowRect, drawnCount % 2 == 0 ? _darkerColor : _lighterColor);
+                            drawnCount++;
 
                             for (int columnIndex = 0; columnIndex < _dataColumnMapping.Length; columnIndex++)
                             {
                                 if (!_multiColumnHeader.IsColumnVisible(columnIndex)) continue;
 
                                 var visibleColumnIndex = _multiColumnHeader.GetVisibleColumnIndex(columnIndex);
+                                var objectValue = _dataColumnMapping[columnIndex].GetValue(item);
+                                var strToShow = _dataMapperStringifiers[columnIndex].Invoke(objectValue);
+
                                 var columnRect = _multiColumnHeader.GetColumnRect(visibleColumnIndex);
                                 columnRect.y = rowRect.y;
-
                                 var cellRect = _multiColumnHeader.GetCellRect(visibleColumnIndex, columnRect);
-                                var objectValue = _dataColumnMapping[columnIndex].GetValue(item);
-                                _dataColumnDrawers[columnIndex].Invoke(objectValue, cellRect);
+                                EditorGUI.LabelField(cellRect, strToShow);
                             }
                         }
                     }
@@ -153,6 +168,25 @@ namespace AIR.Fluxity.Editor
                 }
             }
             GUILayout.EndArea();
+        }
+
+        private void UpdateFilteredResults()
+        {
+            foreach (var item in _cachedBindings)
+            {
+                item.MeetsFilter = false;
+                
+                for (int columnIndex = 0; columnIndex < _dataColumnMapping.Length; columnIndex++)
+                {
+                    if (!_multiColumnHeader.IsColumnVisible(columnIndex)) continue;
+
+                    var visibleColumnIndex = _multiColumnHeader.GetVisibleColumnIndex(columnIndex);
+                    var objectValue = _dataColumnMapping[columnIndex].GetValue(item);
+                    var strToShow = _dataMapperStringifiers[columnIndex].Invoke(objectValue);
+                    if (strToShow.Contains(_searchText, StringComparison.OrdinalIgnoreCase))
+                        item.MeetsFilter = true;
+                }
+            }
         }
 
         private void SortData(MultiColumnHeader multiColumnHeader)
@@ -225,7 +259,12 @@ namespace AIR.Fluxity.Editor
             }
         }
 
-        internal class Binding
+        internal class Filterable
+        {
+            internal bool MeetsFilter { get; set; } = true;
+        }
+        
+        internal class Binding : Filterable
         {
             internal enum BindingElementType
             {
