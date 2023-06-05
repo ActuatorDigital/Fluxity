@@ -23,8 +23,7 @@ namespace AIR.Fluxity.Editor
         private MultiColumnHeaderState.Column[] _columns;
         private List<Binding> _cachedBindings = new List<Binding>();
         private Vector2 _scrollPosition;
-        private SearchField _searchField;
-        private string _searchText = string.Empty;
+        private SearchBoxUtility _searchBoxUtility;
 
         [MenuItem("Window/Fluxity/Runtime Bindings")]
         public static void ShowWindow()
@@ -77,7 +76,8 @@ namespace AIR.Fluxity.Editor
             _multiColumnHeader.sortingChanged += (multiColumnHeader) => { SortData(multiColumnHeader); Repaint(); };
             _multiColumnHeader.ResizeToFit();
 
-            _searchField = new SearchField();
+            _searchBoxUtility = new SearchBoxUtility();
+            _searchBoxUtility.OnSearchTextChanged += UpdateFilteredResults;
         }
 
         private void DrawBindings()
@@ -103,10 +103,7 @@ namespace AIR.Fluxity.Editor
                         Initialize();
                     }
 
-                    var prevSearchText = _searchText;
-                    _searchText = _searchField.OnGUI(_searchText);
-                    if (_searchText != prevSearchText)
-                        UpdateFilteredResults();
+                    _searchBoxUtility.OnGui();
                     
                     GUILayout.FlexibleSpace();
                     var windowRect = GUILayoutUtility.GetLastRect();
@@ -170,7 +167,7 @@ namespace AIR.Fluxity.Editor
             GUILayout.EndArea();
         }
 
-        private void UpdateFilteredResults()
+        private void UpdateFilteredResults(string searchText)
         {
             foreach (var item in _cachedBindings)
             {
@@ -183,7 +180,7 @@ namespace AIR.Fluxity.Editor
                     var visibleColumnIndex = _multiColumnHeader.GetVisibleColumnIndex(columnIndex);
                     var objectValue = _dataColumnMapping[columnIndex].GetValue(item);
                     var strToShow = _dataMapperStringifiers[columnIndex].Invoke(objectValue);
-                    if (strToShow.Contains(_searchText, StringComparison.OrdinalIgnoreCase))
+                    if (strToShow.Contains(searchText, StringComparison.OrdinalIgnoreCase))
                         item.MeetsFilter = true;
                 }
             }

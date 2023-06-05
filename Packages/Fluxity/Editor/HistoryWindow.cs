@@ -11,6 +11,7 @@ namespace AIR.Fluxity.Editor
         private const string TIME_FORMAT = "HH:mm:ss.fff";
         private readonly Queue<DispatchData> _recentDispatchHistory = new Queue<DispatchData>(RECENT_CAPACITY);
         private Vector2 _panelScrollViewPos;
+        private SearchBoxUtility _searchBox;
 
         [MenuItem("Window/Fluxity/Runtime History")]
         public static void ShowWindow()
@@ -76,15 +77,21 @@ namespace AIR.Fluxity.Editor
                     GUILayout.Height(position.height),
                     GUILayout.Width(position.width));
                 {
-                    if (GUILayout.Button("Flush History"))
+                    GUILayout.BeginHorizontal();
                     {
-                        Flush();
-                    }
+                        if (GUILayout.Button("Flush History"))
+                        {
+                            Flush();
+                        }
+                        
+                        if (_searchBox == null)
+                            _searchBox = new SearchBoxUtility();
 
-                    foreach (var dispatch in _recentDispatchHistory)
-                    {
-                        DoPaintDispatchEntry(dispatch);
+                        _searchBox.OnGui();
                     }
+                    GUILayout.EndHorizontal();
+                    
+                    DrawHistoryRows();
                 }
 
                 EditorGUILayout.EndScrollView();
@@ -93,9 +100,20 @@ namespace AIR.Fluxity.Editor
             GUILayout.EndArea();
         }
 
-        private void DoPaintDispatchEntry(DispatchData dispatch)
+        private void DrawHistoryRows()
         {
-            EditorGUILayout.LabelField(dispatch.TimeStamp.ToString(TIME_FORMAT), dispatch.Dispatch);
+            foreach (var dispatch in _recentDispatchHistory)
+            {
+                var dateStr = dispatch.TimeStamp.ToString(TIME_FORMAT);
+                var dispatchStr = dispatch.Dispatch;
+                var filter = _searchBox?.CurrentSearchText ?? string.Empty;
+
+                if (dateStr.Contains(filter, StringComparison.OrdinalIgnoreCase)
+                    || dispatchStr.Contains(filter, StringComparison.OrdinalIgnoreCase))
+                {
+                    EditorGUILayout.LabelField(dateStr, dispatchStr);
+                }
+            }
         }
 
         private void OnReceivedDispatch(ICommand dispatchedCommand)

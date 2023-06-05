@@ -11,6 +11,7 @@ namespace AIR.Fluxity.Editor
         private Vector2 _rightPanelScrollViewPos;
         private string _currentlyShowingName;
         private FeatureStateDrawer _featureDrawer;
+        private SearchBoxUtility _storeSearchBox;
 
         [MenuItem("Window/Fluxity/Runtime Stores")]
         public static void ShowWindow()
@@ -39,6 +40,7 @@ namespace AIR.Fluxity.Editor
             base.Refresh();
             _currentlyShowingName = null;
             _featureDrawer = null;
+            _storeSearchBox = new SearchBoxUtility();
         }
 
         private void DoStoreSelectPanel()
@@ -62,12 +64,19 @@ namespace AIR.Fluxity.Editor
                     }
                     else
                     {
+                        _storeSearchBox?.OnGui();
                         EditorGUILayout.LabelField("Stores", EditorStyles.boldLabel);
                         EditorWindowUtil.DrawHorLine(Color.grey);
+                        var filter = _storeSearchBox?.CurrentSearchText ?? string.Empty;
                         foreach (var feat in store.GetAllFeatures())
                         {
                             var name = feat.GetType().GenericTypeArguments[0].Name;
-                            if (GUILayout.Button(name, _currentlyShowingName == name ? EditorStyles.selectionRect : EditorStyles.label))
+                            if (!name.Contains(filter, System.StringComparison.OrdinalIgnoreCase))
+                                continue;
+
+                            if (GUILayout.Button(name,
+                                _currentlyShowingName == name ? EditorStyles.selectionRect : EditorStyles.label,
+                                GUILayout.Height(EditorGUIUtility.singleLineHeight)))
                             {
                                 _currentlyShowingName = name;
                             }

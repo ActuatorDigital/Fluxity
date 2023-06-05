@@ -1,5 +1,4 @@
 ﻿using AIR.Flume;
-using NSubstitute;
 using UnityEditor;
 using UnityEngine;
 
@@ -38,7 +37,7 @@ namespace AIR.Fluxity.Editor
             GUIContent content = new GUIContent("Refresh");
             menu.AddItem(content, false, Refresh);
         }
-        
+
         protected virtual void Refresh()
         {
             _fluxityHandle = null;
