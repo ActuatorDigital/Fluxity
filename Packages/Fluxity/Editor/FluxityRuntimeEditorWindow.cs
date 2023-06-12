@@ -25,6 +25,7 @@ namespace AIR.Fluxity.Editor
         public virtual void OnEnable()
         {
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            minSize = new Vector2(300, 300);
         }
 
         public virtual void OnDisable()

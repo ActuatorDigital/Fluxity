@@ -2,16 +2,24 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEditor.SettingsManagement;
+using System.IO;
 
 namespace AIR.Fluxity.Editor
 {
     internal class HistoryWindow : FluxityRuntimeEditorWindow
     {
-        private const int RECENT_CAPACITY = 30;
-        private const string TIME_FORMAT = "HH:mm:ss.fff";
-        private readonly Queue<DispatchData> _recentDispatchHistory = new Queue<DispatchData>(RECENT_CAPACITY);
-        private Vector2 _panelScrollViewPos;
+        [UserSetting("General Settings", "Command History Length")]
+        static UserSetting<int> CommandHistoryLength = new UserSetting<int>(FluxityEditorSettings.Instance, $"general.{nameof(CommandHistoryLength)}", 30, SettingsScope.User);
+        [UserSetting("General Settings", "Log History")]
+        static UserSetting<bool> CommandHistoryLogToFile = new UserSetting<bool>(FluxityEditorSettings.Instance, $"general.{nameof(CommandHistoryLogToFile)}", false, SettingsScope.User);
+
+        private const string CommandDispatchedTimeFormat = "HH:mm:ss.fff";
+        private const string SessionStartedTimeFormat = "yyyy-MM-dd_HH-mm-ss";
+        private Queue<DispatchData> _recentDispatchHistory;
         private SearchBoxUtility _searchBox;
+        private TwoPanelUtility _twoPanel;
+        private string _commandHistoryFileName;
 
         [MenuItem("Window/Fluxity/Runtime History")]
         public static void ShowWindow()
@@ -24,11 +32,20 @@ namespace AIR.Fluxity.Editor
 
         public void OnGUI()
         {
-            DoCommandRecentHistory();
+            if (_twoPanel == null)
+            {
+                _twoPanel = new TwoPanelUtility(
+                    220,
+                    DoCommandRecentHistory,
+                    () => { });
+            }
+
+            _twoPanel.OnGui(position);
         }
 
         public override void OnEnable()
         {
+            _recentDispatchHistory = new Queue<DispatchData>(CommandHistoryLength);
             base.OnEnable();
             TrySubscribe();
         }
@@ -44,6 +61,8 @@ namespace AIR.Fluxity.Editor
             Refresh();
             if (state == PlayModeStateChange.EnteredPlayMode)
             {
+                var fileChangeTime = DateTime.Now;
+                _commandHistoryFileName = Application.dataPath + "/../Logs/fluxitycommandhistory_" + fileChangeTime.ToString(SessionStartedTimeFormat) + ".txt";
                 TrySubscribe();
             }
             else if (state == PlayModeStateChange.ExitingPlayMode)
@@ -70,41 +89,30 @@ namespace AIR.Fluxity.Editor
 
         private void DoCommandRecentHistory()
         {
-            GUILayout.BeginArea(new Rect(0, 0, position.width, position.height));
+            GUILayout.BeginHorizontal();
             {
-                _panelScrollViewPos = EditorGUILayout.BeginScrollView(
-                    _panelScrollViewPos,
-                    GUILayout.Height(position.height),
-                    GUILayout.Width(position.width));
+                if (GUILayout.Button("Flush History"))
                 {
-                    GUILayout.BeginHorizontal();
-                    {
-                        if (GUILayout.Button("Flush History"))
-                        {
-                            Flush();
-                        }
-                        
-                        if (_searchBox == null)
-                            _searchBox = new SearchBoxUtility();
-
-                        _searchBox.OnGui();
-                    }
-                    GUILayout.EndHorizontal();
-                    
-                    DrawHistoryRows();
+                    Flush();
                 }
 
-                EditorGUILayout.EndScrollView();
-            }
+                if (_searchBox == null)
+                    _searchBox = new SearchBoxUtility();
 
-            GUILayout.EndArea();
+                _searchBox.OnGui();
+            }
+            GUILayout.EndHorizontal();
+
+            DrawHistoryRows();
         }
 
         private void DrawHistoryRows()
         {
+            var oldWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = 80;
             foreach (var dispatch in _recentDispatchHistory)
             {
-                var dateStr = dispatch.TimeStamp.ToString(TIME_FORMAT);
+                var dateStr = dispatch.TimeStamp.ToString(CommandDispatchedTimeFormat);
                 var dispatchStr = dispatch.Dispatch;
                 var filter = _searchBox?.CurrentSearchText ?? string.Empty;
 
@@ -114,19 +122,24 @@ namespace AIR.Fluxity.Editor
                     EditorGUILayout.LabelField(dateStr, dispatchStr);
                 }
             }
+            EditorGUIUtility.labelWidth = oldWidth;
         }
 
         private void OnReceivedDispatch(ICommand dispatchedCommand)
         {
-            UpdateRecentDispatchHistory(dispatchedCommand.GetType().Name);
+            var now = DateTime.Now;
+            UpdateRecentDispatchHistory(dispatchedCommand.GetType().Name, now);
         }
 
-        private void UpdateRecentDispatchHistory(string dispatchMessage)
+        private void UpdateRecentDispatchHistory(string dispatchMessage, DateTime at)
         {
-            if (_recentDispatchHistory.Count >= RECENT_CAPACITY)
+            if (CommandHistoryLogToFile)
+                File.AppendAllTextAsync(_commandHistoryFileName, $"{at.ToString(CommandDispatchedTimeFormat)} - {dispatchMessage}\n");
+
+            if (_recentDispatchHistory.Count >= CommandHistoryLength)
                 _recentDispatchHistory.Dequeue();
 
-            _recentDispatchHistory.Enqueue(new DispatchData { Dispatch = dispatchMessage, TimeStamp = DateTime.Now });
+            _recentDispatchHistory.Enqueue(new DispatchData { Dispatch = dispatchMessage, TimeStamp = at});
             Repaint();
         }
 
