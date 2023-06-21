@@ -2,15 +2,29 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEditor.SettingsManagement;
 
 namespace AIR.Fluxity.Editor
 {
-    internal class HistoryWindow : FluxityRuntimeEditorWindow
+    internal sealed class HistoryWindow : FluxityRuntimeEditorWindow
     {
-        private const int RECENT_CAPACITY = 30;
-        private const string TIME_FORMAT = "HH:mm:ss.fff";
-        private readonly Queue<DispatchData> _recentDispatchHistory = new Queue<DispatchData>(RECENT_CAPACITY);
-        private Vector2 _panelScrollViewPos;
+        [UserSetting("General Settings", "Command History Length")]
+        static UserSetting<int> CommandHistoryLength = new UserSetting<int>(FluxityEditorSettings.Instance, $"general.{nameof(CommandHistoryLength)}", 30, SettingsScope.User);
+        [UserSetting("General Settings", "Log History")]
+        static UserSetting<bool> CommandHistoryLogToFile = new UserSetting<bool>(FluxityEditorSettings.Instance, $"general.{nameof(CommandHistoryLogToFile)}", false, SettingsScope.User);
+
+        private const string CommandDispatchedTimeFormat = "HH:mm:ss.fff";
+        private const string SessionStartedTimeFormat = "yyyy-MM-dd_HH-mm-ss";
+        private const int LeftPanelRightWall = 280;
+        
+        private Queue<DispatchData> _recentDispatchHistory;
+        private SearchBoxUtility _searchBox;
+        private TwoPanelUtility _twoPanel;
+        private CommandDispatchedLogger _commandDispatchedLogger;
+        private DispatchData _selectedElement;
+        private CommandDrawer _selectedDrawer;
+
+        private string LogsPath => Application.dataPath + "/../Logs/";
 
         [MenuItem("Window/Fluxity/Runtime History")]
         public static void ShowWindow()
@@ -23,11 +37,27 @@ namespace AIR.Fluxity.Editor
 
         public void OnGUI()
         {
-            DoCommandRecentHistory();
+            if (_twoPanel == null)
+            {
+                _twoPanel = new TwoPanelUtility(
+                    LeftPanelRightWall,
+                    DoCommandRecentHistory,
+                    DoShowStore);
+            }
+
+            _twoPanel.OnGui(position);
+        }
+
+        public override void AddItemsToMenu(GenericMenu menu)
+        {
+            base.AddItemsToMenu(menu);
+            GUIContent content = new GUIContent("Open Logs folder");
+            menu.AddItem(content, false, OpenLogFolder);
         }
 
         public override void OnEnable()
         {
+            _recentDispatchHistory = new Queue<DispatchData>(CommandHistoryLength);
             base.OnEnable();
             TrySubscribe();
         }
@@ -43,14 +73,25 @@ namespace AIR.Fluxity.Editor
             Refresh();
             if (state == PlayModeStateChange.EnteredPlayMode)
             {
+                if (_commandDispatchedLogger == null)
+                    CreateCommandLogger();
+                
                 TrySubscribe();
             }
             else if (state == PlayModeStateChange.ExitingPlayMode)
             {
                 TryUnsubscribe();
+                _commandDispatchedLogger?.Dispose();
+                _commandDispatchedLogger = null;
             }
 
             Repaint();
+        }
+
+        private void CreateCommandLogger()
+        {
+            var time = DateTime.Now;
+            _commandDispatchedLogger = new CommandDispatchedLogger( LogsPath + "fluxitycommandhistory_" + time.ToString(SessionStartedTimeFormat) + ".txt");
         }
 
         private void TrySubscribe()
@@ -69,47 +110,114 @@ namespace AIR.Fluxity.Editor
 
         private void DoCommandRecentHistory()
         {
-            GUILayout.BeginArea(new Rect(0, 0, position.width, position.height));
+            GUILayout.BeginHorizontal();
             {
-                _panelScrollViewPos = EditorGUILayout.BeginScrollView(
-                    _panelScrollViewPos,
-                    GUILayout.Height(position.height),
-                    GUILayout.Width(position.width));
+                if (GUILayout.Button("Flush History"))
                 {
-                    if (GUILayout.Button("Flush History"))
-                    {
-                        Flush();
-                    }
-
-                    foreach (var dispatch in _recentDispatchHistory)
-                    {
-                        DoPaintDispatchEntry(dispatch);
-                    }
+                    Flush();
                 }
 
-                EditorGUILayout.EndScrollView();
-            }
+                if (_searchBox == null)
+                    _searchBox = new SearchBoxUtility();
 
-            GUILayout.EndArea();
+                _searchBox.OnGui();
+            }
+            GUILayout.EndHorizontal();
+
+            DrawHistoryRows();
         }
 
-        private void DoPaintDispatchEntry(DispatchData dispatch)
+        private void DrawHistoryRows()
         {
-            EditorGUILayout.LabelField(dispatch.TimeStamp.ToString(TIME_FORMAT), dispatch.Dispatch);
+            var oldWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = 80;
+            foreach (var dispatchData in _recentDispatchHistory)
+            {
+                var dateStr = dispatchData.TimeStamp.ToString(CommandDispatchedTimeFormat);
+                var dispatchStr = dispatchData.DispatchName;
+                var filter = _searchBox?.CurrentSearchText ?? string.Empty;
+
+                if (dateStr.Contains(filter, StringComparison.OrdinalIgnoreCase)
+                    || dispatchStr.Contains(filter, StringComparison.OrdinalIgnoreCase))
+                {
+                    var style = dispatchData == _selectedElement
+                            ? EditorStyles.selectionRect
+                            : EditorStyles.label;
+
+                    EditorGUILayout.LabelField(
+                        dateStr,
+                        dispatchStr,
+                        style,
+                        GUILayout.Height(EditorGUIUtility.singleLineHeight));
+                    
+                    UpdateSelection(dispatchData);
+                }
+            }
+            EditorGUIUtility.labelWidth = oldWidth;
+        }
+
+        private void UpdateSelection(DispatchData dispatchData)
+        {
+            if (Event.current.type == EventType.MouseDown)
+            {
+                var lastRect = GUILayoutUtility.GetLastRect();
+                var max = lastRect.max;
+                max.x = LeftPanelRightWall;
+                lastRect.max = max;
+
+                if (lastRect.Contains(Event.current.mousePosition))
+                {
+                    _selectedElement = dispatchData;
+                    _selectedDrawer = new CommandDrawer(_selectedElement.DispatchCommand);
+                    
+                    Repaint();
+                }
+            }
         }
 
         private void OnReceivedDispatch(ICommand dispatchedCommand)
         {
-            UpdateRecentDispatchHistory(dispatchedCommand.GetType().Name);
+            var dat = new DispatchData
+            {
+                DispatchName = dispatchedCommand.GetType().Name,
+                TimeStamp = DateTime.Now,
+                DispatchCommand = dispatchedCommand,
+            };
+            UpdateRecentDispatchHistory(dat);
         }
 
-        private void UpdateRecentDispatchHistory(string dispatchMessage)
+        private void UpdateRecentDispatchHistory(DispatchData dat)
         {
-            if (_recentDispatchHistory.Count >= RECENT_CAPACITY)
-                _recentDispatchHistory.Dequeue();
+            if (CommandHistoryLogToFile)
+            {
+                if (_commandDispatchedLogger == null)
+                    CreateCommandLogger();
 
-            _recentDispatchHistory.Enqueue(new DispatchData { Dispatch = dispatchMessage, TimeStamp = DateTime.Now });
+                _commandDispatchedLogger.Log(dat);
+            }
+
+            if (_recentDispatchHistory.Count >= CommandHistoryLength)
+            {
+                _recentDispatchHistory.Dequeue();
+            }
+
+            _recentDispatchHistory.Enqueue(dat);
             Repaint();
+        }
+
+        private void DoShowStore()
+        {
+            if (_selectedDrawer == null)
+            {
+                EditorGUILayout.LabelField("No selection");
+            }
+            else
+            {
+                EditorGUILayout.LabelField($"Values of {_selectedElement.DispatchName} @ {_selectedElement.TimeStamp.ToString(CommandDispatchedTimeFormat)}", EditorStyles.boldLabel);
+                EditorWindowUtil.DrawHorLine(Color.grey);
+
+                _selectedDrawer.Draw();
+            }
         }
 
         private void Flush()
@@ -118,10 +226,16 @@ namespace AIR.Fluxity.Editor
             Repaint();
         }
 
-        private struct DispatchData
+        private void OpenLogFolder()
         {
-            public string Dispatch;
-            public DateTime TimeStamp;
+            Application.OpenURL(LogsPath);
         }
+    }
+
+    internal class DispatchData
+    {
+        public string DispatchName;
+        public DateTime TimeStamp;
+        public ICommand DispatchCommand;
     }
 }

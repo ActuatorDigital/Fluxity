@@ -1,5 +1,4 @@
 ﻿using AIR.Flume;
-using NSubstitute;
 using UnityEditor;
 using UnityEngine;
 
@@ -26,6 +25,7 @@ namespace AIR.Fluxity.Editor
         public virtual void OnEnable()
         {
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            minSize = new Vector2(300, 300);
         }
 
         public virtual void OnDisable()
@@ -33,12 +33,12 @@ namespace AIR.Fluxity.Editor
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
         }
 
-        public void AddItemsToMenu(GenericMenu menu)
+        public virtual void AddItemsToMenu(GenericMenu menu)
         {
             GUIContent content = new GUIContent("Refresh");
             menu.AddItem(content, false, Refresh);
         }
-        
+
         protected virtual void Refresh()
         {
             _fluxityHandle = null;

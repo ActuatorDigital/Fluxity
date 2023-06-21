@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - StoresWindow example, has a number of sample cases (Features) for the Stores window to demonstrate.
 - Simple Runtime History window, shows most recent commands dispatched by Dispatcher.
 - Simple Runtime Binding window, shows the currently bound reducers and effects in the system.
+- Add simple case insensitive search filter to editor windows
+- Add details of selected command in History Window, similar to that found in the Stores Window.
+- Add Fluxity user preferences, allows toggling on and off logging of command history to Logs folder and the history limit.
 
 ### Changed
 

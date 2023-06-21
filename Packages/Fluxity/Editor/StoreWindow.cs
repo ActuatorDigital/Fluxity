@@ -1,16 +1,18 @@
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
+using System;
 
 namespace AIR.Fluxity.Editor
 {
     internal class StoreWindow : FluxityRuntimeEditorWindow
     {
         private const int LeftPanelRightWall = 220;
-        private Vector2 _leftPanelScrollViewPos;
-        private Vector2 _rightPanelScrollViewPos;
+        
         private string _currentlyShowingName;
         private FeatureStateDrawer _featureDrawer;
+        private SearchBoxUtility _storeSearchBox;
+        private TwoPanelUtility _twoPanel;
 
         [MenuItem("Window/Fluxity/Runtime Stores")]
         public static void ShowWindow()
@@ -29,8 +31,10 @@ namespace AIR.Fluxity.Editor
             }
             else
             {
-                DoStoreSelectPanel();
-                DoSelectedStore();
+                if (_twoPanel == null)
+                    Refresh();
+
+                _twoPanel.OnGui(position);
             }
         }
 
@@ -39,71 +43,63 @@ namespace AIR.Fluxity.Editor
             base.Refresh();
             _currentlyShowingName = null;
             _featureDrawer = null;
+            _storeSearchBox = new SearchBoxUtility();
+            _twoPanel = new TwoPanelUtility(
+                LeftPanelRightWall,
+                DoSelectStore,
+                DoShowStore);
         }
 
-        private void DoStoreSelectPanel()
+        private void DoSelectStore()
         {
-            GUILayout.BeginArea(new Rect(0, 0, LeftPanelRightWall, position.height));
+            if (GUILayout.Button("Clear Selection"))
             {
-                _leftPanelScrollViewPos = EditorGUILayout.BeginScrollView(
-                    _leftPanelScrollViewPos,
-                    GUILayout.Height(position.height),
-                    GUILayout.Width(LeftPanelRightWall));
-                {
-                    if (GUILayout.Button("Refresh"))
-                    {
-                        Refresh();
-                    }
+                _currentlyShowingName = string.Empty;
+            }
 
-                    var store = GetStore();
-                    if (store == null)
+            var store = GetStore();
+            if (store == null)
+            {
+                EditorGUILayout.LabelField("No store found");
+            }
+            else
+            {
+                _storeSearchBox?.OnGui();
+                EditorGUILayout.LabelField("Stores", EditorStyles.boldLabel);
+                EditorWindowUtil.DrawHorLine(Color.grey);
+                var filter = _storeSearchBox?.CurrentSearchText ?? string.Empty;
+                foreach (var feat in store.GetAllFeatures())
+                {
+                    var name = feat.GetType().GenericTypeArguments[0].Name;
+                    if (!name.Contains(filter, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    if (GUILayout.Button(
+                        name,
+                        _currentlyShowingName == name ? EditorStyles.selectionRect : EditorStyles.label,
+                        GUILayout.Height(EditorGUIUtility.singleLineHeight)))
                     {
-                        EditorGUILayout.LabelField("No store found");
-                    }
-                    else
-                    {
-                        EditorGUILayout.LabelField("Stores", EditorStyles.boldLabel);
-                        EditorWindowUtil.DrawHorLine(Color.grey);
-                        foreach (var feat in store.GetAllFeatures())
-                        {
-                            var name = feat.GetType().GenericTypeArguments[0].Name;
-                            if (GUILayout.Button(name, _currentlyShowingName == name ? EditorStyles.selectionRect : EditorStyles.label))
-                            {
-                                _currentlyShowingName = name;
-                            }
-                        }
+                        _currentlyShowingName = name;
                     }
                 }
-                EditorGUILayout.EndScrollView();
             }
-            GUILayout.EndArea();
         }
 
-        private void DoSelectedStore()
+        private void DoShowStore()
         {
-            GUILayout.BeginArea(new Rect(LeftPanelRightWall, 0, position.width - LeftPanelRightWall, position.height));
+            var drawer = GetObjectDrawerForTarget();
+
+            if (drawer == null)
             {
-                _rightPanelScrollViewPos = EditorGUILayout.BeginScrollView(
-                    _rightPanelScrollViewPos,
-                    GUILayout.Height(position.height));
-                {
-                    var drawer = GetObjectDrawerForTarget();
-
-                    if (drawer == null)
-                    {
-                        EditorGUILayout.LabelField("No feature selected");
-                    }
-                    else
-                    {
-                        EditorGUILayout.LabelField($"Values of {_currentlyShowingName}", EditorStyles.boldLabel);
-                        EditorWindowUtil.DrawHorLine(Color.grey);
-
-                        drawer.Draw();
-                    }
-                }
-                EditorGUILayout.EndScrollView();
+                EditorGUILayout.LabelField("No feature selected");
             }
-            GUILayout.EndArea();
+            else
+            {
+                EditorGUILayout.LabelField($"Values of {_currentlyShowingName}", EditorStyles.boldLabel);
+                EditorWindowUtil.DrawHorLine(Color.grey);
+
+                drawer.Draw();
+            }
         }
 
         private FeatureStateDrawer GetObjectDrawerForTarget()

@@ -279,11 +279,11 @@ Additional examples, including for features such as Effects, can be found in the
 
 ## Editor
 
-Fluxity provides an editor window to aid in debugging.
+Fluxity provides editor windows to aid in debugging.
 
 ### Fluxity Runtime Stores
 
-This window gives a readonly view of the current state in the stores. Located via Window->Fluxity->Runtime Stores.
+This window gives a readonly view of the current state in the stores. Located via `Window->Fluxity->Runtime Stores`.
 This is runtime only.
 
 ![No Stores can be shown when not playing](img/Stores-Not-Runtime.png?raw=true "No Stores can be shown when not playing.")
@@ -298,6 +298,21 @@ Clicking a store in the left panel shows its values on the right.
 
 ### Fluxity Runtime Bindings
 
-This window shows a table of all currently bound reducers and effects. This will be empty when not in playmode. The Column headers can be clicked to sort the table.
+This window shows a table of all currently bound reducers and effects. This will be empty when not in playmode. The Column headers can be clicked to sort the table. Located via `Window->Fluxity->Runtime Bindings`.
+This is runtime only.
 
 !["Reducer and Effect binding, showing during play mode."](img/runtine-bindings-window.png?raw=true "Reducer and Effect binding, showing during play mode.")
+
+### Fluxity History Window
+
+This window acts as middleware to Fluxity. It keeps a copy of every command that is dispatched. This will attempt to keep last history even when playmode is exited. Located via `Window->Fluxity->Runtime History`.
+
+!["Timestamps of each dispatched command, showing during play mode."](img/fluxity_runtime_history.png?raw=true "Timestamps of each dispatched command, showing during play mode.")
+
+It will also log commands with timestamps to file if enabled. They will appear in your project's `Logs`, named `fluxitycommandhistory_<TIME STAMP>.txt`.
+
+### Fluxity Preferences
+
+Found in `Edit->Preferences->Fluxity`. Presently controls the number of commands kept in the recent history queue, and if the history should be logged to file.
+
+!["Fluxity Preferences."](img/fluxity_preferences.png?raw=true "Fluxity Preferences.")

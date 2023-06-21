@@ -2,7 +2,6 @@
 using UnityEditor;
 using System;
 using System.Collections.Generic;
-using UnityEditor.IMGUI.Controls;
 using System.Linq;
 using System.Reflection;
 
@@ -11,18 +10,12 @@ namespace AIR.Fluxity.Editor
     internal class BindingsWindow : FluxityRuntimeEditorWindow
     {
         private const string NA_STRING = "N/A";
-        private readonly Color _lighterColor = Color.white * 0.3f;
-        private readonly Color _darkerColor = Color.white * 0.1f;
-
-        //Invaluable help from https://gamedev.stackexchange.com/questions/188771/creating-a-custom-editor-window-using-a-multi-column-header
-        private Vector2 _scrollViewPos;
-        private MultiColumnHeaderState _multiColumnHeaderState;
-        private MultiColumnHeader _multiColumnHeader;
+        
         private PropertyInfo[] _dataColumnMapping;
-        private Action<object, Rect>[] _dataColumnDrawers;
-        private MultiColumnHeaderState.Column[] _columns;
+        private Func<object, string>[] _dataMapperStringifiers;
         private List<Binding> _cachedBindings = new List<Binding>();
-        private Vector2 _scrollPosition;
+        private SearchBoxUtility _searchBoxUtility;
+        private MultiColumnUtility _multiColumnUtility;
 
         [MenuItem("Window/Fluxity/Runtime Bindings")]
         public static void ShowWindow()
@@ -56,24 +49,24 @@ namespace AIR.Fluxity.Editor
         private void Initialize()
         {
             // include internals as we are the thing messing with it
-            _dataColumnMapping = typeof(Binding).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
-            _dataColumnDrawers = new Action<object, Rect>[]
+            _dataColumnMapping = typeof(Binding).GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
+            _dataMapperStringifiers = new Func<object, string>[]
             {
-                (x, r) => EditorGUI.LabelField(r, ((Binding.BindingElementType)x).ToString()),
-                (x, r) => EditorGUI.LabelField(r, ((Type)x)?.Name ?? NA_STRING),
-                (x, r) => EditorGUI.LabelField(r, ((Type)x)?.Name ?? NA_STRING),
-                (x, r) => EditorGUI.LabelField(r, $"{((MethodInfo)x).DeclaringType.Name}.{((MethodInfo)x).Name}"),
+                (x) => ((Binding.BindingElementType)x).ToString(),
+                (x) => ((Type)x)?.Name ?? NA_STRING,
+                (x) => ((Type)x)?.Name ?? NA_STRING,
+                (x) => $"{((MethodInfo)x).DeclaringType.Name}.{((MethodInfo)x).Name}",
             };
 
-            _columns = _dataColumnMapping
-                .Select((x, i) => new MultiColumnHeaderState.Column { headerContent = new GUIContent(_dataColumnMapping[i].Name) })
-                .ToArray();
+            var columnsNames = _dataColumnMapping.Select(x => x.Name).ToArray();
 
-            _multiColumnHeaderState = new MultiColumnHeaderState(columns: _columns);
-            _multiColumnHeader = new MultiColumnHeader(state: _multiColumnHeaderState);
-            _multiColumnHeader.visibleColumnsChanged += (multiColumnHeader) => multiColumnHeader.ResizeToFit();
-            _multiColumnHeader.sortingChanged += (multiColumnHeader) => { SortData(multiColumnHeader); Repaint(); };
-            _multiColumnHeader.ResizeToFit();
+            _multiColumnUtility = new MultiColumnUtility();
+            _multiColumnUtility.Initialise(
+                columnsNames,
+                (i, b) => { SortData(i,b); Repaint(); });
+
+            _searchBoxUtility = new SearchBoxUtility();
+            _searchBoxUtility.OnSearchTextChanged += UpdateFilteredResults;
         }
 
         private void DrawBindings()
@@ -93,72 +86,54 @@ namespace AIR.Fluxity.Editor
                 }
                 else
                 {
-                    GUILayout.FlexibleSpace();
-                    var windowRect = GUILayoutUtility.GetLastRect();
-
-                    windowRect.width = position.width;
-                    windowRect.height = position.height;
-                    var columnHeight = EditorGUIUtility.singleLineHeight;
-
-                    if (_multiColumnHeader == null)
+                    if (_multiColumnUtility == null)
                     {
                         Initialize();
                     }
 
-                    var columnRectPrototype = new Rect(windowRect)
-                    {
-                        height = columnHeight,
-                    };
+                    _searchBoxUtility.OnGui();
 
-                    var viewRect = new Rect(source: windowRect)
-                    {
-                        width = _multiColumnHeaderState.widthOfAllVisibleColumns,
-                        height = columnHeight * (_cachedBindings.Count + 1),
-                    };
+                    GUILayout.FlexibleSpace();
+                    var windowRect = GUILayoutUtility.GetLastRect();
+                    windowRect.width = position.width;
+                    windowRect.height = position.height - EditorGUIUtility.singleLineHeight;
 
-                    _scrollPosition = GUI.BeginScrollView(
+                    _multiColumnUtility.OnGui(
                         windowRect,
-                        scrollPosition: _scrollPosition,
-                        viewRect,
-                        true,
-                        true
-                    );
-                    {
-                        _multiColumnHeader.OnGUI(columnRectPrototype, 0.0f);
-
-                        for (int i = 0; i < _cachedBindings.Count; i++)
+                        _cachedBindings.Count,
+                        i => _cachedBindings[i].MeetsFilter,
+                        (itemIndex, columnIndex) =>
                         {
-                            var item = _cachedBindings[i];
-                            var rowRect = new Rect(columnRectPrototype);
-
-                            rowRect.y += columnHeight * (i + 1);
-
-                            EditorGUI.DrawRect(rowRect, i % 2 == 0 ? _darkerColor : _lighterColor);
-
-                            for (int columnIndex = 0; columnIndex < _dataColumnMapping.Length; columnIndex++)
-                            {
-                                if (!_multiColumnHeader.IsColumnVisible(columnIndex)) continue;
-
-                                var visibleColumnIndex = _multiColumnHeader.GetVisibleColumnIndex(columnIndex);
-                                var columnRect = _multiColumnHeader.GetColumnRect(visibleColumnIndex);
-                                columnRect.y = rowRect.y;
-
-                                var cellRect = _multiColumnHeader.GetCellRect(visibleColumnIndex, columnRect);
-                                var objectValue = _dataColumnMapping[columnIndex].GetValue(item);
-                                _dataColumnDrawers[columnIndex].Invoke(objectValue, cellRect);
-                            }
-                        }
-                    }
-                    GUI.EndScrollView(true);
+                            var item = _cachedBindings[itemIndex];
+                            var objectValue = _dataColumnMapping[columnIndex].GetValue(item);
+                            var strToShow = _dataMapperStringifiers[columnIndex].Invoke(objectValue);
+                            return strToShow;
+                        });
                 }
             }
             GUILayout.EndArea();
         }
 
-        private void SortData(MultiColumnHeader multiColumnHeader)
+        private void UpdateFilteredResults(string searchText)
         {
-            var columnIndex = multiColumnHeader.sortedColumnIndex;
-            var isAscending = multiColumnHeader.IsSortedAscending(columnIndex);
+            foreach (var item in _cachedBindings)
+            {
+                item.MeetsFilter = false;
+
+                for (int columnIndex = 0; columnIndex < _dataColumnMapping.Length; columnIndex++)
+                {
+                    if (!_multiColumnUtility.IsColumnVisible(columnIndex)) continue;
+
+                    var objectValue = _dataColumnMapping[columnIndex].GetValue(item);
+                    var strToShow = _dataMapperStringifiers[columnIndex].Invoke(objectValue);
+                    if (strToShow.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                        item.MeetsFilter = true;
+                }
+            }
+        }
+
+        private void SortData(int columnIndex, bool isAscending)
+        {
             var propertyInfo = _dataColumnMapping[columnIndex];
             Func<Binding, object> sortFunction = x => propertyInfo.GetValue(x)?.ToString() ?? NA_STRING;
 
@@ -225,7 +200,12 @@ namespace AIR.Fluxity.Editor
             }
         }
 
-        internal class Binding
+        internal class Filterable
+        {
+            internal bool MeetsFilter { get; set; } = true;
+        }
+
+        internal class Binding : Filterable
         {
             internal enum BindingElementType
             {
