@@ -19,7 +19,9 @@ namespace AIR.Fluxity.Editor
         private Queue<DispatchData> _recentDispatchHistory;
         private SearchBoxUtility _searchBox;
         private TwoPanelUtility _twoPanel;
-        private string _commandHistoryFileName;
+        private CommandDispatchedLogger _commandDispatchedLogger;
+
+        private string LogsPath => Application.dataPath + "/../Logs/";
 
         [MenuItem("Window/Fluxity/Runtime History")]
         public static void ShowWindow()
@@ -43,6 +45,13 @@ namespace AIR.Fluxity.Editor
             _twoPanel.OnGui(position);
         }
 
+        public override void AddItemsToMenu(GenericMenu menu)
+        {
+            base.AddItemsToMenu(menu);
+            GUIContent content = new GUIContent("Open Logs folder");
+            menu.AddItem(content, false, OpenLogFolder);
+        }
+
         public override void OnEnable()
         {
             _recentDispatchHistory = new Queue<DispatchData>(CommandHistoryLength);
@@ -61,16 +70,25 @@ namespace AIR.Fluxity.Editor
             Refresh();
             if (state == PlayModeStateChange.EnteredPlayMode)
             {
-                var fileChangeTime = DateTime.Now;
-                _commandHistoryFileName = Application.dataPath + "/../Logs/fluxitycommandhistory_" + fileChangeTime.ToString(SessionStartedTimeFormat) + ".txt";
+                if (_commandDispatchedLogger == null)
+                    CreateCommandLogger();
+                
                 TrySubscribe();
             }
             else if (state == PlayModeStateChange.ExitingPlayMode)
             {
                 TryUnsubscribe();
+                _commandDispatchedLogger?.Dispose();
+                _commandDispatchedLogger = null;
             }
 
             Repaint();
+        }
+
+        private void CreateCommandLogger()
+        {
+            var time = DateTime.Now;
+            _commandDispatchedLogger = new CommandDispatchedLogger( LogsPath + "fluxitycommandhistory_" + time.ToString(SessionStartedTimeFormat) + ".txt");
         }
 
         private void TrySubscribe()
@@ -127,19 +145,31 @@ namespace AIR.Fluxity.Editor
 
         private void OnReceivedDispatch(ICommand dispatchedCommand)
         {
-            var now = DateTime.Now;
-            UpdateRecentDispatchHistory(dispatchedCommand.GetType().Name, now);
+            var dat = new DispatchData
+            {
+                DispatchName = dispatchedCommand.GetType().Name,
+                TimeStamp = DateTime.Now,
+                DispatchCommand = dispatchedCommand,
+            };
+            UpdateRecentDispatchHistory(dat);
         }
 
-        private void UpdateRecentDispatchHistory(string dispatchMessage, DateTime at)
+        private void UpdateRecentDispatchHistory(DispatchData dat)
         {
             if (CommandHistoryLogToFile)
-                File.AppendAllTextAsync(_commandHistoryFileName, $"{at.ToString(CommandDispatchedTimeFormat)} - {dispatchMessage}\n");
+            {
+                if (_commandDispatchedLogger == null)
+                    CreateCommandLogger();
+
+                _commandDispatchedLogger.Log(dat);
+            }
 
             if (_recentDispatchHistory.Count >= CommandHistoryLength)
+            {
                 _recentDispatchHistory.Dequeue();
+            }
 
-            _recentDispatchHistory.Enqueue(new DispatchData { Dispatch = dispatchMessage, TimeStamp = at});
+            _recentDispatchHistory.Enqueue(dat);
             Repaint();
         }
 
@@ -149,10 +179,16 @@ namespace AIR.Fluxity.Editor
             Repaint();
         }
 
-        private struct DispatchData
+        private void OpenLogFolder()
         {
-            public string Dispatch;
-            public DateTime TimeStamp;
+            Application.OpenURL(LogsPath);
         }
+    }
+
+    internal class DispatchData
+    {
+        public string DispatchName;
+        public DateTime TimeStamp;
+        public ICommand DispatchCommand;
     }
 }

@@ -33,7 +33,7 @@ namespace AIR.Fluxity.Editor
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
         }
 
-        public void AddItemsToMenu(GenericMenu menu)
+        public virtual void AddItemsToMenu(GenericMenu menu)
         {
             GUIContent content = new GUIContent("Refresh");
             menu.AddItem(content, false, Refresh);
