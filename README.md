@@ -305,7 +305,7 @@ This is runtime only.
 
 ### Fluxity History Window
 
-This windows acts as middleware to Fluxity. It keeps a copy of every command that is dispatched. This will attempt to keep last history even when playmode is exited. Located via `Window->Fluxity->Runtime History`.
+This window acts as middleware to Fluxity. It keeps a copy of every command that is dispatched. This will attempt to keep last history even when playmode is exited. Located via `Window->Fluxity->Runtime History`.
 
 !["Timestamps of each dispatched command, showing during play mode."](img/fluxity_runtime_history.png?raw=true "Timestamps of each dispatched command, showing during play mode.")
 
