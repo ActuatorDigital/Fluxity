@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEditor.SettingsManagement;
-using System.IO;
 
 namespace AIR.Fluxity.Editor
 {
-    internal class HistoryWindow : FluxityRuntimeEditorWindow
+    internal sealed class HistoryWindow : FluxityRuntimeEditorWindow
     {
         [UserSetting("General Settings", "Command History Length")]
         static UserSetting<int> CommandHistoryLength = new UserSetting<int>(FluxityEditorSettings.Instance, $"general.{nameof(CommandHistoryLength)}", 30, SettingsScope.User);
@@ -16,10 +15,14 @@ namespace AIR.Fluxity.Editor
 
         private const string CommandDispatchedTimeFormat = "HH:mm:ss.fff";
         private const string SessionStartedTimeFormat = "yyyy-MM-dd_HH-mm-ss";
+        private const int LeftPanelRightWall = 280;
+        
         private Queue<DispatchData> _recentDispatchHistory;
         private SearchBoxUtility _searchBox;
         private TwoPanelUtility _twoPanel;
         private CommandDispatchedLogger _commandDispatchedLogger;
+        private DispatchData _selectedElement;
+        private CommandDrawer _selectedDrawer;
 
         private string LogsPath => Application.dataPath + "/../Logs/";
 
@@ -37,9 +40,9 @@ namespace AIR.Fluxity.Editor
             if (_twoPanel == null)
             {
                 _twoPanel = new TwoPanelUtility(
-                    220,
+                    LeftPanelRightWall,
                     DoCommandRecentHistory,
-                    () => { });
+                    DoShowStore);
             }
 
             _twoPanel.OnGui(position);
@@ -128,19 +131,48 @@ namespace AIR.Fluxity.Editor
         {
             var oldWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 80;
-            foreach (var dispatch in _recentDispatchHistory)
+            foreach (var dispatchData in _recentDispatchHistory)
             {
-                var dateStr = dispatch.TimeStamp.ToString(CommandDispatchedTimeFormat);
-                var dispatchStr = dispatch.Dispatch;
+                var dateStr = dispatchData.TimeStamp.ToString(CommandDispatchedTimeFormat);
+                var dispatchStr = dispatchData.DispatchName;
                 var filter = _searchBox?.CurrentSearchText ?? string.Empty;
 
                 if (dateStr.Contains(filter, StringComparison.OrdinalIgnoreCase)
                     || dispatchStr.Contains(filter, StringComparison.OrdinalIgnoreCase))
                 {
-                    EditorGUILayout.LabelField(dateStr, dispatchStr);
+                    var style = dispatchData == _selectedElement
+                            ? EditorStyles.selectionRect
+                            : EditorStyles.label;
+
+                    EditorGUILayout.LabelField(
+                        dateStr,
+                        dispatchStr,
+                        style,
+                        GUILayout.Height(EditorGUIUtility.singleLineHeight));
+                    
+                    UpdateSelection(dispatchData);
                 }
             }
             EditorGUIUtility.labelWidth = oldWidth;
+        }
+
+        private void UpdateSelection(DispatchData dispatchData)
+        {
+            if (Event.current.type == EventType.MouseDown)
+            {
+                var lastRect = GUILayoutUtility.GetLastRect();
+                var max = lastRect.max;
+                max.x = LeftPanelRightWall;
+                lastRect.max = max;
+
+                if (lastRect.Contains(Event.current.mousePosition))
+                {
+                    _selectedElement = dispatchData;
+                    _selectedDrawer = new CommandDrawer(_selectedElement.DispatchCommand);
+                    
+                    Repaint();
+                }
+            }
         }
 
         private void OnReceivedDispatch(ICommand dispatchedCommand)
@@ -171,6 +203,21 @@ namespace AIR.Fluxity.Editor
 
             _recentDispatchHistory.Enqueue(dat);
             Repaint();
+        }
+
+        private void DoShowStore()
+        {
+            if (_selectedDrawer == null)
+            {
+                EditorGUILayout.LabelField("No selection");
+            }
+            else
+            {
+                EditorGUILayout.LabelField($"Values of {_selectedElement.DispatchName} @ {_selectedElement.TimeStamp.ToString(CommandDispatchedTimeFormat)}", EditorStyles.boldLabel);
+                EditorWindowUtil.DrawHorLine(Color.grey);
+
+                _selectedDrawer.Draw();
+            }
         }
 
         private void Flush()

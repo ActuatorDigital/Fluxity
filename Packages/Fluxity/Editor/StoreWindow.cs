@@ -7,6 +7,8 @@ namespace AIR.Fluxity.Editor
 {
     internal class StoreWindow : FluxityRuntimeEditorWindow
     {
+        private const int LeftPanelRightWall = 220;
+        
         private string _currentlyShowingName;
         private FeatureStateDrawer _featureDrawer;
         private SearchBoxUtility _storeSearchBox;
@@ -43,7 +45,7 @@ namespace AIR.Fluxity.Editor
             _featureDrawer = null;
             _storeSearchBox = new SearchBoxUtility();
             _twoPanel = new TwoPanelUtility(
-                220,
+                LeftPanelRightWall,
                 DoSelectStore,
                 DoShowStore);
         }
