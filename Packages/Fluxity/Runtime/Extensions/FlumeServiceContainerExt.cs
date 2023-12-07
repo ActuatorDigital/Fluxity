@@ -29,10 +29,30 @@ namespace AIR.Fluxity
         public Dispatcher Distpatcher { get; }
         public FlumeServiceContainer FlumeServiceContainer { get; }
 
-        public FluxityFlumeRegisterContext RegisterFeature<TState>(TState startingValue)
+        public FluxityFeatureContext<TState> Feature<TState>(TState startingValue)
             where TState : struct
         {
-            Store.AddFeature(new Feature<TState>(startingValue));
+            var feat = new Feature<TState>(startingValue);
+            Store.AddFeature(feat);
+            return new FluxityFeatureContext<TState>(this, feat);
+        }
+    }
+
+    public class FluxityFeatureContext<TState> : FluxityFlumeRegisterContext
+        where TState : struct
+    {
+        private readonly Feature<TState> _feature;
+        public FluxityFeatureContext(FluxityFlumeRegisterContext context, Feature<TState> feature)
+            : base(context.Store, context.Distpatcher, context.FlumeServiceContainer)
+        {
+            _feature = feature;
+        }
+
+        public FluxityFeatureContext<TState> Reducer<TCommand>(IReducer<TState, TCommand>.ReduceDelegate pureFunctionReducer)
+            where TCommand : ICommand
+        {
+            var reducer = new PureFunctionReducerBinder<TState, TCommand>(pureFunctionReducer);
+            _feature.Register(reducer);
             return this;
         }
     }

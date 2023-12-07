@@ -10,8 +10,6 @@ namespace Examples.Countdown
 
         protected override void Initialize()
         {
-            CreateReducer<CountdownState, StartCountdownCommand>(CountdownReducer.StartCountDown);
-            CreateReducer<CountdownState, StopCountdownCommand>(CountdownReducer.StopCountDown);
         }
 
         protected override void PostInitialize(IDispatcher dispatcher)

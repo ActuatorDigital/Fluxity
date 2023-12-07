@@ -1,5 +1,6 @@
 using AIR.Flume;
 using AIR.Fluxity;
+using Examples.Countdown;
 using UnityEngine;
 
 namespace Examples.Countdown
@@ -10,7 +11,10 @@ namespace Examples.Countdown
         protected override void InstallServices(FlumeServiceContainer container)
         {
             container
-                .RegisterFluxity(x => x.RegisterFeature(new CountdownState()))
+                .RegisterFluxity(x => 
+                    x.Feature(new CountdownState())
+                        .Reducer<StartCountdownCommand>(CountdownReducer.StartCountDown)
+                        .Reducer<StopCountdownCommand>(CountdownReducer.StopCountDown))
                 ;
         }
     }

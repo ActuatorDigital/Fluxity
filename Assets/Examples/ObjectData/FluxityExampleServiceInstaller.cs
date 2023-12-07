@@ -10,7 +10,9 @@ namespace Examples.ObjectData
         protected override void InstallServices(FlumeServiceContainer container)
         {
             container
-                .RegisterFluxity(x => x.RegisterFeature(ObjectDataState.CreateDefault()))
+                .RegisterFluxity(x => 
+                    x.Feature(ObjectDataState.CreateDefault())
+                        .Reducer<AddObjectDataCommand>(ObjectDataReducer.AddData))
                 ;
         }
     }

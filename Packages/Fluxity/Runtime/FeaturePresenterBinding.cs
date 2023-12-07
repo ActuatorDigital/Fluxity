@@ -6,25 +6,25 @@ namespace AIR.Fluxity
         where TState : struct
     {
         private readonly IPresenter _presenter;
-        private IFeature<TState> _feature;
+        private IFeatureView<TState> _featureView;
 
         public FeaturePresenterBinding(IPresenter presenter)
             => _presenter = presenter;
 
-        public TState CurrentState { get => _feature.State; }
+        public TState CurrentState { get => _featureView.State; }
 
         public void Inject(IStore store)
         {
-            _feature = store.GetFeature<TState>();
-            _feature.OnStateChanged += OnStateChanged;
+            _featureView = store.GetFeatureView<TState>();
+            _featureView.OnStateChanged += OnStateChanged;
         }
 
         public void Dispose()
         {
-            if (_feature != null)
+            if (_featureView != null)
             {
-                _feature.OnStateChanged -= OnStateChanged;
-                _feature = null;
+                _featureView.OnStateChanged -= OnStateChanged;
+                _featureView = null;
             }
         }
 

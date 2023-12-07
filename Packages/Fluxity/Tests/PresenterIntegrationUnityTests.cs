@@ -39,8 +39,9 @@ public class PresenterIntegrationUnityTests
         _dispatcher = new Dispatcher(_store);
         _feature = new Feature<DummyState>(default);
         _rootGameObject = new GameObject(nameof(PresenterIntegrationUnityTests));
-        _store.AddFeature(_feature);
-        _store.CreateAndRegister<DummyState, DummyCommand>(DummyPureFunctionReducer.Reduce);
+        _store.AddFeature(_feature); 
+        var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyPureFunctionReducer.Reduce);
+        _feature.Register(reducer);
 
         var presenterGO = new GameObject("PresenterNoDi");
         presenterGO.transform.SetParent(_rootGameObject.transform);

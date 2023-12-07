@@ -12,14 +12,14 @@ namespace Examples.StoresWindow
             container
                 .RegisterFluxity(x =>
                 {
-                    x.RegisterFeature(ListOfIntsState.CreateDefault());
-                    x.RegisterFeature(SimpleState.CreateDefault());
-                    x.RegisterFeature(TransformsState.CreateDefault());
-                    x.RegisterFeature(CustomObjectCyclicState.CreateDefault());
-                    x.RegisterFeature(CommonTypesState.CreateDefault());
-                    x.RegisterFeature(DicOfStringTransformState.CreateDefault());
-                    x.RegisterFeature(SomeDatumStateWithEnum.CreateDefault());
-                    x.RegisterFeature(SomeNullDatumState.CreateDefault());
+                    x.Feature(ListOfIntsState.CreateDefault());
+                    x.Feature(SimpleState.CreateDefault());
+                    x.Feature(TransformsState.CreateDefault());
+                    x.Feature(CustomObjectCyclicState.CreateDefault());
+                    x.Feature(CommonTypesState.CreateDefault());
+                    x.Feature(DicOfStringTransformState.CreateDefault());
+                    x.Feature(SomeDatumStateWithEnum.CreateDefault());
+                    x.Feature(SomeNullDatumState.CreateDefault());
                 })
             ;
         }

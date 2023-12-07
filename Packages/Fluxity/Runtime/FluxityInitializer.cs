@@ -18,11 +18,6 @@ namespace AIR.Fluxity
             PostInitialize(_dispatcher);
         }
 
-        public void CreateReducer<TState, TCommand>(IReducer<TState, TCommand>.ReduceDelegate pureFunctionReducer)
-            where TState : struct
-            where TCommand : ICommand
-            => _store.CreateAndRegister(pureFunctionReducer);
-
         public void CreateEffect<TCommand>(IEffect<TCommand>.EffectDelegate effectAction)
                where TCommand : ICommand
         {

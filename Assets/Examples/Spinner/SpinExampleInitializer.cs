@@ -8,8 +8,6 @@ namespace Examples.Spinner
     {
         protected override void Initialize()
         {
-            CreateReducer<SpinState, StartSpinCommand>(SpinnerReducers.StartSpin);
-            CreateReducer<SpinState, StopSpinCommand>(SpinnerReducers.StopSpin);
         }
 
         protected override void PostInitialize(IDispatcher dispatcher)

@@ -34,10 +34,10 @@ namespace AIR.Fluxity
             }
         }
 
-        public IFeature<TState> GetFeature<TState>()
+        public IFeatureView<TState> GetFeatureView<TState>()
             where TState : struct
         {
-            return (IFeature<TState>)_features[typeof(TState)];
+            return (IFeatureView<TState>)_features[typeof(TState)];
         }
     }
 }

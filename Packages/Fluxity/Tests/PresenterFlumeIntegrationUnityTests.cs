@@ -35,7 +35,9 @@ public class PresenterFlumeIntegrationUnityTests
         protected override void InstallServices(FlumeServiceContainer container)
         {
             container
-                .RegisterFluxity(x => x.RegisterFeature(new DummyState()))
+                .RegisterFluxity(x => 
+                    x.Feature(new DummyState())
+                        .Reducer<DummyCommand>(DummyPureFunctionReducer.Reduce))
                 .Register<IDummyService, DummyService>()
                 ;
         }
@@ -45,7 +47,6 @@ public class PresenterFlumeIntegrationUnityTests
     {
         protected override void Initialize()
         {
-            CreateReducer<DummyState, DummyCommand>(DummyPureFunctionReducer.Reduce);
             var dummyCommandEffect = new DummyCommandEffect();
             CreateEffect<DummyCommand>(dummyCommandEffect.DoEffect);
         }

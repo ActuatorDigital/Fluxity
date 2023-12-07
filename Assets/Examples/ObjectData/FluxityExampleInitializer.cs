@@ -8,7 +8,6 @@ namespace Examples.ObjectData
     {
         protected override void Initialize()
         {
-            CreateReducer<ObjectDataState, AddObjectDataCommand>(ObjectDataReducer.AddData);
         }
     }
 }
