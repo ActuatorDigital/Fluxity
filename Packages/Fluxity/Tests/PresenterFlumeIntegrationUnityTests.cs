@@ -35,8 +35,7 @@ public class PresenterFlumeIntegrationUnityTests
         protected override void InstallServices(FlumeServiceContainer container)
         {
             container
-                .RegisterFluxity()
-                .RegisterFeature<DummyState>()
+                .RegisterFluxity(x => x.RegisterFeature(new DummyState()))
                 .Register<IDummyService, DummyService>()
                 ;
         }

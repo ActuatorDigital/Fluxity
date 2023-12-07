@@ -13,9 +13,9 @@ namespace AIR.Fluxity
 
         public TState CurrentState { get => _feature.State; }
 
-        public void Inject(IFeature<TState> feature)
+        public void Inject(IStore store)
         {
-            _feature = feature;
+            _feature = store.GetFeature<TState>();
             _feature.OnStateChanged += OnStateChanged;
         }
 

@@ -16,12 +16,10 @@ public class PresenterIntegrationTests
     public void SetUp()
     {
         _store = new Store();
-        _dispatcher = new Dispatcher();
+        _dispatcher = new Dispatcher(_store);
         _feature = new Feature<DummyState>(default);
         _rootGameObject = new GameObject(nameof(PresenterIntegrationTests));
-
-        _dispatcher.Inject(_store);
-        _feature.Inject(_store);
+        _store.AddFeature(_feature);
         _store.CreateAndRegister<DummyState, DummyCommand>(DummyPureFunctionReducer.Reduce);
 
         var presenterGO = new GameObject("PresenterNoDi");
@@ -55,7 +53,7 @@ public class PresenterIntegrationTests
         const int EXPECTED = 1;
         var result = INITIAL;
         var statePresenterBinding = _dummyPresenter.Bind<DummyState>();
-        statePresenterBinding.Inject(_feature);
+        statePresenterBinding.Inject(_store);
         _dummyPresenter.DummyStatePresenterBinding = statePresenterBinding;
         _dummyPresenter.OnDisplay = (x) => result = EXPECTED;
 
@@ -84,7 +82,7 @@ public class PresenterIntegrationTests
         const int EXPECTED = 1;
         var result = INITIAL;
         var statePresenterBinding = _dummyPresenter.Bind<DummyState>();
-        statePresenterBinding.Inject(_feature);
+        statePresenterBinding.Inject(_store);
         _dummyPresenter.DummyStatePresenterBinding = statePresenterBinding;
         _dummyPresenter.OnDisplay = (x) => result = EXPECTED;
 

@@ -4,7 +4,7 @@ using AIR.Flume;
 
 namespace AIR.Fluxity
 {
-    public class Dispatcher : Dependent, IDispatcher
+    public class Dispatcher : IDispatcher
     {
         public event Action<ICommand> OnDispatch;
 
@@ -12,8 +12,10 @@ namespace AIR.Fluxity
         private bool _isReducing;
         private IStore _store;
 
-        public void Inject(IStore store)
-            => _store = store;
+        public Dispatcher(IStore store)
+        {
+            _store = store;
+        }
 
         public void RegisterEffect<TCommand>(IEffect<TCommand> effect)
             where TCommand : ICommand
@@ -43,7 +45,7 @@ namespace AIR.Fluxity
 
         public IReadOnlyCollection<Type> GetAllEffectCommandTypes()
             => _effects.Keys;
-        
+
         public IReadOnlyCollection<IEffect> GetAllEffectsForCommandType(Type commandType)
             => _effects[commandType].AsReadOnly();
 

@@ -10,8 +10,7 @@ namespace Examples.Spinner
         protected override void InstallServices(FlumeServiceContainer container)
         {
             container
-                .RegisterFluxity()
-                .RegisterFeature<SpinState>()
+                .RegisterFluxity(x => x.RegisterFeature(new SpinState()))
                 ;
         }
     }

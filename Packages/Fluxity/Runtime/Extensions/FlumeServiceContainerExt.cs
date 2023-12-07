@@ -1,21 +1,39 @@
-﻿using AIR.Flume;
+﻿using System;
+using AIR.Flume;
 
 namespace AIR.Fluxity
 {
     public static class FlumeServiceContainerExt
     {
-        public static FlumeServiceContainer RegisterFluxity(this FlumeServiceContainer self)
-            => self
-                .Register<IStore, Store>()
-                .Register<IDispatcher, Dispatcher>();
+        public static FlumeServiceContainer RegisterFluxity(this FlumeServiceContainer self, Action<FluxityFlumeRegisterContext> action)
+        {
+            var store = new Store();
+            var distpatcher = new Dispatcher(store);
+            self.Register<IStore>(store);
+            self.Register<IDispatcher>(distpatcher);
+            action(new FluxityFlumeRegisterContext(store, distpatcher, self));
+            return self;
+        }
+    }
 
-        public static FlumeServiceContainer RegisterFeature<TState>(this FlumeServiceContainer self, TState startingValue)
-            where TState : struct
-            => self
-                .Register<IFeature<TState>>(new Feature<TState>(startingValue));
+    public class FluxityFlumeRegisterContext
+    {
+        public FluxityFlumeRegisterContext(Store store, Dispatcher distpatcher, FlumeServiceContainer flumeServiceContainer)
+        {
+            Store = store;
+            Distpatcher = distpatcher;
+            FlumeServiceContainer = flumeServiceContainer;
+        }
 
-        public static FlumeServiceContainer RegisterFeature<TState>(this FlumeServiceContainer self)
+        public Store Store { get; }
+        public Dispatcher Distpatcher { get; }
+        public FlumeServiceContainer FlumeServiceContainer { get; }
+
+        public FluxityFlumeRegisterContext RegisterFeature<TState>(TState startingValue)
             where TState : struct
-            => RegisterFeature(self, default(TState));
+        {
+            Store.AddFeature(new Feature<TState>(startingValue));
+            return this;
+        }
     }
 }

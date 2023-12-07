@@ -10,8 +10,7 @@ namespace Examples.Countdown
         protected override void InstallServices(FlumeServiceContainer container)
         {
             container
-                .RegisterFluxity()
-                .RegisterFeature<CountdownState>()
+                .RegisterFluxity(x => x.RegisterFeature(new CountdownState()))
                 ;
         }
     }

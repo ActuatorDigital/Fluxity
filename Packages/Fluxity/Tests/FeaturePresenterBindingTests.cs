@@ -5,12 +5,15 @@ using NUnit.Framework;
 
 public class FeaturePresenterBindingTests
 {
+    private IStore _store;
     private IFeature<DummyState> _feature;
 
     [SetUp]
     public void SetUp()
     {
+        _store = new Store();
         _feature = new Feature<DummyState>(default);
+        _store.AddFeature(_feature);
     }
 
     [Test]
@@ -19,7 +22,7 @@ public class FeaturePresenterBindingTests
         const int EXPECTED = 5;
         using (var featurePresenterBinding = new FeaturePresenterBinding<DummyState>(Substitute.For<IPresenter>()))
         {
-            featurePresenterBinding.Inject(_feature);
+            featurePresenterBinding.Inject(_store);
 
             _feature.SetState(new DummyState() { value = EXPECTED});
 
@@ -33,7 +36,7 @@ public class FeaturePresenterBindingTests
         var presenterSubstitute = Substitute.For<IPresenter>();
         using (var featurePresenterBinding = new FeaturePresenterBinding<DummyState>(presenterSubstitute))
         {
-            featurePresenterBinding.Inject(_feature);
+            featurePresenterBinding.Inject(_store);
 
             _feature.SetState(new DummyState());
 
@@ -47,7 +50,7 @@ public class FeaturePresenterBindingTests
         var presenterSubstitute = Substitute.For<IPresenter>();
         using (var featurePresenterBinding = new FeaturePresenterBinding<DummyState>(presenterSubstitute))
         {
-            featurePresenterBinding.Inject(_feature);
+            featurePresenterBinding.Inject(_store);
         }
 
         _feature.SetState(new DummyState());

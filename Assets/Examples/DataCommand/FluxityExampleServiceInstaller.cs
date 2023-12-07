@@ -10,8 +10,8 @@ namespace Examples.DataCommand
         protected override void InstallServices(FlumeServiceContainer container)
         {
             container
-                .RegisterFluxity()
-                .RegisterFeature<CounterState>()
+                .RegisterFluxity(x => x.RegisterFeature(new CounterState()))
+
                 .Register<ISomeService, SomeService>()
                 ;
         }

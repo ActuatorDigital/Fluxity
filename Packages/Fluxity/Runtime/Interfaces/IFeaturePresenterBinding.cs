@@ -7,6 +7,6 @@ namespace AIR.Fluxity
     {
         TState CurrentState { get; }
 
-        void Inject(IFeature<TState> feature);
+        void Inject(IStore store);
     }
 }

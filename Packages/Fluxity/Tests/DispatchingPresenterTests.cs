@@ -22,10 +22,9 @@ public class DispatchingPresenterTests
     {
         var go = new GameObject();
         var dispatchingPresenter = go.AddComponent<DummyDispatchingPresenter>();
-        var dispatcher = new Dispatcher();
         var storeSub = Substitute.For<IStore>();
+        var dispatcher = new Dispatcher(storeSub);
         dispatchingPresenter.Inject(dispatcher);
-        dispatcher.Inject(storeSub);
         var command = new DummyCommand() { payload = 1 };
 
         dispatchingPresenter.Dispatch(command);

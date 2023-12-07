@@ -10,15 +10,17 @@ namespace Examples.StoresWindow
         protected override void InstallServices(FlumeServiceContainer container)
         {
             container
-                .RegisterFluxity()
-                .RegisterFeature(ListOfIntsState.CreateDefault())
-                .RegisterFeature(SimpleState.CreateDefault())
-                .RegisterFeature(TransformsState.CreateDefault())
-                .RegisterFeature(CustomObjectCyclicState.CreateDefault())
-                .RegisterFeature(CommonTypesState.CreateDefault())
-                .RegisterFeature(DicOfStringTransformState.CreateDefault())
-                .RegisterFeature(SomeDatumStateWithEnum.CreateDefault())
-                .RegisterFeature(SomeNullDatumState.CreateDefault())
+                .RegisterFluxity(x =>
+                {
+                    x.RegisterFeature(ListOfIntsState.CreateDefault());
+                    x.RegisterFeature(SimpleState.CreateDefault());
+                    x.RegisterFeature(TransformsState.CreateDefault());
+                    x.RegisterFeature(CustomObjectCyclicState.CreateDefault());
+                    x.RegisterFeature(CommonTypesState.CreateDefault());
+                    x.RegisterFeature(DicOfStringTransformState.CreateDefault());
+                    x.RegisterFeature(SomeDatumStateWithEnum.CreateDefault());
+                    x.RegisterFeature(SomeNullDatumState.CreateDefault());
+                })
             ;
         }
     }

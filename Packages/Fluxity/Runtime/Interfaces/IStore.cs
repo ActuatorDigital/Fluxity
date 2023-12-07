@@ -14,5 +14,8 @@ namespace AIR.Fluxity
         void RegisterReducer<TState, TCommand>(IReducer<TState, TCommand> reducer)
             where TState : struct
             where TCommand : ICommand;
+
+        IFeature<TState> GetFeature<TState>()
+            where TState : struct;
     }
 }

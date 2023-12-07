@@ -13,10 +13,9 @@ public class DispatcherTests
     public void SetUp()
     {
         _store = new Store();
-        _dispatcher = new Dispatcher();
-        _dispatcher.Inject(_store);
+        _dispatcher = new Dispatcher(_store);
         _feature = new DummyFeature(default);
-        _feature.Inject(_store);
+        _store.AddFeature(_feature);
     }
 
     [Test]

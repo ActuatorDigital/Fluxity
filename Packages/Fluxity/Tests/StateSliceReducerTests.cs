@@ -67,9 +67,8 @@ public class StateSliceReducerTests
     [Test]
     public void Dispatch_WhenMultipleReducersMatchCommand_ShouldCallEachAndHaveResultedCombinedState()
     {
-        var dispatcher = new Dispatcher();
         var store = new Store();
-        dispatcher.Inject(store);
+        var dispatcher = new Dispatcher(store);
         var feature = new LargeStateFeature(default);
         store.AddFeature(feature);
         var payloadVal = 3;
@@ -92,9 +91,8 @@ public class StateSliceReducerTests
     public void Dispatch_WhenMultipleReducersMatchCommand_ShouldOnlyInvokeStateChangeOnce()
     {
         var changeCount = 0;
-        var dispatcher = new Dispatcher();
         var store = new Store();
-        dispatcher.Inject(store);
+        var dispatcher = new Dispatcher(store);
         var feature = new LargeStateFeature(default);
         feature.OnStateChanged += (x) => changeCount++;
         store.AddFeature(feature);

@@ -10,6 +10,7 @@ using UnityEngine.TestTools;
 
 public class PresenterTests
 {
+    private Store _store;
     private Feature<DummyState> _feature;
     private GameObject _rootGameObject;
     private DummyDelegatePresenter _dummyPresenter;
@@ -17,9 +18,10 @@ public class PresenterTests
     [SetUp]
     public void SetUp()
     {
+        _store = new Store();
         _feature = new Feature<DummyState>(default);
+        _store.AddFeature(_feature);
         _rootGameObject = new GameObject(nameof(PresenterTests));
-     
         var presenterGO = new GameObject("PresenterNoDi");
         presenterGO.transform.SetParent(_rootGameObject.transform);
         _dummyPresenter = presenterGO.AddComponent<DummyDelegatePresenter>();
@@ -49,7 +51,7 @@ public class PresenterTests
         const int EXPECTED = 1;
         var result = INITIAL;
         var statePresenterBinding = _dummyPresenter.Bind<DummyState>();
-        statePresenterBinding.Inject(_feature);
+        statePresenterBinding.Inject(_store);
         _dummyPresenter.DummyStatePresenterBinding = statePresenterBinding;
         _dummyPresenter.OnDisplay = (x) => result = EXPECTED;
 
