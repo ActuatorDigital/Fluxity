@@ -15,7 +15,7 @@ public class PresenterFlumeIntegrationUnityTests
 
     private class DummyFlumePresenter : Presenter
     {
-        private IFeaturePresenterBinding<DummyState> _dummyState;
+        private FeatureBinding<DummyState> _dummyState;
 
         public string TextContent { get; private set; }
 
@@ -26,7 +26,7 @@ public class PresenterFlumeIntegrationUnityTests
 
         public override void Display()
         {
-            TextContent = _dummyState.CurrentState.value.ToString();
+            TextContent = _dummyState.State.value.ToString();
         }
     }
 

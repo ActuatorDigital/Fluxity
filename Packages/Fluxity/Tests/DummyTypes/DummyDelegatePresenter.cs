@@ -4,7 +4,7 @@ namespace AIR.Fluxity.Tests.DummyTypes
 {
     public class DummyDelegatePresenter : Presenter
     {
-        public IFeaturePresenterBinding<DummyState> DummyStatePresenterBinding { get; set; }
+        public FeatureBinding<DummyState> DummyStatePresenterBinding { get; set; }
         public Action<DummyState> OnDisplay { get; set; }
 
         public override void CreateBindings()
@@ -13,7 +13,7 @@ namespace AIR.Fluxity.Tests.DummyTypes
 
         public override void Display()
         {
-            var state = DummyStatePresenterBinding.CurrentState;
+            var state = DummyStatePresenterBinding.State;
             OnDisplay?.Invoke(state);
         }
     }

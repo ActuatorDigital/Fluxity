@@ -3,7 +3,7 @@ using AIR.Fluxity.Tests.DummyTypes;
 using NSubstitute;
 using NUnit.Framework;
 
-public class FeaturePresenterBindingTests
+public class FeatureBindingTests
 {
     private IStore _store;
     private IFeature<DummyState> _feature;
@@ -17,44 +17,46 @@ public class FeaturePresenterBindingTests
     }
 
     [Test]
-    public void CurrentState_WhenFeatureStateUpdates_ShouldInvoke()
+    public void CurrentState_WhenFeatureStateUpdates_ShouldHaveExpectedValue()
     {
         const int EXPECTED = 5;
-        using (var featurePresenterBinding = new FeaturePresenterBinding<DummyState>(Substitute.For<IPresenter>()))
+        using (var featurePresenterBinding = new FeatureBinding<DummyState>())
         {
             featurePresenterBinding.Inject(_store);
 
             _feature.SetState(new DummyState() { value = EXPECTED});
 
-            Assert.AreEqual(EXPECTED, featurePresenterBinding.CurrentState.value);
+            Assert.AreEqual(EXPECTED, featurePresenterBinding.State.value);
         }
     }
 
     [Test]
     public void Display_WhenFeatureStateUpdates_ShouldInvoke()
     {
-        var presenterSubstitute = Substitute.For<IPresenter>();
-        using (var featurePresenterBinding = new FeaturePresenterBinding<DummyState>(presenterSubstitute))
+        var invoked = false;
+        using (var featurePresenterBinding = new FeatureBinding<DummyState>())
         {
             featurePresenterBinding.Inject(_store);
+            featurePresenterBinding.OnStateChanged += x => invoked = true;
 
             _feature.SetState(new DummyState());
 
-            presenterSubstitute.Received().Display();
+            Assert.IsTrue(invoked);
         }
     }
 
     [Test]
     public void Display_WhenDisposed_ShouldNotInvoke()
     {
-        var presenterSubstitute = Substitute.For<IPresenter>();
-        using (var featurePresenterBinding = new FeaturePresenterBinding<DummyState>(presenterSubstitute))
+        var invoked = false;
+        using (var featurePresenterBinding = new FeatureBinding<DummyState>())
         {
             featurePresenterBinding.Inject(_store);
+            featurePresenterBinding.OnStateChanged += x => invoked = true;
         }
 
         _feature.SetState(new DummyState());
 
-        presenterSubstitute.DidNotReceive().Display();
+        Assert.IsFalse(invoked);
     }
 }

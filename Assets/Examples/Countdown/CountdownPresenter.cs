@@ -13,7 +13,7 @@ namespace Examples.Countdown
         [SerializeField] private ButtonView uStopCountdownButton;
         [SerializeField] private float uCountdownSeconds;
 
-        private IFeaturePresenterBinding<CountdownState> _countdownStateBinding;
+        private IFeatureView<CountdownState> _countdownStateBinding;
         private DispatcherHandle _dispatcherHandle;
         private float _secondsRemaining = 0;
         private bool _isRunning = false;
@@ -21,7 +21,7 @@ namespace Examples.Countdown
         public override void Display()
         {
             // State is source of truth and should always override local values.
-            var currentState = _countdownStateBinding.CurrentState;
+            var currentState = _countdownStateBinding.State;
             if (!currentState.IsRunning) {
                 uCountdownDisplayText.text = "Countdown Disabled";
                 _isRunning = false;

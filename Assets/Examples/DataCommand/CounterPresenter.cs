@@ -12,7 +12,7 @@ namespace Examples.DataCommand
         [SerializeField] private InputField uInputField;
         [SerializeField] private ButtonView uButtonView;
 
-        private IFeaturePresenterBinding<CounterState> _counterStateBinding;
+        private IFeatureView<CounterState> _counterStateBinding;
         private DispatcherHandle _dispatcherHandle;
 
         public override void CreateBindings()
@@ -22,7 +22,7 @@ namespace Examples.DataCommand
 
         public override void Display()
         {
-            uCountText.text = _counterStateBinding.CurrentState.CurrentCount.ToString();
+            uCountText.text = _counterStateBinding.State.CurrentCount.ToString();
         }
 
         protected override void SetUp()

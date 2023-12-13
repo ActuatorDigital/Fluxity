@@ -9,7 +9,7 @@ namespace Examples.Simple
         [SerializeField] private Text uLabelText;
         [SerializeField] private Text uCountText;
 
-        private IFeaturePresenterBinding<CounterState> _counterStateBinding;
+        private IFeatureView<CounterState> _counterStateBinding;
 
         public override void CreateBindings()
         {
@@ -18,7 +18,7 @@ namespace Examples.Simple
 
         public override void Display()
         {
-            uCountText.text = _counterStateBinding.CurrentState.CurrentCount.ToString();
+            uCountText.text = _counterStateBinding.State.CurrentCount.ToString();
         }
 
         protected override void SetUp()

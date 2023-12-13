@@ -9,7 +9,7 @@ namespace Examples.ObjectData
         [SerializeField] private Text uObjectStateText;
         [SerializeField] private Text uObjectCountText;
 
-        private IFeaturePresenterBinding<ObjectDataState> _objectDataStateBinding;
+        private IFeatureView<ObjectDataState> _objectDataStateBinding;
 
         public override void CreateBindings()
         {
@@ -18,8 +18,8 @@ namespace Examples.ObjectData
 
         public override void Display()
         {
-            uObjectStateText.text = string.Join(System.Environment.NewLine, _objectDataStateBinding.CurrentState.Guids);
-            uObjectCountText.text = $"Count: {_objectDataStateBinding.CurrentState.Guids.Count}";
+            uObjectStateText.text = string.Join(System.Environment.NewLine, _objectDataStateBinding.State.Guids);
+            uObjectCountText.text = $"Count: {_objectDataStateBinding.State.Guids.Count}";
         }
 
         protected override void SetUp()

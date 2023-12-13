@@ -19,10 +19,11 @@ namespace AIR.Fluxity
 
         public abstract void CreateBindings();
 
-        public IFeaturePresenterBinding<TState> Bind<TState>()
+        public FeatureBinding<TState> Bind<TState>()
             where TState : struct
         {
-            var newBinding = new FeaturePresenterBinding<TState>(this);
+            var newBinding = new FeatureBinding<TState>();
+            newBinding.OnStateChanged += x => Display();
             _bindings.Add(newBinding);
             return newBinding;
         }

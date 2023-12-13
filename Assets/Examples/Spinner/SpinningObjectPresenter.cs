@@ -6,7 +6,7 @@ namespace Examples.Spinner
     public class SpinningObjectPresenter : Presenter
     {
         [SerializeField] private SpinnerView uSpinnerView;
-        private IFeaturePresenterBinding<SpinState> _spinStateBinding;
+        private IFeatureView<SpinState> _spinStateBinding;
 
         public override void CreateBindings()
         {
@@ -15,7 +15,7 @@ namespace Examples.Spinner
 
         public override void Display()
         {
-            var currentState = _spinStateBinding.CurrentState;
+            var currentState = _spinStateBinding.State;
             uSpinnerView.SetSpinRate(currentState.DegreesPerSecond);
             if (currentState.DoSpin)
                 uSpinnerView.StartSpin();
