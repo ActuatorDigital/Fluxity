@@ -13,7 +13,6 @@ namespace Examples.DataCommand
         [SerializeField] private ButtonView uButtonView;
 
         private IFeatureView<CounterState> _counterStateBinding;
-        private DispatcherHandle _dispatcherHandle;
 
         public override void CreateBindings()
         {
@@ -27,7 +26,6 @@ namespace Examples.DataCommand
 
         protected override void SetUp()
         {
-            _dispatcherHandle = new DispatcherHandle();
             uLabelText.text = "Current Count:";
             uButtonView.SetButtonText("Change Count");
             uButtonView.SetOnClickedCallback(OnButtonClick);
@@ -37,8 +35,7 @@ namespace Examples.DataCommand
 
         private void OnButtonClick()
         {
-            var command = new ChangeCountCommand { Delta = int.Parse(uInputField.text) };
-            _dispatcherHandle.Dispatch(command);
+            new DispatcherHandle().Dispatch(new ChangeCountCommand { Delta = int.Parse(uInputField.text) });
         }
     }
 }

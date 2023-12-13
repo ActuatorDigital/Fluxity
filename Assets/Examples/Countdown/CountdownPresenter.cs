@@ -1,4 +1,3 @@
-using System;
 using AIR.Fluxity;
 using Examples.Shared;
 using UnityEngine;
@@ -13,20 +12,21 @@ namespace Examples.Countdown
         [SerializeField] private ButtonView uStopCountdownButton;
         [SerializeField] private float uCountdownSeconds;
 
-        private IFeatureView<CountdownState> _countdownStateBinding;
-        private DispatcherHandle _dispatcherHandle;
         private float _secondsRemaining = 0;
         private bool _isRunning = false;
+        private FeatureBinding<CountdownState> _countdownStateBinding;
 
         public override void Display()
         {
             // State is source of truth and should always override local values.
             var currentState = _countdownStateBinding.State;
-            if (!currentState.IsRunning) {
+            if (!currentState.IsRunning)
+            {
                 uCountdownDisplayText.text = "Countdown Disabled";
                 _isRunning = false;
             }
-            else {
+            else
+            {
                 _secondsRemaining = currentState.CountdownDurationSeconds;
                 _isRunning = true;
             }
@@ -46,12 +46,11 @@ namespace Examples.Countdown
             _secondsRemaining -= Time.deltaTime;
             uCountdownDisplayText.text = $"{_secondsRemaining:F2} s remaining";
             if (_secondsRemaining <= 0)
-                _dispatcherHandle.Dispatch(new StopCountdownCommand());
+                DispatchStop();
         }
 
         protected override void SetUp()
         {
-            _dispatcherHandle = new DispatcherHandle();
             uStartCountdownButton.SetButtonText($"Start ({uCountdownSeconds}s)");
             uStartCountdownButton.SetOnClickedCallback(OnClickStart);
             uStopCountdownButton.SetButtonText("Stop");
@@ -59,9 +58,14 @@ namespace Examples.Countdown
         }
 
         private void OnClickStart()
-            => _dispatcherHandle.Dispatch(new StartCountdownCommand { Seconds = uCountdownSeconds });
+            => new DispatcherHandle().Dispatch(new StartCountdownCommand { Seconds = uCountdownSeconds });
 
         private void OnClickStop()
-            => _dispatcherHandle.Dispatch(new StopCountdownCommand());
+            => DispatchStop();
+
+        private void DispatchStop()
+        {
+            new DispatcherHandle().Dispatch(new StopCountdownCommand());
+        }
     }
 }
