@@ -48,6 +48,12 @@ namespace AIR.Fluxity
             _feature = feature;
         }
 
+        public FluxityFeatureContext<TState> BulkReducers(Action<FluxityFeatureContext<TState>> registerAll)
+        {
+            registerAll(this);
+            return this;
+        }
+
         public FluxityFeatureContext<TState> Reducer<TCommand>(IReducer<TState, TCommand>.ReduceDelegate pureFunctionReducer)
             where TCommand : ICommand
         {

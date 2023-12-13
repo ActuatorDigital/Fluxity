@@ -6,6 +6,14 @@ namespace Examples.Simple
     [DefaultExecutionOrder(1)]
     public class FluxityExampleInitializer : FluxityInitializer
     {
+        internal static void Setup(FluxityFlumeRegisterContext context)
+        {
+            context
+                .Feature(new CounterState())
+                    .BulkReducers(CounterReducer.RegisterAll)
+                ;
+        }
+
         protected override void Initialize()
         {
             // NOTE: You don't need to make an effect for every command, we're doing so here
