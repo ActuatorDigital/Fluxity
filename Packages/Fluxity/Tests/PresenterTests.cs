@@ -1,19 +1,15 @@
-using AIR.Flume;
 using AIR.Fluxity;
 using AIR.Fluxity.Tests.DummyTypes;
-using NSubstitute;
 using NUnit.Framework;
 using System;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 public class PresenterTests
 {
     private Store _store;
     private Feature<DummyState> _feature;
     private GameObject _rootGameObject;
-    private DummyDelegatePresenter _dummyPresenter;
+    private DummyPresenter _dummyPresenter;
 
     [SetUp]
     public void SetUp()
@@ -24,7 +20,7 @@ public class PresenterTests
         _rootGameObject = new GameObject(nameof(PresenterTests));
         var presenterGO = new GameObject("PresenterNoDi");
         presenterGO.transform.SetParent(_rootGameObject.transform);
-        _dummyPresenter = presenterGO.AddComponent<DummyDelegatePresenter>();
+        _dummyPresenter = presenterGO.AddComponent<DummyPresenter>();
     }
 
     [TearDown]
@@ -45,18 +41,17 @@ public class PresenterTests
     }
 
     [Test]
-    public void Display_WhenSetupCorrectly_ShouldInvokeProvidedDelegate()
+    public void Display_WhenSetupCorrectly_ShouldDisplayAndHaveExpectedState()
     {
-        const int INITIAL = 2;
-        const int EXPECTED = 1;
-        var result = INITIAL;
+        var featureValue = -1;
+        _feature.SetState(new DummyState() { value = featureValue });
         var statePresenterBinding = _dummyPresenter.Bind<DummyState>();
         statePresenterBinding.Inject(_store);
         _dummyPresenter.DummyStatePresenterBinding = statePresenterBinding;
-        _dummyPresenter.OnDisplay = (x) => result = EXPECTED;
 
         _dummyPresenter.Display();
 
-        Assert.AreEqual(EXPECTED, result);
+        Assert.AreEqual(1, _dummyPresenter.DisplayCallCount);
+        Assert.AreEqual(featureValue, _dummyPresenter.StateAtLastDisplay.value);
     }
 }

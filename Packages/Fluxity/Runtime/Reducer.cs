@@ -13,6 +13,7 @@ namespace AIR.Fluxity
 
         public TState Reduce(TState state, ICommand command)
             => Reduce(state, (TCommand)command);
+
         public abstract MethodInfo ReducerBindingInfo();
     }
 }

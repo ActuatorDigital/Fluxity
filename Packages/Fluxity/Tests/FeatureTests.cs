@@ -6,7 +6,7 @@ using System.Linq;
 
 public class FeatureTests
 {
-    private IFeature<DummyState> _feature;
+    private Feature<DummyState> _feature;
 
     [SetUp]
     public void SetUp()
@@ -17,7 +17,7 @@ public class FeatureTests
     [Test]
     public void Register_WhenCalledWithIncorrectType_ShouldThrow()
     {
-        var reducer = new OtherDummyReducer();
+        var reducer = new PureFunctionReducerBinder<OtherDummyState, OtherDummyCommand>(OtherDummyReducer.Reduce);
 
         void Act() => _feature.Register(reducer);
 
@@ -27,7 +27,7 @@ public class FeatureTests
     [Test]
     public void Register_WhenCalledWithCorrectType_ShouldNotThrow()
     {
-        var reducer = new DummyReducer();
+        var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
 
         void Act() => _feature.Register(reducer);
 
@@ -99,7 +99,7 @@ public class FeatureTests
     [Test]
     public void GetHandled_WhenOneBound_ShouldReturnExpectedOne()
     {
-        var reducer = new DummyReducer();
+        var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
         _feature.Register(reducer);
 
         var res = _feature.GetAllHandledCommandTypes();
@@ -108,8 +108,8 @@ public class FeatureTests
 
         Assert.AreEqual(1, res.Count);
         StringAssert.AreEqualIgnoringCase(nameof(DummyCommand), res.First().Name);
-        StringAssert.AreEqualIgnoringCase(nameof(DummyReducer.Reduce), innerBindingInfo.Name);
-        StringAssert.AreEqualIgnoringCase(nameof(DummyReducer), innerBindingInfo.DeclaringType.Name);
+        StringAssert.AreEqualIgnoringCase(nameof(DummyReducers.Reduce), innerBindingInfo.Name);
+        StringAssert.AreEqualIgnoringCase(nameof(DummyReducers), innerBindingInfo.DeclaringType.Name);
     }
 
     [Test]

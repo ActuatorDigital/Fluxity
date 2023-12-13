@@ -9,8 +9,7 @@ namespace Examples.Simple
         internal static void Setup(FluxityFlumeRegisterContext context)
         {
             context
-                .Feature(new CounterState())
-                    .BulkReducers(CounterReducer.RegisterAll)
+                .Feature(new CounterState(), CounterReducer.RegisterAll)
                 ;
         }
 

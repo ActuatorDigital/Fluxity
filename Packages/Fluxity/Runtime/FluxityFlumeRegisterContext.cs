@@ -1,4 +1,5 @@
-﻿using AIR.Flume;
+﻿using System;
+using AIR.Flume;
 
 namespace AIR.Fluxity
 {
@@ -21,6 +22,16 @@ namespace AIR.Fluxity
             var feat = new Feature<TState>(startingValue);
             Store.AddFeature(feat);
             return new FluxityFeatureContext<TState>(this, feat);
+        }
+
+        public FluxityFeatureContext<TState> Feature<TState>(
+            TState startingValue,
+            Action<FluxityFeatureContext<TState>> createReducers)
+            where TState : struct
+        {
+            var context = Feature(startingValue);
+            createReducers(context);
+            return context;
         }
     }
 }

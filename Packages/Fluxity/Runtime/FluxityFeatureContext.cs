@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AIR.Fluxity
+﻿namespace AIR.Fluxity
 {
     public class FluxityFeatureContext<TState> : FluxityFlumeRegisterContext
         where TState : struct
@@ -10,12 +8,6 @@ namespace AIR.Fluxity
             : base(context.Store, context.Distpatcher, context.FlumeServiceContainer)
         {
             _feature = feature;
-        }
-
-        public FluxityFeatureContext<TState> BulkReducers(Action<FluxityFeatureContext<TState>> registerAll)
-        {
-            registerAll(this);
-            return this;
         }
 
         public FluxityFeatureContext<TState> Reducer<TCommand>(IReducer<TState, TCommand>.ReduceDelegate pureFunctionReducer)

@@ -7,14 +7,15 @@ public class DispatcherTests
 {
     private Store _store;
     private Dispatcher _dispatcher;
-    private DummyFeature _feature;
+    private Feature<DummyState> _feature;
+    private static Dispatcher _staticDispatcher;
 
     [SetUp]
     public void SetUp()
     {
         _store = new Store();
         _dispatcher = new Dispatcher(_store);
-        _feature = new DummyFeature(default);
+        _feature = new Feature<DummyState>(default);
         _store.AddFeature(_feature);
     }
 
@@ -32,8 +33,8 @@ public class DispatcherTests
         var state = new DummyState() { value = 1 };
         _feature.SetState(state);
         var payloadVal = 3;
-        var command = new DummyCommand() { payload = payloadVal };
-        var reducer = new DummyReducer();
+        var command = new DummyCommand() { Payload = payloadVal };
+        var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
         _feature.Register(reducer);
 
         _dispatcher.Dispatch(command);
@@ -46,7 +47,7 @@ public class DispatcherTests
     {
         var state = new DummyState() { value = 1 };
         _feature.SetState(state);
-        var reducer = new DummyReducer();
+        var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
         _feature.Register(reducer);
 
         _dispatcher.Dispatch(new OtherDummyCommand());
@@ -58,7 +59,7 @@ public class DispatcherTests
     public void Dispatch_WhenMatchingEffectRegistered_ShouldInvoke()
     {
         var payloadVal = 3;
-        var command = new DummyCommand() { payload = payloadVal };
+        var command = new DummyCommand() { Payload = payloadVal };
         var dummyEffect = new DummyEffect();
         var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
         _dispatcher.RegisterEffect(effect);
@@ -72,7 +73,7 @@ public class DispatcherTests
     public void Dispatch_WhenMatchingEffectRegisteredViaExtension_ShouldInvoke()
     {
         var payloadVal = 3;
-        var command = new DummyCommand() { payload = payloadVal };
+        var command = new DummyCommand() { Payload = payloadVal };
         var dummyEffect = new DummyEffect();
         var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
         _dispatcher.RegisterEffect(effect);
@@ -100,10 +101,10 @@ public class DispatcherTests
     {
         var state = new DummyState() { value = 1 };
         _feature.SetState(state);
-        var reducer = new DummyReducer();
+        var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
         _store.RegisterReducer(reducer);
         var payloadVal = 2;
-        var command = new DummyCommand() { payload = payloadVal };
+        var command = new DummyCommand() { Payload = payloadVal };
         var dummyEffect = new DummyEffect();
         var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
         _dispatcher.RegisterEffect(effect);
@@ -119,12 +120,12 @@ public class DispatcherTests
     {
         var state = new DummyState() { value = 1 };
         _feature.SetState(state);
-        var reducer = new DummyReducer();
+        var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
         //two of the same reducer
         _store.RegisterReducer(reducer);
         _store.RegisterReducer(reducer);
         var payloadVal = 1;
-        var command = new DummyCommand() { payload = payloadVal };
+        var command = new DummyCommand() { Payload = payloadVal };
         var dummyEffect = new DummyEffect();
         var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
         //two of the same effect
@@ -141,12 +142,19 @@ public class DispatcherTests
     public void Dispatch_WhenReducerDispatches_ShouldThrow()
     {
         _feature.SetState(new DummyState());
-        IReducer reducer = new DummyDelegateReducer(() => _dispatcher.Dispatch(new OtherDummyCommand()));
+        _staticDispatcher = _dispatcher;
+        var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DispatchDuringReduce);
         _feature.Register(reducer);
 
         void Act() => _dispatcher.Dispatch(new DummyCommand());
 
         Assert.Throws<DispatcherException>(Act);
+    }
+
+    private static DummyState DispatchDuringReduce(DummyState state, DummyCommand command)
+    {
+        _staticDispatcher.Dispatch(new OtherDummyCommand());
+        return state;
     }
 
     [Test]

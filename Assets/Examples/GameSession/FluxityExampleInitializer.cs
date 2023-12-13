@@ -11,9 +11,8 @@ namespace Examples.GameSession
             context
                 .Feature(GamePhaseState.Create())
                     .Reducer<SetGamePhaseCommand>(GamePhaseReducers.SetGamePhase)
-                .Feature(GameSessionScoreState.Create())
-                    .BulkReducers(GameSessionReducers.RegisterAll)
-                 .Feature(HighScoresState.Create())
+                .Feature(GameSessionScoreState.Create(), GameSessionReducers.RegisterAll)
+                .Feature(HighScoresState.Create())
                     .Reducer<HighScoresLoadedCommand>(AssignHighScores)
                 ;
         }

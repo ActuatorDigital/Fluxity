@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 public class ReducerTests
 {
-    private DummyReducer _reducer;
+    private PureFunctionReducerBinder<DummyState, DummyCommand> _reducer;
     private DummyDoubleReducer _doubleReducer;
 
     private class DummyDoubleReducer : Reducer<DummyState, DummyCommand>
@@ -24,7 +24,7 @@ public class ReducerTests
     [SetUp]
     public void SetUp()
     {
-        _reducer = new DummyReducer();
+        _reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
         _doubleReducer = new DummyDoubleReducer();
     }
 
@@ -45,10 +45,10 @@ public class ReducerTests
     public void ProcessReducers_WhenGivenCorrectType_ShouldCallWithExpectedPayloadValue()
     {
         var state = new DummyState() { value = 1 };
-        var feature = new DummyFeature(default);
+        var feature = new Feature<DummyState>(default);
         feature.SetState(state);
         var payloadVal = 3;
-        var correctCommandType = new DummyCommand() { payload = payloadVal };
+        var correctCommandType = new DummyCommand() { Payload = payloadVal };
         feature.Register(_reducer);
 
         feature.ProcessReducers(correctCommandType);
@@ -63,9 +63,9 @@ public class ReducerTests
         var expected = 8;
         var payloadVal = 3;
         var state = new DummyState() { value = initial };
-        var feature = new DummyFeature(default);
+        var feature = new Feature<DummyState>(default);
         feature.SetState(state);
-        var correctCommandType = new DummyCommand() { payload = payloadVal };
+        var correctCommandType = new DummyCommand() { Payload = payloadVal };
         feature.Register(_reducer);
         feature.Register(_doubleReducer);
 
@@ -81,9 +81,9 @@ public class ReducerTests
         var expected = 5;
         var payloadVal = 3;
         var state = new DummyState() { value = initial };
-        var feature = new DummyFeature(default);
+        var feature = new Feature<DummyState>(default);
         feature.SetState(state);
-        var correctCommandType = new DummyCommand() { payload = payloadVal };
+        var correctCommandType = new DummyCommand() { Payload = payloadVal };
         feature.Register(_doubleReducer);
         feature.Register(_reducer);
 

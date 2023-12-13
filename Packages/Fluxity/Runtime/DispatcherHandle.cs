@@ -2,7 +2,7 @@ using AIR.Flume;
 
 namespace AIR.Fluxity
 {
-    public class DispatcherHandle : Dependent
+    public sealed class DispatcherHandle : Dependent
     {
         private IDispatcher _dispatcher;
 

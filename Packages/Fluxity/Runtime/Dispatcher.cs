@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
-using AIR.Flume;
 
 namespace AIR.Fluxity
 {
-    public class Dispatcher : IDispatcher
+    public sealed class Dispatcher : IDispatcher
     {
         public event Action<ICommand> OnDispatch;
 
-        private readonly Dictionary<Type, List<IEffect>> _effects = new Dictionary<Type, List<IEffect>>();
+        private readonly Dictionary<Type, List<IEffect>> _effects = new();
         private bool _isReducing;
-        private IStore _store;
+        private readonly IStore _store;
 
         public Dispatcher(IStore store)
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AIR.Fluxity
 {
-    public class Store : IStore
+    public sealed class Store : IStore
     {
         private readonly Dictionary<Type, IFeature> _features = new();
 

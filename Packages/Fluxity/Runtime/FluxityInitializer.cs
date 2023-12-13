@@ -4,14 +4,10 @@ namespace AIR.Fluxity
 {
     public abstract class FluxityInitializer : DependentBehaviour
     {
-        private IStore _store;
         private IDispatcher _dispatcher;
 
-        public void Inject(
-            IDispatcher dispatcher,
-            IStore store)
+        public void Inject(IDispatcher dispatcher)
         {
-            _store = store;
             _dispatcher = dispatcher;
 
             Initialize();

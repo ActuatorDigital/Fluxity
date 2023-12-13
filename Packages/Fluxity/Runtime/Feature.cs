@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using AIR.Flume;
 
 namespace AIR.Fluxity
 {
-    public class Feature<TState> : IFeature<TState>
+    public sealed class Feature<TState> : IFeature<TState>
         where TState : struct
     {
-        private readonly Dictionary<Type, List<IReducer<TState>>> _reducers = new Dictionary<Type, List<IReducer<TState>>>();
+        private readonly Dictionary<Type, List<IReducer<TState>>> _reducers = new();
 
         public Feature(TState state)
         {
@@ -17,11 +16,8 @@ namespace AIR.Fluxity
         public event Action<TState> OnStateChanged;
 
         public TState State { get; private set; }
-
         public Type GetStateType => typeof(TState);
-
         public IReadOnlyCollection<Type> GetAllHandledCommandTypes() => _reducers.Keys;
-
         public IReadOnlyCollection<IReducer> GetAllReducersForCommand(Type commandType) => _reducers[commandType].AsReadOnly();
 
         public void SetState(TState newState)

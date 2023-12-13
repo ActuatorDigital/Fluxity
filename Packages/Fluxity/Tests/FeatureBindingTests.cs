@@ -6,7 +6,7 @@ using NUnit.Framework;
 public class FeatureBindingTests
 {
     private IStore _store;
-    private IFeature<DummyState> _feature;
+    private Feature<DummyState> _feature;
 
     [SetUp]
     public void SetUp()
