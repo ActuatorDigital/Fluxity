@@ -74,7 +74,7 @@ The minimum required to install and use Fluxity in a scene is laid out in the fo
 Any additional Flux content can be added simply after this:
 
 1. Create state
-2. Register state with the Flume service installer
+2. Register state during RegisterFluxity in service installer
 3. Create commands, effects, reducers
 4. Create bindings for reducers/effects in the Initializer
 
@@ -122,17 +122,20 @@ public class StopSpinCommand : ICommand
 ### Reducers used
 
 ```cs
-public static SpinState StartSpin(SpinState state, StartSpinCommand command)
+public static class SpinStateReducers
 {
-    return new SpinState {
-        DegreesPerSecond = command.DegreesPerSecond,
-        DoSpin = true,
-    };
-}
+    public static SpinState StartSpin(SpinState state, StartSpinCommand command)
+    {
+        return new SpinState {
+            DegreesPerSecond = command.DegreesPerSecond,
+            DoSpin = true,
+        };
+    }
 
-public static SpinState StopSpin(SpinState state, StopSpinCommand command)
-{
-    return new SpinState { DoSpin = false };
+    public static SpinState StopSpin(SpinState state, StopSpinCommand command)
+    {
+        return new SpinState { DoSpin = false };
+    }
 }
 ```
 
@@ -142,10 +145,17 @@ public static SpinState StopSpin(SpinState state, StopSpinCommand command)
 [DefaultExecutionOrder(1)]
 public class SpinExampleInitializer : FluxityInitializer
 {
+    public static void Setup(FluxityFlumeRegisterContext context)
+    {
+        context
+            .Feature(SpinState.Create())
+                .Reducer.Reducer<StartSpinCommand>(SpinStateReducers.StartSpin)
+                .Reducer.Reducer<StopSpinCommand>(SpinStateReducers.StopSpin)
+            ;
+    }
+
     protected override void Initialize()
     {
-        CreateReducer<SpinState, StartSpinCommand>(StartSpin);
-        CreateReducer<SpinState, StopSpinCommand>(StopSpin);
     }
 
     protected override void PostInitialize(IDispatcher dispatcher)
@@ -166,8 +176,7 @@ public class SpinExampleServiceInstaller : ServiceInstaller
     protected override void InstallServices(FlumeServiceContainer container)
     {
         container
-            .RegisterFluxity()
-            .RegisterFeature<SpinState>()
+            .RegisterFluxity(SpinExampleInitializer.Setup)
             ;
     }
 }
@@ -180,7 +189,7 @@ public class SpinningObjectPresenter : Presenter
 {
     [SerializeField] private SpinnerView uSpinnerView;
 
-    private IFeaturePresenterBinding<SpinState> _spinStateBinding;
+    private FeatureView<SpinState> _spinStateBinding;
 
     public override void CreateBindings()
     {
@@ -189,7 +198,7 @@ public class SpinningObjectPresenter : Presenter
 
     public override void Display()
     {
-        var currentState = _spinStateBinding.CurrentState;
+        var currentState = _spinStateBinding.State;
         uSpinnerView.SetSpinRate(currentState.DegreesPerSecond);
         if (currentState.DoSpin)
             uSpinnerView.StartSpin();

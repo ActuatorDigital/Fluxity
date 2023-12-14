@@ -18,14 +18,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add simple case insensitive search filter to editor windows
 - Add details of selected command in History Window, similar to that found in the Stores Window.
 - Add Fluxity user preferences, allows toggling on and off logging of command history to Logs folder and the history limit.
+- Example GameSession, empty scene with fluxity setup showing common scenario for game state, current score, and high scores.
+- FluxityFlumeRegisterContext and FluxityFeatureContext. Used during fluxity setup to move this logic out into it's own location.
 
 ### Changed
 
 - Effects are now bound via internal mechanism during CreateEffect.
+- Simplified Example folder structures.
+- Many tests now directly use existing fluxity type rather than a dummy.
+- Feature<TState>s are no longer added to the ServiceInstaller. To get direct access to a feature either request the `Store` and `GetFeatureView` or use a `FeatureView`.
 
 ### Removed
 
 - EffectT, replaced by internal binding done by EffectBinding.
+- IFeaturePresenterBinding replaced with IFeatureView and FeatureView
+- DispatchingPresenter, not being used.
+- StyleCop package, was not being used.
 
 ## [0.1.0]
 
