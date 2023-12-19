@@ -8,10 +8,6 @@ namespace Examples.Countdown
     {
         [SerializeField] private float uInitialCountdown = 10;
 
-        protected override void Initialize()
-        {
-        }
-
         protected override void PostInitialize(IDispatcher dispatcher)
         {
             var command = new StartCountdownCommand { Seconds = uInitialCountdown };
