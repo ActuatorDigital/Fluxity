@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Examples.ObjectData
 {
@@ -7,8 +8,18 @@ namespace Examples.ObjectData
     //  a starting value.
     public struct ObjectDataState
     {
-        public static ObjectDataState CreateDefault() => new ObjectDataState { Guids = new List<System.Guid>() };
+        public static ObjectDataState Create() => new() { Guids = new List<System.Guid>() };
 
         public List<System.Guid> Guids;
+    }
+
+    public static class ObjectDataReducer
+    {
+        public static ObjectDataState AddData(ObjectDataState state, AddObjectDataCommand command)
+        {
+            var guids = state.Guids;
+            guids.AddRange(command.GuidsToAdd);
+            return new ObjectDataState { Guids = guids.Distinct().ToList() };
+        }
     }
 }

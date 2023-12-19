@@ -21,9 +21,5 @@ namespace Examples.ObjectData
             uObjectStateText.text = string.Join(System.Environment.NewLine, _objectDataStateBinding.State.Guids);
             uObjectCountText.text = $"Count: {_objectDataStateBinding.State.Guids.Count}";
         }
-
-        protected override void SetUp()
-        {
-        }
     }
 }

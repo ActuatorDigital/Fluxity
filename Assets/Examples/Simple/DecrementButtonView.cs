@@ -12,9 +12,8 @@ namespace Examples.Simple
 
         public void Start()
         {
-            var dispatcherHandle = new DispatcherHandle();
             uButtonView.SetButtonText("Decrease");
-            uButtonView.SetOnClickedCallback(() => dispatcherHandle.Dispatch(new DecrementCountCommand()));
+            uButtonView.SetOnClickedCallback(() => new DispatcherHandle().Dispatch(new DecrementCountCommand()));
         }
     }
 }
