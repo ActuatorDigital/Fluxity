@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - EffectT, replaced by internal binding done by EffectBinding.
-- IFeaturePresenterBinding replaced with IFeatureView and FeatureView
+- IFeaturePresenterBinding replaced with IFeatureObserver and FeatureObserver
 - DispatchingPresenter, not being used.
 - StyleCop package, was not being used.
 

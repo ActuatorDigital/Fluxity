@@ -6,24 +6,24 @@ namespace AIR.Fluxity
     public sealed class FeatureObserver<TState> : Dependent, IFeatureView<TState>, IDisposable
         where TState : struct
     {
-        private IFeatureObservable<TState> _featureView;
+        private IFeatureObservable<TState> _featureObservable;
 
-        public TState State => _featureView.State;
+        public TState State => _featureObservable.State;
 
         public event Action<TState> OnStateChanged;
 
         public void Inject(IStore store)
         {
-            _featureView = store.GetFeatureObservable<TState>();
-            _featureView.OnStateChanged += InvokeOnStateChanged;
+            _featureObservable = store.GetFeatureObservable<TState>();
+            _featureObservable.OnStateChanged += InvokeOnStateChanged;
         }
 
         public void Dispose()
         {
-            if (_featureView != null)
+            if (_featureObservable != null)
             {
-                _featureView.OnStateChanged -= InvokeOnStateChanged;
-                _featureView = null;
+                _featureObservable.OnStateChanged -= InvokeOnStateChanged;
+                _featureObservable = null;
             }
         }
 

@@ -189,7 +189,7 @@ public class SpinningObjectPresenter : Presenter
 {
     [SerializeField] private SpinnerView uSpinnerView;
 
-    private FeatureView<SpinState> _spinStateBinding;
+    private FeatureObserver<SpinState> _spinStateBinding;
 
     public override void CreateBindings()
     {
