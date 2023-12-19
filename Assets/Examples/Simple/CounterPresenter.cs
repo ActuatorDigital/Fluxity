@@ -4,26 +4,27 @@ using UnityEngine.UI;
 
 namespace Examples.Simple
 {
-    public class CounterPresenter : Presenter
+    public class CounterPresenter : MonoBehaviour
     {
         [SerializeField] private Text uLabelText;
         [SerializeField] private Text uCountText;
 
-        private IFeatureView<CounterState> _counterStateBinding;
+        private FeatureObserver<CounterState> _counterState = new();
 
-        public override void CreateBindings()
+        public void Start()
         {
-            _counterStateBinding = Bind<CounterState>();
-        }
-
-        public override void Display()
-        {
-            uCountText.text = _counterStateBinding.State.CurrentCount.ToString();
-        }
-
-        protected override void SetUp()
-        {
+            _counterState.OnStateChanged += Display;
             uLabelText.text = "Current Count:";
+        }
+
+        public void OnDestroy()
+        {
+            _counterState.OnStateChanged -= Display;
+        }
+
+        private void Display(CounterState state)
+        {
+            uCountText.text = state.CurrentCount.ToString();
         }
     }
 }

@@ -4,22 +4,27 @@ using UnityEngine.UI;
 
 namespace Examples.ObjectData
 {
-    public class ObjectDataPresenter : Presenter
+    public class ObjectDataPresenter : MonoBehaviour
     {
         [SerializeField] private Text uObjectStateText;
         [SerializeField] private Text uObjectCountText;
 
-        private IFeatureView<ObjectDataState> _objectDataStateBinding;
+        private FeatureObserver<ObjectDataState> _objectDataState = new();
 
-        public override void CreateBindings()
+        public void Start()
         {
-            _objectDataStateBinding = Bind<ObjectDataState>();
+            _objectDataState.OnStateChanged += Display;
         }
 
-        public override void Display()
+        public void OnDestroy()
         {
-            uObjectStateText.text = string.Join(System.Environment.NewLine, _objectDataStateBinding.State.Guids);
-            uObjectCountText.text = $"Count: {_objectDataStateBinding.State.Guids.Count}";
+            _objectDataState.OnStateChanged -= Display;
+        }
+
+        private void Display(ObjectDataState state)
+        {
+            uObjectStateText.text = string.Join(System.Environment.NewLine, state.Guids);
+            uObjectCountText.text = $"Count: {state.Guids.Count}";
         }
     }
 }
