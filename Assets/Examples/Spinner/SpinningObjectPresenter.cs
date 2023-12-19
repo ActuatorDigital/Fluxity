@@ -15,9 +15,9 @@ namespace Examples.Spinner
 
         public override void Display()
         {
-            var currentState = _spinStateBinding.State;
-            uSpinnerView.SetSpinRate(currentState.DegreesPerSecond);
-            if (currentState.DoSpin)
+            var state = _spinStateBinding.State;
+            uSpinnerView.SetSpinRate(state.DegreesPerSecond);
+            if (state.DoSpin)
                 uSpinnerView.StartSpin();
             else
                 uSpinnerView.StopSpin();

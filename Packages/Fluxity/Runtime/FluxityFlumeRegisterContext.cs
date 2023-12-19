@@ -5,15 +5,15 @@ namespace AIR.Fluxity
 {
     public class FluxityFlumeRegisterContext
     {
-        public FluxityFlumeRegisterContext(Store store, Dispatcher distpatcher, FlumeServiceContainer flumeServiceContainer)
+        public FluxityFlumeRegisterContext(Store store, Dispatcher dispatcher, FlumeServiceContainer flumeServiceContainer)
         {
             Store = store;
-            Distpatcher = distpatcher;
+            Dispatcher = dispatcher;
             FlumeServiceContainer = flumeServiceContainer;
         }
 
         public Store Store { get; }
-        public Dispatcher Distpatcher { get; }
+        public Dispatcher Dispatcher { get; }
         public FlumeServiceContainer FlumeServiceContainer { get; }
 
         public FluxityFeatureContext<TState> Feature<TState>(TState startingValue)

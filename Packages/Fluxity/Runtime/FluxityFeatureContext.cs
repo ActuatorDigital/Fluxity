@@ -5,7 +5,7 @@
     {
         private readonly Feature<TState> _feature;
         public FluxityFeatureContext(FluxityFlumeRegisterContext context, Feature<TState> feature)
-            : base(context.Store, context.Distpatcher, context.FlumeServiceContainer)
+            : base(context.Store, context.Dispatcher, context.FlumeServiceContainer)
         {
             _feature = feature;
         }

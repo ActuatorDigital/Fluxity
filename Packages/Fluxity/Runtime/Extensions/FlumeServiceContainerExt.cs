@@ -8,10 +8,10 @@ namespace AIR.Fluxity
         public static FlumeServiceContainer RegisterFluxity(this FlumeServiceContainer self, Action<FluxityFlumeRegisterContext> action)
         {
             var store = new Store();
-            var distpatcher = new Dispatcher(store);
+            var dispatcher = new Dispatcher(store);
             self.Register<IStore>(store);
-            self.Register<IDispatcher>(distpatcher);
-            action(new FluxityFlumeRegisterContext(store, distpatcher, self));
+            self.Register<IDispatcher>(dispatcher);
+            action(new FluxityFlumeRegisterContext(store, dispatcher, self));
             return self;
         }
     }
