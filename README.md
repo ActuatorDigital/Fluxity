@@ -153,7 +153,7 @@ public class SpinExampleInitializer : FluxityInitializer
             ;
     }
 
-    protected override void Initialize()
+    protected override void CreateEffect()
     {
     }
 
@@ -184,7 +184,7 @@ public class SpinExampleServiceInstaller : ServiceInstaller
 ### Spinning Object Presenter
 
 ```cs
-public class SpinningObjectPresenter : Presenter
+public class SpinningObjectPresenter : MonoBehaviour
 {
     [SerializeField] private SpinnerView uSpinnerView;
 

@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Simplified Example folder structures.
 - Many tests now directly use existing Fluxity type rather than a dummy.
 - Feature<TState>s are no longer added to the ServiceInstaller. To get direct access to a feature either request the `Store` and `GetFeatureView` or use a `FeatureObserver`.
+- Renamed Initialise to CreateEffects in the FluxityInitialiser, as that is it's actual use in practice.
 
 ### Removed
 
