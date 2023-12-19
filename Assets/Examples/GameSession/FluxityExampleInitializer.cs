@@ -17,6 +17,8 @@ namespace Examples.GameSession
                 .Feature(HighScoresState.Create())
                     .Reducer<HighScoresLoadedCommand>(AssignHighScores)
                 .Feature(ComboRankLookupState.Create(_comboRanksSO.ComboRanks))
+                .Feature(LivesState.Create(), LivesReducers.RegisterAll)
+                .Feature(DevModeState.Create())
                 ;
         }
 
@@ -29,8 +31,10 @@ namespace Examples.GameSession
         protected override void Initialize()
         {
             var highScoreEffects = new HighScoreEffects();
+            var livesEffects = new LivesEffects();
 
             CreateEffect<SetGamePhaseCommand>(highScoreEffects.HandleGamePhaseChange);
+            CreateEffect<PlayerDiedCommand>(livesEffects.HandlePlayerDied);
         }
     }
 }
