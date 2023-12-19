@@ -27,7 +27,7 @@ public class DispatcherHandleTests
         const int PAYLOAD_VALUE = 1;
         var dispatcher = Substitute.For<IDispatcher>();
         var dispatcherHandle = new DispatcherHandle();
-        var command = new DummyCommand { payload = PAYLOAD_VALUE };
+        var command = new DummyCommand { Payload = PAYLOAD_VALUE };
         dispatcherHandle.Inject(dispatcher);
 
         // Act

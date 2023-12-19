@@ -10,8 +10,7 @@ namespace Examples.Simple
         protected override void InstallServices(FlumeServiceContainer container)
         {
             container
-                .RegisterFluxity()
-                .RegisterFeature<CounterState>()
+                .RegisterFluxity(FluxityExampleInitializer.Setup)
                 ;
         }
     }

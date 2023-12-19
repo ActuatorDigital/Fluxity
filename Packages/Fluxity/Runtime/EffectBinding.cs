@@ -2,10 +2,10 @@
 
 namespace AIR.Fluxity
 {
-    public class EffectBinding<TCommand> : IEffect<TCommand>
+    public sealed class EffectBinding<TCommand> : IEffect<TCommand>
         where TCommand : ICommand
     {
-        private IEffect<TCommand>.EffectDelegate _effectDel;
+        private readonly IEffect<TCommand>.EffectDelegate _effectDel;
 
         public EffectBinding(IEffect<TCommand>.EffectDelegate effectDef)
         {

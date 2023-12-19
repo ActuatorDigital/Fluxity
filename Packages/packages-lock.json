@@ -27,13 +27,6 @@
       "dependencies": {},
       "hash": "b9adb717bb3114fdaedb76dd510fc7b61cfab047"
     },
-    "com.air.stylecop": {
-      "version": "https://github.com/AnImaginedReality/StyleCop.Package.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "b030ded201f979f546cbea829462309f3d68da93"
-    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,

@@ -10,7 +10,7 @@ public class PureFunctionReducerTests
     {
         public static DummyState ReduceWrongArgCount(DummyState state, DummyCommand command, int extra)
         {
-            return new DummyState() { value = state.value + command.payload };
+            return new DummyState() { value = state.value + command.Payload };
         }
 
         public static int ReduceWrongReturn(DummyState state, DummyCommand command)
@@ -33,14 +33,14 @@ public class PureFunctionReducerTests
     {
         public DummyState ReduceNonStatic(DummyState state, DummyCommand command)
         {
-            return new DummyState() { value = state.value + command.payload };
+            return new DummyState() { value = state.value + command.Payload };
         }
     }
 
     [Test]
     public void DoReduce_WhenGivenIncorrectType_ShouldThrow()
     {
-        _reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(typeof(DummyPureFunctionReducer).GetMethod("Reduce"));
+        _reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(typeof(DummyReducers).GetMethod("Reduce"));
         var wrongCommandType = new OtherDummyCommand();
 
         void Act()
@@ -54,12 +54,12 @@ public class PureFunctionReducerTests
     [Test]
     public void DoReduce_WhenGivenCorrectType_ShouldCallWithExpectedPayloadValue()
     {
-        _reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(typeof(DummyPureFunctionReducer).GetMethod("Reduce"));
+        _reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(typeof(DummyReducers).GetMethod("Reduce"));
         var state = new DummyState() { value = 1 };
-        var feature = new DummyFeature(default);
+        var feature = new Feature<DummyState>(default);
         feature.SetState(state);
         var payloadVal = 3;
-        var correctCommandType = new DummyCommand() { payload = payloadVal };
+        var correctCommandType = new DummyCommand() { Payload = payloadVal };
         feature.Register(_reducer);
 
         feature.ProcessReducers(correctCommandType);
@@ -70,12 +70,12 @@ public class PureFunctionReducerTests
     [Test]
     public void DoReduce_WhenConstructedFromFuncAndGivenCorrectType_ShouldCallWithExpectedPayloadValue()
     {
-        _reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyPureFunctionReducer.Reduce);
+        _reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
         var state = new DummyState() { value = 1 };
-        var feature = new DummyFeature(default);
+        var feature = new Feature<DummyState>(default);
         feature.SetState(state);
         var payloadVal = 3;
-        var correctCommandType = new DummyCommand() { payload = payloadVal };
+        var correctCommandType = new DummyCommand() { Payload = payloadVal };
         feature.Register(_reducer);
 
         feature.ProcessReducers(correctCommandType);

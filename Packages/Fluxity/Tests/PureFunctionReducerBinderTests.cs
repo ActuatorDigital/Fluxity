@@ -7,11 +7,11 @@ public class PureFunctionReducerBinderTests
     [Test]
     public void ReducerBindingInfo_WhenConstructedFromFuncAndGivenCorrectType_ShouldCallWithExpectedPayloadValue()
     {
-        var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyPureFunctionReducer.Reduce);
+        var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
 
         var res = reducer.ReducerBindingInfo();
 
-        StringAssert.AreEqualIgnoringCase(nameof(DummyPureFunctionReducer.Reduce), res.Name);
-        StringAssert.AreEqualIgnoringCase(nameof(DummyPureFunctionReducer), res.DeclaringType.Name);
+        StringAssert.AreEqualIgnoringCase(nameof(DummyReducers.Reduce), res.Name);
+        StringAssert.AreEqualIgnoringCase(nameof(DummyReducers), res.DeclaringType.Name);
     }
 }

@@ -2,9 +2,7 @@
 using AIR.Fluxity.Tests.DummyTypes;
 using NSubstitute;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 public class StoreTests
 {
@@ -36,27 +34,10 @@ public class StoreTests
         Assert.DoesNotThrow(Act);
     }
 
-    internal class DummyReducer : IReducer<DummyState, DummyCommand>
-    {
-        public Type CommandType => typeof(DummyCommand);
-
-        public DummyState Reduce(DummyState state, DummyCommand command)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DummyState Reduce(DummyState state, ICommand command) => Reduce(state, (DummyCommand)command);
-
-        public MethodInfo ReducerBindingInfo()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     [Test]
     public void RegisterReducer_WhenNoMatchingFeaturesRegistered_ShouldThrow()
     {
-        var dummyReducer = new DummyReducer();
+        var dummyReducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
 
         void Act() => _store.RegisterReducer(dummyReducer);
 
@@ -69,7 +50,7 @@ public class StoreTests
         var featureSubstitute = Substitute.For<IFeature<DummyState>>();
         featureSubstitute.GetStateType.Returns(typeof(DummyState));
         _store.AddFeature(featureSubstitute);
-        var dummyReducer = new DummyReducer();
+        var dummyReducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
 
         void Act() => _store.RegisterReducer(dummyReducer);
 

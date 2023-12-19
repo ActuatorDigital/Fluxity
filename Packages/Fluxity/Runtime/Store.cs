@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace AIR.Fluxity
 {
-    public class Store : IStore
+    public sealed class Store : IStore
     {
-        private readonly Dictionary<Type, IFeature> _features = new Dictionary<Type, IFeature>();
+        private readonly Dictionary<Type, IFeature> _features = new();
 
         public IReadOnlyCollection<IFeature> GetAllFeatures()
         {
@@ -32,6 +32,12 @@ namespace AIR.Fluxity
             {
                 feature.ProcessReducers(command);
             }
+        }
+
+        public IFeatureObservable<TState> GetFeatureObservable<TState>()
+            where TState : struct
+        {
+            return (IFeatureObservable<TState>)_features[typeof(TState)];
         }
     }
 }

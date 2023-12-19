@@ -6,7 +6,7 @@
 
         public void DoEffect(DummyCommand command, IDispatcher dispatcher)
         {
-            accumPayload += command.payload;
+            accumPayload += command.Payload;
         }
     }
 }

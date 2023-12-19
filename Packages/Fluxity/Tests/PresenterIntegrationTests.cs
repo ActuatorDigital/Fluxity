@@ -5,28 +5,27 @@ using UnityEngine;
 
 public class PresenterIntegrationTests
 {
+    private const int StartingDummyStateValue = -1;
     private GameObject _rootGameObject;
     private Store _store;
     private Dispatcher _dispatcher;
     private Feature<DummyState> _feature;
-    private DummyDelegatePresenter _dummyPresenter;
-
+    private DummyPresenter _dummyPresenter;
 
     [SetUp]
     public void SetUp()
     {
         _store = new Store();
-        _dispatcher = new Dispatcher();
-        _feature = new Feature<DummyState>(default);
+        _dispatcher = new Dispatcher(_store);
+        _feature = new Feature<DummyState>(new DummyState { value = StartingDummyStateValue });
         _rootGameObject = new GameObject(nameof(PresenterIntegrationTests));
-
-        _dispatcher.Inject(_store);
-        _feature.Inject(_store);
-        _store.CreateAndRegister<DummyState, DummyCommand>(DummyPureFunctionReducer.Reduce);
+        _store.AddFeature(_feature);
+        var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
+        _feature.Register(reducer);
 
         var presenterGO = new GameObject("PresenterNoDi");
         presenterGO.transform.SetParent(_rootGameObject.transform);
-        _dummyPresenter = presenterGO.AddComponent<DummyDelegatePresenter>();
+        _dummyPresenter = presenterGO.AddComponent<DummyPresenter>();
     }
 
     [TearDown]
@@ -38,58 +37,43 @@ public class PresenterIntegrationTests
     [Test]
     public void Display_WhenNotBoundToStateAndStateChanged_ShouldNotCallDisplay()
     {
-        const int INITIAL = 2;
-        const int EXPECTED = 1;
-        var result = INITIAL;
-        _dummyPresenter.OnDisplay = (x) => result = EXPECTED;
-
         _feature.SetState(new DummyState());
 
-        Assert.AreNotEqual(EXPECTED, result);
+        Assert.AreEqual(0, _dummyPresenter.DisplayCallCount);
     }
 
     [Test]
-    public void Display_WhenBoundAndMatchingStateChanged_ShouldInvokeDelegate()
+    public void Display_WhenBoundAndMatchingStateChanged_ShouldHaveDisplayedAndLastState()
     {
-        const int INITIAL = 2;
-        const int EXPECTED = 1;
-        var result = INITIAL;
+        var expected = 10;
         var statePresenterBinding = _dummyPresenter.Bind<DummyState>();
-        statePresenterBinding.Inject(_feature);
+        (statePresenterBinding as FeatureObserver<DummyState>).Inject(_store);
         _dummyPresenter.DummyStatePresenterBinding = statePresenterBinding;
-        _dummyPresenter.OnDisplay = (x) => result = EXPECTED;
 
-        _feature.SetState(new DummyState());
+        _feature.SetState(new DummyState() { value = expected });
 
-        Assert.AreEqual(EXPECTED, result);
+        Assert.AreEqual(1, _dummyPresenter.DisplayCallCount);
+        Assert.AreEqual(expected, _dummyPresenter.StateAtLastDisplay.value);
     }
 
     [Test]
     public void Display_WhenNotBoundToStateAndCommandDispatched_ShouldNotCallDisplay()
     {
-        const int INITIAL = 2;
-        const int EXPECTED = 1;
-        var result = INITIAL;
-        _dummyPresenter.OnDisplay = (x) => result = EXPECTED;
-
         _dispatcher.Dispatch(new DummyCommand());
 
-        Assert.AreNotEqual(EXPECTED, result);
+        Assert.AreEqual(0, _dummyPresenter.DisplayCallCount);
     }
 
     [Test]
-    public void Display_WhenBoundAndMatchingCommandDispatched_ShouldInvokeDelegate()
+    public void Display_WhenBoundAndMatchingCommandDispatched_ShouldHaveDisplayedAndLastState()
     {
-        const int INITIAL = 2;
-        const int EXPECTED = 1;
-        var result = INITIAL;
         var statePresenterBinding = _dummyPresenter.Bind<DummyState>();
-        statePresenterBinding.Inject(_feature);
+        (statePresenterBinding as FeatureObserver<DummyState>).Inject(_store);
         _dummyPresenter.DummyStatePresenterBinding = statePresenterBinding;
-        _dummyPresenter.OnDisplay = (x) => result = EXPECTED;
 
         _dispatcher.Dispatch(new DummyCommand());
 
-        Assert.AreEqual(EXPECTED, result);
+        Assert.AreEqual(1, _dummyPresenter.DisplayCallCount);
+        Assert.AreEqual(StartingDummyStateValue, _dummyPresenter.StateAtLastDisplay.value);
     }
 }

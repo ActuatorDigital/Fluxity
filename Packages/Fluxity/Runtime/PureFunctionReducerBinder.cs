@@ -2,7 +2,7 @@
 
 namespace AIR.Fluxity
 {
-    public class PureFunctionReducerBinder<TState, TCommand> : Reducer<TState, TCommand>
+    public sealed class PureFunctionReducerBinder<TState, TCommand> : Reducer<TState, TCommand>
         where TState : struct
         where TCommand : ICommand
     {

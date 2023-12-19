@@ -8,8 +8,6 @@ namespace Examples.DataCommand
     {
         protected override void Initialize()
         {
-            CreateReducer<CounterState, ChangeCountCommand>(CounterReducer.Change);
-
             var changeCounterEffect = new ChangeCounterEffect();
             CreateEffect<ChangeCountCommand>(changeCounterEffect.DoEffect);
         }

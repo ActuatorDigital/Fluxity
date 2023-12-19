@@ -12,14 +12,6 @@ public class StateSliceReducerTests
         public int executionCount;
     }
 
-    private class LargeStateFeature : Feature<LargeState>
-    {
-        public LargeStateFeature(LargeState state)
-            : base(state)
-        {
-        }
-    }
-
     private class LargeStateCommand : ICommand { public int response; }
 
     private class LargeStateRespReducer : Reducer<LargeState, LargeStateCommand>
@@ -67,10 +59,9 @@ public class StateSliceReducerTests
     [Test]
     public void Dispatch_WhenMultipleReducersMatchCommand_ShouldCallEachAndHaveResultedCombinedState()
     {
-        var dispatcher = new Dispatcher();
         var store = new Store();
-        dispatcher.Inject(store);
-        var feature = new LargeStateFeature(default);
+        var dispatcher = new Dispatcher(store);
+        var feature = new Feature<LargeState>(default);
         store.AddFeature(feature);
         var payloadVal = 3;
         var command = new LargeStateCommand() { response = payloadVal };
@@ -92,10 +83,9 @@ public class StateSliceReducerTests
     public void Dispatch_WhenMultipleReducersMatchCommand_ShouldOnlyInvokeStateChangeOnce()
     {
         var changeCount = 0;
-        var dispatcher = new Dispatcher();
         var store = new Store();
-        dispatcher.Inject(store);
-        var feature = new LargeStateFeature(default);
+        var dispatcher = new Dispatcher(store);
+        var feature = new Feature<LargeState>(default);
         feature.OnStateChanged += (x) => changeCount++;
         store.AddFeature(feature);
         var payloadVal = 3;

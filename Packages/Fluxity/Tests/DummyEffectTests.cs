@@ -15,7 +15,7 @@ public class DummyEffectTests
     public void DoEffect_WhenGivenCorrectType_ShouldCallWithExpectedPayloadValue()
     {
         var payloadVal = 3;
-        var correctCommandType = new DummyCommand() { payload = payloadVal };
+        var correctCommandType = new DummyCommand() { Payload = payloadVal };
 
         effect.DoEffect(correctCommandType, default);
 

@@ -11,43 +11,23 @@ public class PresenterIntegrationUnityTests
     private Store _store;
     private Dispatcher _dispatcher;
     private Feature<DummyState> _feature;
-    private CustomUnityTestDummyDelegatePresenter _presenter;
-
-    private class CustomUnityTestDummyDelegatePresenter : DummyDelegatePresenter
-    {
-        public int DisplayCallCount { get; private set; }
-        public IFeature<DummyState> FeatureToBind { get; internal set; }
-
-        public override void CreateBindings()
-        {
-            DummyStatePresenterBinding = Bind<DummyState>();
-            //Only needed during test to remove need for test to use auto DI
-            DummyStatePresenterBinding.Inject(FeatureToBind);
-        }
-
-        public override void Display()
-        {
-            base.Display();
-            DisplayCallCount++;
-        }
-    }
+    private DummyPresenter _presenter;
 
     [UnitySetUp]
     public IEnumerator SetUp()
     {
         _store = new Store();
-        _dispatcher = new Dispatcher();
+        _dispatcher = new Dispatcher(_store);
         _feature = new Feature<DummyState>(default);
         _rootGameObject = new GameObject(nameof(PresenterIntegrationUnityTests));
-
-        _dispatcher.Inject(_store);
-        _feature.Inject(_store);
-        _store.CreateAndRegister<DummyState, DummyCommand>(DummyPureFunctionReducer.Reduce);
+        _store.AddFeature(_feature); 
+        var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
+        _feature.Register(reducer);
 
         var presenterGO = new GameObject("PresenterNoDi");
         presenterGO.transform.SetParent(_rootGameObject.transform);
-        _presenter = presenterGO.AddComponent<CustomUnityTestDummyDelegatePresenter>();
-        _presenter.FeatureToBind = _feature;
+        _presenter = presenterGO.AddComponent<DummyPresenter>();
+        _presenter.Store = _store;
         yield return null;  //give frame so start can be called
     }
 

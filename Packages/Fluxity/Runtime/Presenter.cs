@@ -6,7 +6,7 @@ namespace AIR.Fluxity
 {
     public abstract class Presenter : DependentBehaviour, IPresenter
     {
-        private readonly List<IDisposable> _bindings = new List<IDisposable>();
+        private readonly List<IDisposable> _bindings = new();
 
         public virtual void Start()
         {
@@ -15,25 +15,23 @@ namespace AIR.Fluxity
             Display();
         }
 
-        public abstract void Display();
-
         public abstract void CreateBindings();
 
-        public IFeaturePresenterBinding<TState> Bind<TState>()
+        public abstract void Display();
+
+        public IFeatureView<TState> Bind<TState>()
             where TState : struct
         {
-            var newBinding = new FeaturePresenterBinding<TState>(this);
+            var newBinding = new FeatureObserver<TState>();
+            newBinding.OnStateChanged += x => Display();
             _bindings.Add(newBinding);
             return newBinding;
         }
 
         protected virtual void SetUp() { }
 
-        protected virtual void TearDown() { }
-
-        private void OnDestroy()
+        public virtual void OnDestroy()
         {
-            TearDown();
             foreach (var item in _bindings)
             {
                 item.Dispose();

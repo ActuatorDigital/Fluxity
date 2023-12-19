@@ -15,7 +15,7 @@ public class PresenterFlumeIntegrationUnityTests
 
     private class DummyFlumePresenter : Presenter
     {
-        private IFeaturePresenterBinding<DummyState> _dummyState;
+        private IFeatureView<DummyState> _dummyState;
 
         public string TextContent { get; private set; }
 
@@ -26,7 +26,7 @@ public class PresenterFlumeIntegrationUnityTests
 
         public override void Display()
         {
-            TextContent = _dummyState.CurrentState.value.ToString();
+            TextContent = _dummyState.State.value.ToString();
         }
     }
 
@@ -35,8 +35,8 @@ public class PresenterFlumeIntegrationUnityTests
         protected override void InstallServices(FlumeServiceContainer container)
         {
             container
-                .RegisterFluxity()
-                .RegisterFeature<DummyState>()
+                .RegisterFluxity(DummyFluxityInitializer.Setup)
+
                 .Register<IDummyService, DummyService>()
                 ;
         }
@@ -44,9 +44,15 @@ public class PresenterFlumeIntegrationUnityTests
 
     public class DummyFluxityInitializer : FluxityInitializer
     {
+        public static void Setup(FluxityFlumeRegisterContext context)
+        {
+            context
+                .Feature(new DummyState(), DummyReducers.RegisterAll)
+                ;
+        }
+
         protected override void Initialize()
         {
-            CreateReducer<DummyState, DummyCommand>(DummyPureFunctionReducer.Reduce);
             var dummyCommandEffect = new DummyCommandEffect();
             CreateEffect<DummyCommand>(dummyCommandEffect.DoEffect);
         }
@@ -88,9 +94,9 @@ public class PresenterFlumeIntegrationUnityTests
 
         public void Inject(IDummyService dummyService) => _dummyService = dummyService;
 
-        public void DoEffect(DummyCommand command, IDispatcher dispatcher)
+        public void DoEffect(DummyCommand command, IDispatcher _)
         {
-            _dummyService.LastSignal = command.payload;
+            _dummyService.LastSignal = command.Payload;
         }
     }
 
@@ -118,7 +124,7 @@ public class PresenterFlumeIntegrationUnityTests
         _presenter = _rootGameObject.AddComponent<DummyFlumePresenter>();
         yield return null; //< give frame so start can be called
 
-        _dipatcherHandle.Dispatch(new DummyCommand() { payload = PAYLOAD });
+        _dipatcherHandle.Dispatch(new DummyCommand() { Payload = PAYLOAD });
         var result = _presenter.TextContent;
 
         Assert.AreEqual(EXPECTED, result);
@@ -131,7 +137,7 @@ public class PresenterFlumeIntegrationUnityTests
         var dummyServiceHandle = new DummyServiceHandle();
         yield return null; //< give frame so start can be called
 
-        _dipatcherHandle.Dispatch(new DummyCommand() { payload = EXPECTED });
+        _dipatcherHandle.Dispatch(new DummyCommand() { Payload = EXPECTED });
         var result = dummyServiceHandle.DummySerivce.LastSignal;
 
         Assert.AreEqual(EXPECTED, result);
