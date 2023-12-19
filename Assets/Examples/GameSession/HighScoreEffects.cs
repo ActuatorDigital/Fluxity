@@ -13,19 +13,19 @@ namespace Examples.GameSession
                 //the sake of this example we'll just create some dummy data
                 var highScoreEntries = new List<HighScoreEntry>
                 {
-                    new HighScoreEntry {Name = "Player 1", Score = 100},
-                    new HighScoreEntry {Name = "Player 2", Score = 200},
-                    new HighScoreEntry {Name = "Player 3", Score = 300},
-                    new HighScoreEntry {Name = "Player 4", Score = 400},
-                    new HighScoreEntry {Name = "Player 5", Score = 500},
-                    new HighScoreEntry {Name = "Player 6", Score = 600},
-                    new HighScoreEntry {Name = "Player 7", Score = 700},
-                    new HighScoreEntry {Name = "Player 8", Score = 800},
-                    new HighScoreEntry {Name = "Player 9", Score = 900},
-                    new HighScoreEntry {Name = "Player 10", Score = 1000},
+                    new() {Name = "Player 1", Score = 100},
+                    new() {Name = "Player 2", Score = 200},
+                    new() {Name = "Player 3", Score = 300},
+                    new() {Name = "Player 4", Score = 400},
+                    new() {Name = "Player 5", Score = 500},
+                    new() {Name = "Player 6", Score = 600},
+                    new() {Name = "Player 7", Score = 700},
+                    new() {Name = "Player 8", Score = 800},
+                    new() {Name = "Player 9", Score = 900},
+                    new() {Name = "Player 10", Score = 1000},
                 };
 
-                dispatcher.Dispatch(new HighScoresLoadedCommand { HighScoreEntries = highScoreEntries});
+                dispatcher.Dispatch(new HighScoresLoadedCommand { HighScoreEntries = highScoreEntries });
             }
         }
     }

@@ -10,10 +10,10 @@ namespace Examples.GameSession
 
     public struct HighScoresState
     {
-        public List<HighScoreEntry> HighScoreEntries;
+        public IReadOnlyList<HighScoreEntry> HighScoreEntries;
 
         public static HighScoresState Create() 
-            => new HighScoresState
+            => new()
             {
                 HighScoreEntries = new List<HighScoreEntry>()
             };

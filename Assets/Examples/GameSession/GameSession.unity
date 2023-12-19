@@ -169,6 +169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84468b1c5f883064aa242f3b423b0110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _fluxityExampleInitializer: {fileID: 1087130863}
 --- !u!114 &1087130862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,6 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81774088dad084540967bdb65c0a53c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _comboRanksSO: {fileID: 11400000, guid: 37aefd7163e9eee4db6e08bf73ca2df5, type: 2}
 --- !u!1 &1406968055
 GameObject:
   m_ObjectHideFlags: 0

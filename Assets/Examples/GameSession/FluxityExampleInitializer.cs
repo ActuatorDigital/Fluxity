@@ -6,7 +6,9 @@ namespace Examples.GameSession
     [DefaultExecutionOrder(1)]
     public class FluxityExampleInitializer : FluxityInitializer
     {
-        public static void Setup(FluxityFlumeRegisterContext context)
+        [SerializeField] private ComboRanksSO _comboRanksSO;
+
+        public void Setup(FluxityFlumeRegisterContext context)
         {
             context
                 .Feature(GamePhaseState.Create())
@@ -14,6 +16,7 @@ namespace Examples.GameSession
                 .Feature(GameSessionScoreState.Create(), GameSessionReducers.RegisterAll)
                 .Feature(HighScoresState.Create())
                     .Reducer<HighScoresLoadedCommand>(AssignHighScores)
+                .Feature(ComboRankLookupState.Create(_comboRanksSO.ComboRanks))
                 ;
         }
 

@@ -5,6 +5,6 @@ namespace Examples.GameSession
 {
     public class HighScoresLoadedCommand : ICommand
     {
-        public List<HighScoreEntry> HighScoreEntries;
+        public IReadOnlyList<HighScoreEntry> HighScoreEntries;
     }
 }
