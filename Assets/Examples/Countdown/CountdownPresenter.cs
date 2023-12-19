@@ -14,7 +14,7 @@ namespace Examples.Countdown
 
         private float _secondsRemaining = 0;
         private bool _isRunning = false;
-        private FeatureObserver<CountdownState> _countdownState = new();
+        private readonly FeatureObserver<CountdownState> _countdownState = new();
 
         public void Start()
         {
@@ -28,6 +28,7 @@ namespace Examples.Countdown
         public void OnDestroy()
         {
             _countdownState.OnStateChanged -= Display;
+            _countdownState.Dispose();
         }
 
         private void Display(CountdownState state)

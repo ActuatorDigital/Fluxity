@@ -6,7 +6,7 @@ namespace Examples.Spinner
     public class SpinningObjectPresenter : MonoBehaviour
     {
         [SerializeField] private SpinnerView uSpinnerView;
-        private FeatureObserver<SpinState> _spinState = new();
+        private readonly FeatureObserver<SpinState> _spinState = new();
 
         public void Start()
         {
@@ -16,6 +16,7 @@ namespace Examples.Spinner
         public void OnDestroy()
         {
             _spinState.OnStateChanged -= Display;
+            _spinState.Dispose();
         }
 
         private void Display(SpinState state)

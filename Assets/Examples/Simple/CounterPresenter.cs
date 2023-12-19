@@ -9,7 +9,7 @@ namespace Examples.Simple
         [SerializeField] private Text uLabelText;
         [SerializeField] private Text uCountText;
 
-        private FeatureObserver<CounterState> _counterState = new();
+        private readonly FeatureObserver<CounterState> _counterState = new();
 
         public void Start()
         {
@@ -20,6 +20,7 @@ namespace Examples.Simple
         public void OnDestroy()
         {
             _counterState.OnStateChanged -= Display;
+            _counterState.Dispose();
         }
 
         private void Display(CounterState state)

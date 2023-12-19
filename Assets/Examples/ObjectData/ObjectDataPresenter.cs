@@ -9,7 +9,7 @@ namespace Examples.ObjectData
         [SerializeField] private Text uObjectStateText;
         [SerializeField] private Text uObjectCountText;
 
-        private FeatureObserver<ObjectDataState> _objectDataState = new();
+        private readonly FeatureObserver<ObjectDataState> _objectDataState = new();
 
         public void Start()
         {
@@ -19,6 +19,7 @@ namespace Examples.ObjectData
         public void OnDestroy()
         {
             _objectDataState.OnStateChanged -= Display;
+            _objectDataState.Dispose();
         }
 
         private void Display(ObjectDataState state)

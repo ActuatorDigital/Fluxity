@@ -12,7 +12,7 @@ namespace Examples.DataCommand
         [SerializeField] private InputField uInputField;
         [SerializeField] private ButtonView uButtonView;
 
-        private FeatureObserver<CounterState> _counterState = new();
+        private readonly FeatureObserver<CounterState> _counterState = new();
 
         public void Start()
         {
@@ -23,6 +23,7 @@ namespace Examples.DataCommand
         public void OnDestroy()
         {
             _counterState.OnStateChanged -= Display;
+            _counterState.Dispose();
         }
 
         private void Display(CounterState state)
