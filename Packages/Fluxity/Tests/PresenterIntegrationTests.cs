@@ -47,7 +47,7 @@ public class PresenterIntegrationTests
     {
         var expected = 10;
         var statePresenterBinding = _dummyPresenter.Bind<DummyState>();
-        statePresenterBinding.Inject(_store);
+        (statePresenterBinding as FeatureObserver<DummyState>).Inject(_store);
         _dummyPresenter.DummyStatePresenterBinding = statePresenterBinding;
 
         _feature.SetState(new DummyState() { value = expected });
@@ -68,7 +68,7 @@ public class PresenterIntegrationTests
     public void Display_WhenBoundAndMatchingCommandDispatched_ShouldHaveDisplayedAndLastState()
     {
         var statePresenterBinding = _dummyPresenter.Bind<DummyState>();
-        statePresenterBinding.Inject(_store);
+        (statePresenterBinding as FeatureObserver<DummyState>).Inject(_store);
         _dummyPresenter.DummyStatePresenterBinding = statePresenterBinding;
 
         _dispatcher.Dispatch(new DummyCommand());

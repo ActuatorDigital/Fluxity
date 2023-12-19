@@ -3,10 +3,10 @@ using AIR.Flume;
 
 namespace AIR.Fluxity
 {
-    public sealed class FeatureBinding<TState> : Dependent, IFeatureView<TState>, IDisposable
+    public sealed class FeatureObserver<TState> : Dependent, IFeatureView<TState>, IDisposable
         where TState : struct
     {
-        private IFeatureView<TState> _featureView;
+        private IFeatureObservable<TState> _featureView;
 
         public TState State => _featureView.State;
 
@@ -14,7 +14,7 @@ namespace AIR.Fluxity
 
         public void Inject(IStore store)
         {
-            _featureView = store.GetFeatureView<TState>();
+            _featureView = store.GetFeatureObservable<TState>();
             _featureView.OnStateChanged += InvokeOnStateChanged;
         }
 

@@ -3,7 +3,7 @@ using AIR.Fluxity.Tests.DummyTypes;
 using NSubstitute;
 using NUnit.Framework;
 
-public class FeatureBindingTests
+public class FeatureObserverTests
 {
     private IStore _store;
     private Feature<DummyState> _feature;
@@ -17,10 +17,10 @@ public class FeatureBindingTests
     }
 
     [Test]
-    public void CurrentState_WhenFeatureStateUpdates_ShouldHaveExpectedValue()
+    public void State_WhenFeatureStateUpdates_ShouldHaveExpectedValue()
     {
         const int EXPECTED = 5;
-        using (var featurePresenterBinding = new FeatureBinding<DummyState>())
+        using (var featurePresenterBinding = new FeatureObserver<DummyState>())
         {
             featurePresenterBinding.Inject(_store);
 
@@ -34,7 +34,7 @@ public class FeatureBindingTests
     public void Display_WhenFeatureStateUpdates_ShouldInvoke()
     {
         var invoked = false;
-        using (var featurePresenterBinding = new FeatureBinding<DummyState>())
+        using (var featurePresenterBinding = new FeatureObserver<DummyState>())
         {
             featurePresenterBinding.Inject(_store);
             featurePresenterBinding.OnStateChanged += x => invoked = true;
@@ -49,7 +49,7 @@ public class FeatureBindingTests
     public void Display_WhenDisposed_ShouldNotInvoke()
     {
         var invoked = false;
-        using (var featurePresenterBinding = new FeatureBinding<DummyState>())
+        using (var featurePresenterBinding = new FeatureObserver<DummyState>())
         {
             featurePresenterBinding.Inject(_store);
             featurePresenterBinding.OnStateChanged += x => invoked = true;

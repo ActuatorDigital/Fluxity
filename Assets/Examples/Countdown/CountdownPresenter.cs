@@ -14,20 +14,20 @@ namespace Examples.Countdown
 
         private float _secondsRemaining = 0;
         private bool _isRunning = false;
-        private FeatureBinding<CountdownState> _countdownStateBinding;
+        private IFeatureView<CountdownState> _countdownStateBinding;
 
         public override void Display()
         {
             // State is source of truth and should always override local values.
-            var currentState = _countdownStateBinding.State;
-            if (!currentState.IsRunning)
+            var state = _countdownStateBinding.State;
+            if (!state.IsRunning)
             {
                 uCountdownDisplayText.text = "Countdown Disabled";
                 _isRunning = false;
             }
             else
             {
-                _secondsRemaining = currentState.CountdownDurationSeconds;
+                _secondsRemaining = state.CountdownDurationSeconds;
                 _isRunning = true;
             }
         }

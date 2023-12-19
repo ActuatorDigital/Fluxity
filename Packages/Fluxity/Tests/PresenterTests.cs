@@ -46,7 +46,7 @@ public class PresenterTests
         var featureValue = -1;
         _feature.SetState(new DummyState() { value = featureValue });
         var statePresenterBinding = _dummyPresenter.Bind<DummyState>();
-        statePresenterBinding.Inject(_store);
+        (statePresenterBinding as FeatureObserver<DummyState>).Inject(_store);
         _dummyPresenter.DummyStatePresenterBinding = statePresenterBinding;
 
         _dummyPresenter.Display();

@@ -4,7 +4,7 @@ namespace AIR.Fluxity.Tests.DummyTypes
 {
     public class DummyPresenter : Presenter
     {
-        public FeatureBinding<DummyState> DummyStatePresenterBinding { get; set; }
+        public IFeatureView<DummyState> DummyStatePresenterBinding { get; set; }
 
         public int DisplayCallCount { get; private set; }
         public IStore Store { get; set; }
@@ -14,7 +14,7 @@ namespace AIR.Fluxity.Tests.DummyTypes
         {
             DummyStatePresenterBinding = Bind<DummyState>();
             //Only needed during test to remove need for test to use auto DI
-            DummyStatePresenterBinding.Inject(Store);
+            (DummyStatePresenterBinding as FeatureObserver<DummyState>).Inject(Store);
         }
 
         public override void Display()

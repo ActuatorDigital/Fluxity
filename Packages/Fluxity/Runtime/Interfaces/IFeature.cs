@@ -3,17 +3,21 @@ using System.Collections.Generic;
 
 namespace AIR.Fluxity
 {
-    public interface IFeature<TState> : IFeatureView<TState>, IFeature
+    public interface IFeature<TState> : IFeatureObservable<TState>, IFeature
         where TState : struct
     {
         void SetState(TState newState);
     }
 
-    public interface IFeatureView<TState>
+    public interface IFeatureObservable<TState> : IFeatureView<TState>
         where TState : struct
     {
         event Action<TState> OnStateChanged;
+    }
 
+    public interface IFeatureView<TState>
+        where TState : struct
+    {
         TState State { get; }
     }
 

@@ -15,7 +15,7 @@ public class PresenterFlumeIntegrationUnityTests
 
     private class DummyFlumePresenter : Presenter
     {
-        private FeatureBinding<DummyState> _dummyState;
+        private IFeatureView<DummyState> _dummyState;
 
         public string TextContent { get; private set; }
 

@@ -15,7 +15,7 @@ namespace AIR.Fluxity
             where TState : struct
             where TCommand : ICommand;
 
-        IFeatureView<TState> GetFeatureView<TState>()
+        IFeatureObservable<TState> GetFeatureObservable<TState>()
             where TState : struct;
     }
 }
