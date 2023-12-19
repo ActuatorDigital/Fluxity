@@ -28,7 +28,7 @@ namespace Examples.GameSession
             return state;
         }
 
-        protected override void Initialize()
+        protected override void CreateEffects()
         {
             var highScoreEffects = new HighScoreEffects();
             var livesEffects = new LivesEffects();

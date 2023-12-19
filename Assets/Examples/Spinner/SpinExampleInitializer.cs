@@ -6,6 +6,10 @@ namespace Examples.Spinner
     [DefaultExecutionOrder(1)]
     public class SpinExampleInitializer : FluxityInitializer
     {
+        protected override void CreateEffects()
+        {
+        }
+
         protected override void PostInitialize(IDispatcher dispatcher)
         {
             // Initial state that object starts out spinning.

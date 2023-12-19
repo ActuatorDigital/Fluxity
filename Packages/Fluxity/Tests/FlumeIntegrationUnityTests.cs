@@ -6,27 +6,32 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-public class PresenterFlumeIntegrationUnityTests
+public class FlumeIntegrationUnityTests
 {
     private GameObject _rootGameObject;
 
     private DummyFlumePresenter _presenter;
     private DispatcherHandle _dipatcherHandle;
 
-    private class DummyFlumePresenter : Presenter
+    private class DummyFlumePresenter : MonoBehaviour
     {
-        private IFeatureView<DummyState> _dummyState;
+        private FeatureObserver<DummyState> _dummyState = new();
 
         public string TextContent { get; private set; }
 
-        public override void CreateBindings()
+        public void Start()
         {
-            _dummyState = Bind<DummyState>();
+            _dummyState.OnStateChanged += Display;
         }
 
-        public override void Display()
+        public void OnDestroy()
         {
-            TextContent = _dummyState.State.value.ToString();
+            _dummyState.OnStateChanged -= Display;
+        }
+
+        private void Display(DummyState state)
+        {
+            TextContent = state.value.ToString();
         }
     }
 
@@ -51,7 +56,7 @@ public class PresenterFlumeIntegrationUnityTests
                 ;
         }
 
-        protected override void Initialize()
+        protected override void CreateEffects()
         {
             var dummyCommandEffect = new DummyCommandEffect();
             CreateEffect<DummyCommand>(dummyCommandEffect.DoEffect);
@@ -103,7 +108,7 @@ public class PresenterFlumeIntegrationUnityTests
     [SetUp]
     public void SetUp()
     {
-        _rootGameObject = new GameObject(nameof(PresenterFlumeIntegrationUnityTests));
+        _rootGameObject = new GameObject(nameof(FlumeIntegrationUnityTests));
         _rootGameObject.AddComponent<DummyFlumeServiceInstaller>();
         _rootGameObject.AddComponent<DummyFluxityInitializer>();
 
