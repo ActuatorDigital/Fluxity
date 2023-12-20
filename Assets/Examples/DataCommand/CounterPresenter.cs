@@ -5,26 +5,33 @@ using UnityEngine.UI;
 
 namespace Examples.DataCommand
 {
-    public class CounterPresenter : Presenter
+    public class CounterPresenter : MonoBehaviour
     {
         [SerializeField] private Text uLabelText;
         [SerializeField] private Text uCountText;
         [SerializeField] private InputField uInputField;
         [SerializeField] private ButtonView uButtonView;
 
-        private IFeatureView<CounterState> _counterStateBinding;
+        private readonly FeatureObserver<CounterState> _counterState = new();
 
-        public override void CreateBindings()
+        public void Start()
         {
-            _counterStateBinding = Bind<CounterState>();
+            _counterState.OnStateChanged += Display;
+            SetUp();
         }
 
-        public override void Display()
+        public void OnDestroy()
         {
-            uCountText.text = _counterStateBinding.State.CurrentCount.ToString();
+            _counterState.OnStateChanged -= Display;
+            _counterState.Dispose();
         }
 
-        protected override void SetUp()
+        private void Display(CounterState state)
+        {
+            uCountText.text = state.CurrentCount.ToString();
+        }
+
+        protected void SetUp()
         {
             uLabelText.text = "Current Count:";
             uButtonView.SetButtonText("Change Count");

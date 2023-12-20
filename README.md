@@ -26,7 +26,7 @@ The table below specifies any changes to the basic concept names with following 
 | Store             | Store                 |
 | Dispatcher        | Dispatcher            |
 | Action            | Command               |
-| Controller-View   | Presenter             |
+| Controller-View   | FeatureObserver / FeatureObserverAggregate |
 | View              | -                     |
 
 ### Commands
@@ -34,12 +34,11 @@ The table below specifies any changes to the basic concept names with following 
 Flux pattern Actions are renamed to be Commands in Fluxity to make a cleaner distinction from C# Actions, and to emphasize
 that they are only used via the Dispatcher.
 
-### Presenters
+### FeatureObserver
 
-Presenters are conceptually similar to Controller-Views, acting as the binding layer between state and view; their main difference is that they have no view component in themselves, only referencing and passing information to said referenced Views.
+FeatureObserver allows for registering on state change or at will polling of the state of the feature. They are the backbone of creating `Display` type calls.
 
-A Presenter will bind to one or more States, and when one of those States updates, will tell its bound Views to update
-their display with the new State information.
+The FeatureObserverAggregate is designed for the special case where you want to route the callback from a number of Features all to the same `Action`.
 
 ### Views
 
@@ -154,7 +153,7 @@ public class SpinExampleInitializer : FluxityInitializer
             ;
     }
 
-    protected override void Initialize()
+    protected override void CreateEffect()
     {
     }
 
@@ -185,7 +184,7 @@ public class SpinExampleServiceInstaller : ServiceInstaller
 ### Spinning Object Presenter
 
 ```cs
-public class SpinningObjectPresenter : Presenter
+public class SpinningObjectPresenter : MonoBehaviour
 {
     [SerializeField] private SpinnerView uSpinnerView;
 

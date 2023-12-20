@@ -3,19 +3,24 @@ using UnityEngine;
 
 namespace Examples.Spinner
 {
-    public class SpinningObjectPresenter : Presenter
+    public class SpinningObjectPresenter : MonoBehaviour
     {
         [SerializeField] private SpinnerView uSpinnerView;
-        private IFeatureView<SpinState> _spinStateBinding;
+        private readonly FeatureObserver<SpinState> _spinState = new();
 
-        public override void CreateBindings()
+        public void Start()
         {
-            _spinStateBinding = Bind<SpinState>();
+            _spinState.OnStateChanged += Display;
         }
 
-        public override void Display()
+        public void OnDestroy()
         {
-            var state = _spinStateBinding.State;
+            _spinState.OnStateChanged -= Display;
+            _spinState.Dispose();
+        }
+
+        private void Display(SpinState state)
+        {
             uSpinnerView.SetSpinRate(state.DegreesPerSecond);
             if (state.DoSpin)
                 uSpinnerView.StartSpin();

@@ -6,7 +6,7 @@ namespace Examples.DataCommand
     [DefaultExecutionOrder(1)]
     public class FluxityExampleInitializer : FluxityInitializer
     {
-        protected override void Initialize()
+        protected override void CreateEffects()
         {
             var changeCounterEffect = new ChangeCounterEffect();
             CreateEffect<ChangeCountCommand>(changeCounterEffect.DoEffect);

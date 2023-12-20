@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Fluxity user preferences, allows toggling on and off logging of command history to Logs folder and the history limit.
 - Example GameSession, empty scene with Fluxity setup showing common scenario for game state, current score, and high scores.
 - FluxityFlumeRegisterContext and FluxityFeatureContext. Used during Fluxity setup to move this logic out into it's own location.
+- `FeatureAggregateObserver`, mechanism for bundling change notification from multiple sources. Replacing that use case previously in `Presenter`.
 
 ### Changed
 
@@ -27,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Simplified Example folder structures.
 - Many tests now directly use existing Fluxity type rather than a dummy.
 - Feature<TState>s are no longer added to the ServiceInstaller. To get direct access to a feature either request the `Store` and `GetFeatureView` or use a `FeatureObserver`.
+- Renamed Initialise to CreateEffects in the FluxityInitialiser, as that is it's actual use in practice.
 
 ### Removed
 
@@ -34,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - IFeaturePresenterBinding replaced with IFeatureObserver and FeatureObserver
 - DispatchingPresenter, not being used.
 - StyleCop package, was not being used.
+- Presenter, had multiple responsibilities enforced a pattern of usage that was oft ill-fitting.
 
 ## [0.1.0]
 

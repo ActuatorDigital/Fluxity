@@ -10,7 +10,7 @@ namespace AIR.Fluxity
         {
             _dispatcher = dispatcher;
 
-            Initialize();
+            CreateEffects();
             PostInitialize(_dispatcher);
         }
 
@@ -21,7 +21,7 @@ namespace AIR.Fluxity
             _dispatcher.RegisterEffect(effect);
         }
 
-        protected virtual void Initialize() { }
+        protected abstract void CreateEffects();
 
         protected virtual void PostInitialize(IDispatcher dispatcher) { }
     }

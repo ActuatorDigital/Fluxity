@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Examples.Countdown
 {
-    public class CountdownPresenter : Presenter
+    public class CountdownPresenter : MonoBehaviour
     {
         [SerializeField] private Text uCountdownDisplayText;
         [SerializeField] private ButtonView uStartCountdownButton;
@@ -14,12 +14,25 @@ namespace Examples.Countdown
 
         private float _secondsRemaining = 0;
         private bool _isRunning = false;
-        private IFeatureView<CountdownState> _countdownStateBinding;
+        private readonly FeatureObserver<CountdownState> _countdownState = new();
 
-        public override void Display()
+        public void Start()
         {
-            // State is source of truth and should always override local values.
-            var state = _countdownStateBinding.State;
+            uStartCountdownButton.SetButtonText($"Start ({uCountdownSeconds}s)");
+            uStartCountdownButton.SetOnClickedCallback(OnClickStart);
+            uStopCountdownButton.SetButtonText("Stop");
+            uStopCountdownButton.SetOnClickedCallback(OnClickStop);
+            _countdownState.OnStateChanged += Display;
+        }
+
+        public void OnDestroy()
+        {
+            _countdownState.OnStateChanged -= Display;
+            _countdownState.Dispose();
+        }
+
+        private void Display(CountdownState state)
+        {
             if (!state.IsRunning)
             {
                 uCountdownDisplayText.text = "Countdown Disabled";
@@ -32,11 +45,6 @@ namespace Examples.Countdown
             }
         }
 
-        public override void CreateBindings()
-        {
-            _countdownStateBinding = Bind<CountdownState>();
-        }
-
         // NOTE: Update loop used instead of coroutine for example simplicity.
         public void Update()
         {
@@ -47,14 +55,6 @@ namespace Examples.Countdown
             uCountdownDisplayText.text = $"{_secondsRemaining:F2} s remaining";
             if (_secondsRemaining <= 0)
                 DispatchStop();
-        }
-
-        protected override void SetUp()
-        {
-            uStartCountdownButton.SetButtonText($"Start ({uCountdownSeconds}s)");
-            uStartCountdownButton.SetOnClickedCallback(OnClickStart);
-            uStopCountdownButton.SetButtonText("Stop");
-            uStopCountdownButton.SetOnClickedCallback(OnClickStop);
         }
 
         private void OnClickStart()
