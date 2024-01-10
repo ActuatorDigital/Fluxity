@@ -1,11 +1,15 @@
 ﻿namespace AIR.Fluxity
 {
-    public class FluxityFeatureContext<TState> : FluxityFlumeRegisterContext
+    public sealed class FluxityFeatureContext<TState> : FluxityRegisterContext
         where TState : struct
     {
         private readonly Feature<TState> _feature;
-        public FluxityFeatureContext(FluxityFlumeRegisterContext context, Feature<TState> feature)
-            : base(context.Store, context.Dispatcher, context.FlumeServiceContainer)
+
+        public FluxityFeatureContext(
+            IStore store,
+            IDispatcher dispatcher,
+            Feature<TState> feature)
+            : base(store, dispatcher)
         {
             _feature = feature;
         }

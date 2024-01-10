@@ -134,7 +134,6 @@ GameObject:
   - component: {fileID: 1087130860}
   - component: {fileID: 1087130863}
   - component: {fileID: 1087130862}
-  - component: {fileID: 1087130861}
   m_Layer: 0
   m_Name: DI
   m_TagString: Untagged
@@ -157,19 +156,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1087130861
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1087130856}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84468b1c5f883064aa242f3b423b0110, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _fluxityExampleInitializer: {fileID: 1087130863}
 --- !u!114 &1087130862
 MonoBehaviour:
   m_ObjectHideFlags: 0

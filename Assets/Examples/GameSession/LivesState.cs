@@ -1,5 +1,4 @@
-﻿using System;
-using AIR.Fluxity;
+﻿using AIR.Fluxity;
 
 namespace Examples.GameSession
 {

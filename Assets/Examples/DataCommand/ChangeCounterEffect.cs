@@ -12,7 +12,7 @@ namespace Examples.DataCommand
             _someService = someService;
         }
 
-        public void DoEffect(ChangeCountCommand command, IDispatcher dispatcher)
+        public void DoEffect(ChangeCountCommand command, IDispatcher _)
         {
             _someService.DoSomething($"Count changed by {command.Delta}.");
         }

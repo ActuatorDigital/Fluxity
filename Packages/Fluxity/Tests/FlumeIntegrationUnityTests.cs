@@ -11,7 +11,6 @@ public class FlumeIntegrationUnityTests
     private GameObject _rootGameObject;
 
     private DummyFlumePresenter _presenter;
-    private DispatcherHandle _dipatcherHandle;
 
     private class DummyFlumePresenter : MonoBehaviour
     {
@@ -35,44 +34,22 @@ public class FlumeIntegrationUnityTests
         }
     }
 
-    public class DummyFlumeServiceInstaller : ServiceInstaller
-    {
-        protected override void InstallServices(FlumeServiceContainer container)
-        {
-            container
-                .RegisterFluxity(DummyFluxityInitializer.Setup)
-
-                .Register<IDummyService, DummyService>()
-                ;
-        }
-    }
-
     public class DummyFluxityInitializer : FluxityInitializer
     {
-        public static void Setup(FluxityFlumeRegisterContext context)
+        public override void Register(FluxityRegisterContext context)
         {
             context
                 .Feature(new DummyState(), DummyReducers.RegisterAll)
+                .Effect(new DummyCommandEffect())
+                    .Method<DummyCommand>(x => x.DoEffect)
                 ;
         }
 
-        protected override void CreateEffects()
+        protected override void Install(FlumeServiceContainer container)
         {
-            var dummyCommandEffect = new DummyCommandEffect();
-            CreateEffect<DummyCommand>(dummyCommandEffect.DoEffect);
-        }
-    }
-
-    private class DispatcherHandle : Dependent
-    {
-        private IDispatcher _dispatcher;
-
-        public void Inject(IDispatcher dispatcher) => _dispatcher = dispatcher;
-
-        public void Dispatch<TCommand>(TCommand command)
-             where TCommand : ICommand
-        {
-            _dispatcher.Dispatch(command);
+            container
+                .Register<IDummyService, DummyService>()
+            ;
         }
     }
 
@@ -109,10 +86,7 @@ public class FlumeIntegrationUnityTests
     public void SetUp()
     {
         _rootGameObject = new GameObject(nameof(FlumeIntegrationUnityTests));
-        _rootGameObject.AddComponent<DummyFlumeServiceInstaller>();
         _rootGameObject.AddComponent<DummyFluxityInitializer>();
-
-        _dipatcherHandle = new DispatcherHandle();
     }
 
     [TearDown]
@@ -129,7 +103,7 @@ public class FlumeIntegrationUnityTests
         _presenter = _rootGameObject.AddComponent<DummyFlumePresenter>();
         yield return null; //< give frame so start can be called
 
-        _dipatcherHandle.Dispatch(new DummyCommand() { Payload = PAYLOAD });
+        new DispatcherHandle().Dispatch(new DummyCommand() { Payload = PAYLOAD });
         var result = _presenter.TextContent;
 
         Assert.AreEqual(EXPECTED, result);
@@ -142,7 +116,7 @@ public class FlumeIntegrationUnityTests
         var dummyServiceHandle = new DummyServiceHandle();
         yield return null; //< give frame so start can be called
 
-        _dipatcherHandle.Dispatch(new DummyCommand() { Payload = EXPECTED });
+        new DispatcherHandle().Dispatch(new DummyCommand() { Payload = EXPECTED });
         var result = dummyServiceHandle.DummySerivce.LastSignal;
 
         Assert.AreEqual(EXPECTED, result);
