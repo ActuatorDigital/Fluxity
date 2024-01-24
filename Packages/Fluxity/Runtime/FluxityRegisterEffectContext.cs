@@ -2,11 +2,11 @@
 
 namespace AIR.Fluxity
 {
-    public sealed class FluxityEffectContext<T> : FluxityRegisterContext
+    public sealed class FluxityRegisterEffectContext<T> : FluxityRegisterContext
     {
         private readonly T _instance;
 
-        public FluxityEffectContext(
+        public FluxityRegisterEffectContext(
             IStore store,
             IDispatcher dispatcher,
             T instanceContext)
@@ -15,7 +15,7 @@ namespace AIR.Fluxity
             _instance = instanceContext;
         }
 
-        public FluxityEffectContext<T> Method<TCommand>(Func<T, IEffect<TCommand>.EffectDelegate> make)
+        public FluxityRegisterEffectContext<T> Method<TCommand>(Func<T, IEffect<TCommand>.EffectDelegate> make)
             where TCommand : ICommand
         {
             var effect = new EffectBinding<TCommand>(make(_instance));

@@ -17,7 +17,7 @@ namespace Examples.GameSession
 
     public static class GameSessionReducers
     {
-        public static void RegisterAll(FluxityFeatureContext<GameSessionScoreState> context)
+        public static void RegisterAll(FluxityRegisterFeatureContext<GameSessionScoreState> context)
         {
             context
                 .Reducer<IncrementScoreCommand>(IncrementScore)

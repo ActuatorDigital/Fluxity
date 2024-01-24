@@ -58,4 +58,13 @@ namespace AIR.Fluxity
                 effect.DoEffect(command, this);
         }
     }
+
+    [Serializable]
+    public class DispatcherException : Exception
+    {
+        public DispatcherException(string message)
+            : base(message)
+        {
+        }
+    }
 }

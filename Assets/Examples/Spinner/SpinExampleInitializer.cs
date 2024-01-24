@@ -1,6 +1,5 @@
 using AIR.Flume;
 using AIR.Fluxity;
-using UnityEngine;
 
 namespace Examples.Spinner
 {

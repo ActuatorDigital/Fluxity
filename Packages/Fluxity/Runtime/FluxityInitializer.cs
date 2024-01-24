@@ -9,11 +9,6 @@ namespace AIR.Fluxity
     {
         private Dispatcher _dispatcher;
 
-        public abstract class ServiceInstaller : MonoBehaviour
-        {
-            protected abstract void InstallServices(FlumeServiceContainer container);
-        }
-
         public virtual void Awake()
         {
             var container = gameObject.GetComponent<FlumeServiceContainer>();

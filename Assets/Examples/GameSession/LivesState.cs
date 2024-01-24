@@ -11,7 +11,7 @@ namespace Examples.GameSession
 
     public static class LivesReducers
     {
-        internal static void RegisterAll(FluxityFeatureContext<LivesState> context)
+        internal static void RegisterAll(FluxityRegisterFeatureContext<LivesState> context)
         {
             context
                 .Reducer<SetLivesCommand>(SetLives)

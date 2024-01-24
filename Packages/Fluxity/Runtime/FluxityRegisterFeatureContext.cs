@@ -1,11 +1,11 @@
 ﻿namespace AIR.Fluxity
 {
-    public sealed class FluxityFeatureContext<TState> : FluxityRegisterContext
+    public sealed class FluxityRegisterFeatureContext<TState> : FluxityRegisterContext
         where TState : struct
     {
         private readonly Feature<TState> _feature;
 
-        public FluxityFeatureContext(
+        public FluxityRegisterFeatureContext(
             IStore store,
             IDispatcher dispatcher,
             Feature<TState> feature)
@@ -14,7 +14,7 @@
             _feature = feature;
         }
 
-        public FluxityFeatureContext<TState> Reducer<TCommand>(IReducer<TState, TCommand>.ReduceDelegate pureFunctionReducer)
+        public FluxityRegisterFeatureContext<TState> Reducer<TCommand>(IReducer<TState, TCommand>.ReduceDelegate pureFunctionReducer)
             where TCommand : ICommand
         {
             var reducer = new PureFunctionReducerBinder<TState, TCommand>(pureFunctionReducer);

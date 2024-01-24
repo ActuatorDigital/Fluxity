@@ -15,17 +15,17 @@ namespace AIR.Fluxity
             _dispatcher = dispatcher;
         }
 
-        public FluxityFeatureContext<TState> Feature<TState>(TState startingValue)
+        public FluxityRegisterFeatureContext<TState> Feature<TState>(TState startingValue)
             where TState : struct
         {
             var feat = new Feature<TState>(startingValue);
             _store.AddFeature(feat);
-            return new FluxityFeatureContext<TState>(_store, _dispatcher, feat);
+            return new FluxityRegisterFeatureContext<TState>(_store, _dispatcher, feat);
         }
 
-        public FluxityFeatureContext<TState> Feature<TState>(
+        public FluxityRegisterFeatureContext<TState> Feature<TState>(
             TState startingValue,
-            Action<FluxityFeatureContext<TState>> createReducers)
+            Action<FluxityRegisterFeatureContext<TState>> createReducers)
             where TState : struct
         {
             var context = Feature(startingValue);
@@ -41,20 +41,10 @@ namespace AIR.Fluxity
             return this;
         }
 
-        public FluxityEffectContext<T> Effect<T>(T instanceContext)
+        public FluxityRegisterEffectContext<T> Effect<T>(T instanceContext)
             where T : class
         {
-            return new FluxityEffectContext<T>(_store, _dispatcher, instanceContext);
-        }
-
-        public FluxityRegisterContext Effect<T>(
-            T instanceContext,
-            Action<FluxityEffectContext<T>> createEffects)
-            where T : class
-        {
-            var res = new FluxityEffectContext<T>(_store, _dispatcher, instanceContext);
-            createEffects(res);
-            return this;
+            return new FluxityRegisterEffectContext<T>(_store, _dispatcher, instanceContext);
         }
     }
 }
