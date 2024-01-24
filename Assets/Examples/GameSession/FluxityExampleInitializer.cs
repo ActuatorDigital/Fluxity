@@ -8,7 +8,7 @@ namespace Examples.GameSession
     {
         [SerializeField] private ComboRanksSO _comboRanksSO;
 
-        public override void Register(FluxityRegisterContext context)
+        public override void RegisterFluxity(FluxityRegisterContext context)
         {
             var livesEffects = new LivesEffects();
 
@@ -28,7 +28,7 @@ namespace Examples.GameSession
             ;
         }
 
-        protected override void Install(FlumeServiceContainer container)
+        protected override void RegisterServices(FlumeServiceContainer container)
         {
         }
 

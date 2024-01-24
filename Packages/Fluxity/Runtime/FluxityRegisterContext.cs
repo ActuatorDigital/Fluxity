@@ -46,5 +46,15 @@ namespace AIR.Fluxity
         {
             return new FluxityRegisterEffectContext<T>(_store, _dispatcher, instanceContext);
         }
+
+        public FluxityRegisterEffectContext<T> Effect<T>(
+            T instanceContext,
+            Action<FluxityRegisterEffectContext<T>> createEffects)
+            where T : class
+        {
+            var effectContext = new FluxityRegisterEffectContext<T>(_store, _dispatcher, instanceContext);
+            createEffects(effectContext);
+            return effectContext;
+        }
     }
 }

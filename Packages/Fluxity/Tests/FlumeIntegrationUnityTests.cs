@@ -36,20 +36,26 @@ public class FlumeIntegrationUnityTests
 
     public class DummyFluxityInitializer : FluxityInitializer
     {
-        public override void Register(FluxityRegisterContext context)
+        public override void RegisterFluxity(FluxityRegisterContext context)
         {
             context
                 .Feature(new DummyState(), DummyReducers.RegisterAll)
-                .Effect(new DummyCommandEffect())
-                    .Method<DummyCommand>(x => x.DoEffect)
+                .Effect(new DummyCommandEffect(), RegisterDummyEffects)
                 ;
         }
 
-        protected override void Install(FlumeServiceContainer container)
+        protected override void RegisterServices(FlumeServiceContainer container)
         {
             container
                 .Register<IDummyService, DummyService>()
             ;
+        }
+
+        private static void RegisterDummyEffects(FluxityRegisterEffectContext<DummyCommandEffect> context)
+        {
+            context
+                .Method<DummyCommand>(x => x.DoEffect)
+                ;
         }
     }
 

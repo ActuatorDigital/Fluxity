@@ -5,7 +5,7 @@ namespace Examples.Spinner
 {
     public class SpinExampleInitializer : FluxityInitializer
     {
-        public override void Register(FluxityRegisterContext context)
+        public override void RegisterFluxity(FluxityRegisterContext context)
         {
             context
                 .Feature(new SpinState())
@@ -14,7 +14,7 @@ namespace Examples.Spinner
                 ;
         }
 
-        protected override void Install(FlumeServiceContainer container)
+        protected override void RegisterServices(FlumeServiceContainer container)
         {
         }
 

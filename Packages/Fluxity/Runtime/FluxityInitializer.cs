@@ -19,18 +19,18 @@ namespace AIR.Fluxity
             var registerContext = new FluxityRegisterContext(store, _dispatcher);
             container.Register<IStore>(store);
             container.Register<IDispatcher>(_dispatcher);
-            Register(registerContext);
+            RegisterFluxity(registerContext);
         }
 
         private void InstallServices(FlumeServiceContainer container)
         {
-            Install(container);
+            RegisterServices(container);
             PostInitialize(_dispatcher);
         }
 
-        protected abstract void Install(FlumeServiceContainer container);
+        protected abstract void RegisterServices(FlumeServiceContainer container);
 
-        public abstract void Register(FluxityRegisterContext context);
+        public abstract void RegisterFluxity(FluxityRegisterContext context);
 
         protected virtual void PostInitialize(IDispatcher dispatcher) { }
     }

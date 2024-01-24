@@ -7,7 +7,7 @@ namespace Examples.ObjectData
     [DefaultExecutionOrder(-1)]
     public class FluxityExampleInitializer : FluxityInitializer
     {
-        public override void Register(FluxityRegisterContext context)
+        public override void RegisterFluxity(FluxityRegisterContext context)
         {
             context
                 .Feature(ObjectDataState.Create())
@@ -15,7 +15,7 @@ namespace Examples.ObjectData
                 ;
         }
 
-        protected override void Install(FlumeServiceContainer container)
+        protected override void RegisterServices(FlumeServiceContainer container)
         {
         }
     }

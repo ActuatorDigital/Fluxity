@@ -5,7 +5,7 @@ namespace Examples.DataCommand
 {
     public class FluxityExampleInitializer : FluxityInitializer
     {
-        public override void Register(FluxityRegisterContext context)
+        public override void RegisterFluxity(FluxityRegisterContext context)
         {
             context
                 .Feature(new CounterState())
@@ -15,7 +15,7 @@ namespace Examples.DataCommand
                 ;
         }
 
-        protected override void Install(FlumeServiceContainer container)
+        protected override void RegisterServices(FlumeServiceContainer container)
         {
             container
                 .Register<ISomeService, SomeService>()
