@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example GameSession, empty scene with Fluxity setup showing common scenario for game state, current score, and high scores.
 - FluxityFlumeRegisterContext and FluxityFeatureContext. Used during Fluxity setup to move this logic out into it's own location.
 - `FeatureAggregateObserver`, mechanism for bundling change notification from multiple sources. Replacing that use case previously in `Presenter`.
+- Effects can now be set up in a similar way to Feature,Reducer binding.
 
 ### Changed
 
@@ -29,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Many tests now directly use existing Fluxity type rather than a dummy.
 - Feature<TState>s are no longer added to the ServiceInstaller. To get direct access to a feature either request the `Store` and `GetFeatureView` or use a `FeatureObserver`.
 - Renamed Initialise to CreateEffects in the FluxityInitialiser, as that is it's actual use in practice.
+- FluxityInitialiser is now also the ServiceInstaller
+- FluxityInitialiser methods renamed, RegisterFluxity and RegisterServices
 
 ### Removed
 
@@ -37,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - DispatchingPresenter, not being used.
 - StyleCop package, was not being used.
 - Presenter, had multiple responsibilities enforced a pattern of usage that was oft ill-fitting.
+- FluxityFlumeRegisterContext and ServiceInstallerExt, the FluxityInitialiser handles these more directly now.
 
 ## [0.1.0]
 
