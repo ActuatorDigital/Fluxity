@@ -1,27 +1,36 @@
 ﻿using AIR.Flume;
+using UnityEngine;
 
 namespace AIR.Fluxity
 {
-    public abstract class FluxityInitializer : DependentBehaviour
+    [DefaultExecutionOrder(-1)]
+    [RequireComponent(typeof(FlumeServiceContainer))]
+    public abstract class FluxityInitializer : MonoBehaviour
     {
-        private IDispatcher _dispatcher;
+        private Dispatcher _dispatcher;
 
-        public void Inject(IDispatcher dispatcher)
+        public virtual void Awake()
         {
-            _dispatcher = dispatcher;
+            var container = gameObject.GetComponent<FlumeServiceContainer>();
+            container.OnContainerReady += InstallServices;
 
-            CreateEffects();
+            var store = new Store();
+            _dispatcher = new Dispatcher(store);
+            var registerContext = new FluxityRegisterContext(store, _dispatcher);
+            container.Register<IStore>(store);
+            container.Register<IDispatcher>(_dispatcher);
+            RegisterFluxity(registerContext);
+        }
+
+        private void InstallServices(FlumeServiceContainer container)
+        {
+            RegisterServices(container);
             PostInitialize(_dispatcher);
         }
 
-        public void CreateEffect<TCommand>(IEffect<TCommand>.EffectDelegate effectAction)
-               where TCommand : ICommand
-        {
-            var effect = new EffectBinding<TCommand>(effectAction);
-            _dispatcher.RegisterEffect(effect);
-        }
+        protected abstract void RegisterServices(FlumeServiceContainer container);
 
-        protected abstract void CreateEffects();
+        public abstract void RegisterFluxity(FluxityRegisterContext context);
 
         protected virtual void PostInitialize(IDispatcher dispatcher) { }
     }

@@ -12,7 +12,7 @@
 
     public static class DummyReducers
     {
-        internal static void RegisterAll(FluxityFeatureContext<DummyState> context)
+        internal static void RegisterAll(FluxityRegisterFeatureContext<DummyState> context)
         {
             context.Reducer<DummyCommand>(Reduce);
         }

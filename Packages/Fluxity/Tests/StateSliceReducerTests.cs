@@ -1,7 +1,6 @@
 ﻿using AIR.Fluxity;
 using NUnit.Framework;
 using System;
-using System.Reflection;
 
 public class StateSliceReducerTests
 {
@@ -14,45 +13,24 @@ public class StateSliceReducerTests
 
     private class LargeStateCommand : ICommand { public int response; }
 
-    private class LargeStateRespReducer : Reducer<LargeState, LargeStateCommand>
+    private static class LargeStateReducers
     {
-        public override LargeState Reduce(LargeState state, LargeStateCommand command)
+        public static LargeState RespReduce(LargeState state, LargeStateCommand command)
         {
             state.lastResp = command.response;
             return state;
         }
 
-        public override MethodInfo ReducerBindingInfo()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    private class LargeStateMessageReducer : Reducer<LargeState, LargeStateCommand>
-    {
-        public override LargeState Reduce(LargeState state, LargeStateCommand command)
+        public static LargeState MsgReduce(LargeState state, LargeStateCommand command)
         {
             state.msg = Guid.Empty.ToString();
             return state;
         }
 
-        public override MethodInfo ReducerBindingInfo()
-        {
-            throw new NotImplementedException();
-        }
-    }
-    
-    private class LargeStateExecutionCountReducer : Reducer<LargeState, LargeStateCommand>
-    {
-        public override LargeState Reduce(LargeState state, LargeStateCommand command)
+        public static LargeState ExeCountReduce(LargeState state, LargeStateCommand command)
         {
             state.executionCount++;
             return state;
-        }
-
-        public override MethodInfo ReducerBindingInfo()
-        {
-            throw new NotImplementedException();
         }
     }
 
@@ -65,11 +43,11 @@ public class StateSliceReducerTests
         store.AddFeature(feature);
         var payloadVal = 3;
         var command = new LargeStateCommand() { response = payloadVal };
-        var respReducer = new LargeStateRespReducer();
+        var respReducer = new PureFunctionReducerBinder<LargeState, LargeStateCommand>(LargeStateReducers.RespReduce);
         feature.Register(respReducer);
-        var msgReduer = new LargeStateMessageReducer();
+        var msgReduer = new PureFunctionReducerBinder<LargeState, LargeStateCommand>(LargeStateReducers.MsgReduce);
         feature.Register(msgReduer);
-        var exeCountReduer = new LargeStateExecutionCountReducer();
+        var exeCountReduer = new PureFunctionReducerBinder<LargeState, LargeStateCommand>(LargeStateReducers.ExeCountReduce);
         feature.Register(exeCountReduer);
 
         dispatcher.Dispatch(command);
@@ -90,11 +68,11 @@ public class StateSliceReducerTests
         store.AddFeature(feature);
         var payloadVal = 3;
         var command = new LargeStateCommand() { response = payloadVal };
-        var respReducer = new LargeStateRespReducer();
+        var respReducer = new PureFunctionReducerBinder<LargeState, LargeStateCommand>(LargeStateReducers.RespReduce);
         feature.Register(respReducer);
-        var msgReduer = new LargeStateMessageReducer();
+        var msgReduer = new PureFunctionReducerBinder<LargeState, LargeStateCommand>(LargeStateReducers.MsgReduce);
         feature.Register(msgReduer);
-        var exeCountReduer = new LargeStateExecutionCountReducer();
+        var exeCountReduer = new PureFunctionReducerBinder<LargeState, LargeStateCommand>(LargeStateReducers.ExeCountReduce);
         feature.Register(exeCountReduer);
 
         dispatcher.Dispatch(command);

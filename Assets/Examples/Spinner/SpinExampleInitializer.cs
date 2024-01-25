@@ -1,12 +1,20 @@
+using AIR.Flume;
 using AIR.Fluxity;
-using UnityEngine;
 
 namespace Examples.Spinner
 {
-    [DefaultExecutionOrder(1)]
     public class SpinExampleInitializer : FluxityInitializer
     {
-        protected override void CreateEffects()
+        public override void RegisterFluxity(FluxityRegisterContext context)
+        {
+            context
+                .Feature(new SpinState())
+                    .Reducer<StartSpinCommand>(SpinnerReducers.StartSpin)
+                    .Reducer<StopSpinCommand>(SpinnerReducers.StopSpin)
+                ;
+        }
+
+        protected override void RegisterServices(FlumeServiceContainer container)
         {
         }
 

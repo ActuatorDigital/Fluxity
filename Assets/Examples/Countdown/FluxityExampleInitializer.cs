@@ -1,14 +1,23 @@
+using AIR.Flume;
 using AIR.Fluxity;
 using UnityEngine;
 
 namespace Examples.Countdown
 {
-    [DefaultExecutionOrder(1)]
     public class FluxityExampleInitializer : FluxityInitializer
     {
         [SerializeField] private float uInitialCountdown = 10;
 
-        protected override void CreateEffects()
+        public override void RegisterFluxity(FluxityRegisterContext context)
+        {
+            context
+                .Feature(new CountdownState())
+                    .Reducer<StartCountdownCommand>(CountdownReducer.StartCountDown)
+                    .Reducer<StopCountdownCommand>(CountdownReducer.StopCountDown)
+                ;
+        }
+
+        protected override void RegisterServices(FlumeServiceContainer container)
         {
         }
 

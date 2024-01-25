@@ -1,15 +1,25 @@
+using AIR.Flume;
 using AIR.Fluxity;
-using UnityEngine;
 
 namespace Examples.DataCommand
 {
-    [DefaultExecutionOrder(1)]
     public class FluxityExampleInitializer : FluxityInitializer
     {
-        protected override void CreateEffects()
+        public override void RegisterFluxity(FluxityRegisterContext context)
         {
-            var changeCounterEffect = new ChangeCounterEffect();
-            CreateEffect<ChangeCountCommand>(changeCounterEffect.DoEffect);
+            context
+                .Feature(new CounterState())
+                    .Reducer<ChangeCountCommand>(CounterReducer.Change)
+                .Effect(new ChangeCounterEffect())
+                    .Method<ChangeCountCommand>(x => x.DoEffect)
+                ;
+        }
+
+        protected override void RegisterServices(FlumeServiceContainer container)
+        {
+            container
+                .Register<ISomeService, SomeService>()
+                ;
         }
     }
 }

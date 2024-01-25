@@ -9,7 +9,7 @@ namespace Examples.Simple
 
     public static class CounterReducer
     {
-        public static void RegisterAll(FluxityFeatureContext<CounterState> fluxityFeatureContext)
+        public static void RegisterAll(FluxityRegisterFeatureContext<CounterState> fluxityFeatureContext)
         {
             fluxityFeatureContext
                 .Reducer<IncrementCountCommand>(Increment)

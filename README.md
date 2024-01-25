@@ -141,42 +141,26 @@ public static class SpinStateReducers
 ### Fluxity Initializer
 
 ```cs
-[DefaultExecutionOrder(1)]
 public class SpinExampleInitializer : FluxityInitializer
 {
-    public static void Setup(FluxityFlumeRegisterContext context)
+    public override void RegisterFluxity(FluxityRegisterContext context)
     {
         context
-            .Feature(SpinState.Create())
-                .Reducer.Reducer<StartSpinCommand>(SpinStateReducers.StartSpin)
-                .Reducer.Reducer<StopSpinCommand>(SpinStateReducers.StopSpin)
+            .Feature(new SpinState())
+                .Reducer<StartSpinCommand>(SpinnerReducers.StartSpin)
+                .Reducer<StopSpinCommand>(SpinnerReducers.StopSpin)
             ;
     }
 
-    protected override void CreateEffect()
+    protected override void RegisterServices(FlumeServiceContainer container)
     {
     }
 
     protected override void PostInitialize(IDispatcher dispatcher)
     {
         // Initial state that object starts out spinning.
-        var command = new StartSpinCommand { DegreesPerSecond = 90f };
+        var command = new StartSpinCommand { DegreesPerSecond = 270f };
         dispatcher.Dispatch(command);
-    }
-}
-```
-
-### Flume Service Installer
-
-```cs
-[DefaultExecutionOrder(-1)]
-public class SpinExampleServiceInstaller : ServiceInstaller
-{
-    protected override void InstallServices(FlumeServiceContainer container)
-    {
-        container
-            .RegisterFluxity(SpinExampleInitializer.Setup)
-            ;
     }
 }
 ```

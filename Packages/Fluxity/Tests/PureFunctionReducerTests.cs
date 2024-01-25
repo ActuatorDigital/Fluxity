@@ -88,7 +88,7 @@ public class PureFunctionReducerTests
     {
         void Act() => _reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(new DummyPureFunctionReducerNonStatic().ReduceNonStatic);
 
-        var exception = Assert.Throws<ReducerException>(Act);
+        var exception = Assert.Throws<PureFunctionReducerException>(Act);
         Assert.AreEqual("Expected static got instance. Invalid method on reducer 'ReduceNonStatic'.", exception.Message);
     }
 
@@ -99,7 +99,7 @@ public class PureFunctionReducerTests
 
         void Act() => _reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(typeof(DummyPureFunctionReducerInvalidForms).GetMethod(nameof(DummyPureFunctionReducerInvalidForms.ReduceWrongReturn)));
 
-        var exception = Assert.Throws<ReducerException>(Act);
+        var exception = Assert.Throws<PureFunctionReducerException>(Act);
         Assert.AreEqual(EXPECTED_ERR_MSG, exception.Message);
     }
 
@@ -110,7 +110,7 @@ public class PureFunctionReducerTests
 
         void Act() => _reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(typeof(DummyPureFunctionReducerInvalidForms).GetMethod(nameof(DummyPureFunctionReducerInvalidForms.ReduceWrongState)));
 
-        var exception = Assert.Throws<ReducerException>(Act);
+        var exception = Assert.Throws<PureFunctionReducerException>(Act);
         Assert.AreEqual(EXPECTED_ERR_MSG, exception.Message);
     }
 
@@ -121,7 +121,7 @@ public class PureFunctionReducerTests
 
         void Act() => _reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(typeof(DummyPureFunctionReducerInvalidForms).GetMethod(nameof(DummyPureFunctionReducerInvalidForms.ReduceWrongCommand)));
 
-        var exception = Assert.Throws<ReducerException>(Act);
+        var exception = Assert.Throws<PureFunctionReducerException>(Act);
         Assert.AreEqual(EXPECTED_ERR_MSG, exception.Message);
     }
 
@@ -130,7 +130,7 @@ public class PureFunctionReducerTests
     {
         void Act() => _reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(typeof(DummyPureFunctionReducerInvalidForms).GetMethod(nameof(DummyPureFunctionReducerInvalidForms.ReduceWrongArgCount)));
 
-        var exception = Assert.Throws<ReducerException>(Act);
+        var exception = Assert.Throws<PureFunctionReducerException>(Act);
         Assert.AreEqual("Expected '2' but got '3'. Invalid argument count on reducer 'ReduceWrongArgCount'.", exception.Message);
     }
 }

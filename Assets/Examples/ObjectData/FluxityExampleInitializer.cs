@@ -1,16 +1,17 @@
 using AIR.Flume;
 using AIR.Fluxity;
+using UnityEngine;
 
-namespace Examples.Simple
+namespace Examples.ObjectData
 {
+    [DefaultExecutionOrder(-1)]
     public class FluxityExampleInitializer : FluxityInitializer
     {
         public override void RegisterFluxity(FluxityRegisterContext context)
         {
             context
-                .Feature(new CounterState(), CounterReducer.RegisterAll)
-                .Effect<IncrementCountCommand>(CounterEffects.DoIncrementEffect)
-                .Effect<DecrementCountCommand>(CounterEffects.DoDecrementEffect)
+                .Feature(ObjectDataState.Create())
+                        .Reducer<AddObjectDataCommand>(ObjectDataReducer.AddData)
                 ;
         }
 

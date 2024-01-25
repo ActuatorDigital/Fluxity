@@ -1,31 +1,22 @@
-﻿using System.Reflection;
-using AIR.Fluxity;
+﻿using AIR.Fluxity;
 using AIR.Fluxity.Tests.DummyTypes;
 using NUnit.Framework;
 
 public class ReducerTests
 {
     private PureFunctionReducerBinder<DummyState, DummyCommand> _reducer;
-    private DummyDoubleReducer _doubleReducer;
+    private PureFunctionReducerBinder<DummyState, DummyCommand> _doubleReducer;
 
-    private class DummyDoubleReducer : Reducer<DummyState, DummyCommand>
+    private static DummyState DoubleReduce(DummyState state, DummyCommand command)
     {
-        public override DummyState Reduce(DummyState state, DummyCommand command)
-        {
-            return new DummyState() { value = state.value * 2 };
-        }
-
-        public override MethodInfo ReducerBindingInfo()
-        {
-            throw new System.NotImplementedException();
-        }
+        return new DummyState() { value = state.value * 2 };
     }
 
     [SetUp]
     public void SetUp()
     {
         _reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
-        _doubleReducer = new DummyDoubleReducer();
+        _doubleReducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DoubleReduce);
     }
 
     [Test]

@@ -11,7 +11,10 @@ namespace AIR.Fluxity
 
         public event Action OnAnyStateChanged;
 
-        public void Inject(IStore store) => _store = store;
+        public void Inject(IStore store)
+        {
+            _store = store;
+        }
 
         public IFeatureView<TState> Bind<TState>()
             where TState : struct
