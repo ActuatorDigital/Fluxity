@@ -127,4 +127,18 @@ public class FlumeIntegrationUnityTests
 
         Assert.AreEqual(EXPECTED, result);
     }
+
+    [UnityTest]
+    public IEnumerator Effect_WhenICommandDispatched_ShouldPutExpectedValueInInjectedService()
+    {
+        const int EXPECTED = 5;
+        var dummyServiceHandle = new DummyServiceHandle();
+        yield return null; //< give frame so start can be called
+        ICommand commandAsBase = new DummyCommand() { Payload = EXPECTED };
+
+        new DispatcherHandle().Dispatch(commandAsBase);
+        var result = dummyServiceHandle.DummySerivce.LastSignal;
+
+        Assert.AreEqual(EXPECTED, result);
+    }
 }

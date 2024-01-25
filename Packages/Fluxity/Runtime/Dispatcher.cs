@@ -51,7 +51,7 @@ namespace AIR.Fluxity
         private void ProcessEffects<TCommand>(TCommand command)
             where TCommand : ICommand
         {
-            if (!_effects.TryGetValue(typeof(TCommand), out var extantEffects))
+            if (!_effects.TryGetValue(command.GetType(), out var extantEffects))
                 return;
 
             foreach (var effect in extantEffects)
