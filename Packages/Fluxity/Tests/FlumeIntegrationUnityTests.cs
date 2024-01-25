@@ -71,9 +71,9 @@ public class FlumeIntegrationUnityTests
 
     public class DummyServiceHandle : Dependent
     {
-        public IDummyService DummySerivce { get; private set; }
+        public IDummyService DummyService { get; private set; }
 
-        public void Inject(IDummyService dummyService) => DummySerivce = dummyService;
+        public void Inject(IDummyService dummyService) => DummyService = dummyService;
     }
 
     public class DummyCommandEffect : Dependent
@@ -123,7 +123,7 @@ public class FlumeIntegrationUnityTests
         yield return null; //< give frame so start can be called
 
         new DispatcherHandle().Dispatch(new DummyCommand() { Payload = EXPECTED });
-        var result = dummyServiceHandle.DummySerivce.LastSignal;
+        var result = dummyServiceHandle.DummyService.LastSignal;
 
         Assert.AreEqual(EXPECTED, result);
     }
@@ -137,7 +137,7 @@ public class FlumeIntegrationUnityTests
         ICommand commandAsBase = new DummyCommand() { Payload = EXPECTED };
 
         new DispatcherHandle().Dispatch(commandAsBase);
-        var result = dummyServiceHandle.DummySerivce.LastSignal;
+        var result = dummyServiceHandle.DummyService.LastSignal;
 
         Assert.AreEqual(EXPECTED, result);
     }
