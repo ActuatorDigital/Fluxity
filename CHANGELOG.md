@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - FluxityFlumeRegisterContext and FluxityFeatureContext. Used during Fluxity setup to move this logic out into it's own location.
 - `FeatureAggregateObserver`, mechanism for bundling change notification from multiple sources. Replacing that use case previously in `Presenter`.
 - Effects can now be set up in a similar way to Feature, Reducer binding.
+- Correctly show `decimal` type values in the StoresWindow.
 
 ### Changed
 
