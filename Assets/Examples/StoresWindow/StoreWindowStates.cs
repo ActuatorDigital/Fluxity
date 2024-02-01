@@ -41,6 +41,8 @@ namespace Examples.StoresWindow
         public System.Guid guid;
         public System.DateTime dateTime;
         public System.TimeSpan timeSpan;
+        public long i64;
+        public decimal dec;
     }
 
     public struct TransformsState

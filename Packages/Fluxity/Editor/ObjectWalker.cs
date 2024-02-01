@@ -129,19 +129,20 @@ namespace AIR.Fluxity.Editor
         private bool IsLeafType(object obj)
         {
             if (obj.GetType().IsPrimitive
-                || obj.GetType().IsEnum
-                || obj is UnityEngine.Object)
+                || obj.GetType().IsEnum)
                 return true;
 
             switch (obj)
             {
             case string:
+            case decimal:
             case Vector2:
             case Vector3:
             case Vector4:
             case System.Guid:
             case System.DateTime:
             case System.TimeSpan:
+            case UnityEngine.Object:
                 return true;
             default:
                 return false;
