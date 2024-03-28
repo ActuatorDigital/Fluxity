@@ -1,23 +1,17 @@
 using AIR.Fluxity;
-using Examples.Shared;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Examples.DataCommand
 {
     public class CounterPresenter : MonoBehaviour
     {
-        [SerializeField] private Text uLabelText;
-        [SerializeField] private Text uCountText;
-        [SerializeField] private InputField uInputField;
-        [SerializeField] private ButtonView uButtonView;
+        [SerializeField] private CounterView _counterView;
 
         private readonly FeatureObserver<CounterState> _counterState = new();
 
         public void Start()
         {
             _counterState.OnStateChanged += Display;
-            SetUp();
         }
 
         public void OnDestroy()
@@ -28,21 +22,7 @@ namespace Examples.DataCommand
 
         private void Display(CounterState state)
         {
-            uCountText.text = state.CurrentCount.ToString();
-        }
-
-        protected void SetUp()
-        {
-            uLabelText.text = "Current Count:";
-            uButtonView.SetButtonText("Change Count");
-            uButtonView.SetOnClickedCallback(OnButtonClick);
-            uInputField.contentType = InputField.ContentType.IntegerNumber;
-            uInputField.text = "1";
-        }
-
-        private void OnButtonClick()
-        {
-            new DispatcherHandle().Dispatch(new ChangeCountCommand { Delta = int.Parse(uInputField.text) });
+            _counterView.UpdateModel(new CounterView.Model { CurrentCount = state.CurrentCount });
         }
     }
 }

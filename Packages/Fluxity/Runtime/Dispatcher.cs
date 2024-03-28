@@ -7,8 +7,10 @@ namespace AIR.Fluxity
     {
         public event Action<ICommand> OnDispatch;
 
+        private const int MaxDequeueDispatches = 1000;
         private readonly Dictionary<Type, List<IEffect>> _effects = new();
-        private bool _isReducing;
+        private readonly Queue<ICommand> _commandQueue = new();
+        private bool _isDequeing;
         private readonly IStore _store;
 
         public Dispatcher(IStore store)
@@ -31,14 +33,33 @@ namespace AIR.Fluxity
         public void Dispatch<TCommand>(TCommand command)
             where TCommand : ICommand
         {
+            _commandQueue.Enqueue(command);
+            if (_isDequeing) return;
+
+            InnerDispatch(command);
+        }
+
+        private void InnerDispatch<TCommand>(TCommand command) where TCommand : ICommand
+        {
+            _isDequeing = true;
+            var count = 0;
+            while (_commandQueue.Count > 0)
+            {
+                var nextCommand = _commandQueue.Dequeue();
+                ProcessCommand(nextCommand);
+                if (count++ > MaxDequeueDispatches)
+                {
+                    throw new DispatcherException($"Dispatcher is stuck in a loop. Check for circular dependencies in your effects. " +
+                        $"Current command '{nextCommand.GetType()}', exceeded '{MaxDequeueDispatches}' deque dispatches.");
+                }
+            }
+            _isDequeing = false;
+        }
+
+        private void ProcessCommand<TCommand>(TCommand command) where TCommand : ICommand
+        {
             OnDispatch?.Invoke(command);
-            if (_isReducing)
-                throw new DispatcherException($"Attempted to dispatch '{command.GetType()}' during an existing {nameof(Dispatch)}.");
-
-            _isReducing = true;
             _store.ProcessCommand(command);
-            _isReducing = false;
-
             ProcessEffects(command);
         }
 
