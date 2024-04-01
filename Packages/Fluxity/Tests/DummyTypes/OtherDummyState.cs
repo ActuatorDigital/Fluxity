@@ -2,8 +2,8 @@
 {
     public struct OtherDummyState { }
 
-    internal class OtherDummyCommand : ICommand
-    { }
+    internal class OtherDummyCommand : ICommand { }
+    internal class OtherOtherDummyCommand : ICommand { }
 
     internal static class OtherDummyReducer
     {

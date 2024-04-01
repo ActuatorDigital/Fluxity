@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using AIR.Fluxity;
 using AIR.Fluxity.Tests.DummyTypes;
 using NUnit.Framework;
@@ -139,12 +140,100 @@ public class DispatcherTests
     }
 
     [Test]
-    public void Dispatch_WhenReducerDispatches_ShouldThrow()
+    public void Dispatch_WhenReducerDispatches_ShouldDispatchTwice()
     {
+        var count = 0;
         _feature.SetState(new DummyState());
         _staticDispatcher = _dispatcher;
+        //this is a hack that we don't actually want to allow but now we queue so we can ensure the following thing happens
         var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DispatchDuringReduce);
         _feature.Register(reducer);
+        _dispatcher.OnDispatch += _ => count++;
+
+        _dispatcher.Dispatch(new DummyCommand());
+
+        Assert.AreEqual(2, count);
+    }
+
+    [Test]
+    public void Dispatch_WhenEffectDispatchesSameButLimited_ShouldDispatchTwiceAndEffectInvokeTwice()
+    {
+        var count = 0;
+        _feature.SetState(new DummyState());
+        var dummyEffect = new DummyEffect();
+        dummyEffect.Action = () =>
+        {
+            if (count < 2)
+                _dispatcher.Dispatch(new DummyCommand());
+        };
+        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
+        _dispatcher.RegisterEffect(effect);
+        _dispatcher.OnDispatch += _ => count++;
+
+        _dispatcher.Dispatch(new DummyCommand());
+
+        Assert.AreEqual(2, count);
+        Assert.AreEqual(2, dummyEffect.callCount);
+    }
+
+    [Test]
+    public void Dispatch_WhenEffectDispatchesOther_ShouldDispatchTwiceAndEffectInvokeOnce()
+    {
+        var count = 0;
+        _feature.SetState(new DummyState());
+        var dummyEffect = new DummyEffect();
+        dummyEffect.Action = () =>
+        {
+            _dispatcher.Dispatch(new OtherDummyCommand());
+        };
+        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
+        _dispatcher.RegisterEffect(effect);
+        _dispatcher.OnDispatch += _ => count++;
+
+        _dispatcher.Dispatch(new DummyCommand());
+
+        Assert.AreEqual(2, count);
+        Assert.AreEqual(1, dummyEffect.callCount);
+    }
+
+    [Test]
+    public void Dispatch_WhenEffectDispatchesMultiple_ShouldDispatchSameCountAndInOrder()
+    {
+        var commandList = new List<ICommand>();
+        _feature.SetState(new DummyState());
+        var dummyEffect = new DummyEffect();
+        dummyEffect.Action = () =>
+        {
+            _dispatcher.Dispatch(new OtherDummyCommand());
+            _dispatcher.Dispatch(new OtherOtherDummyCommand());
+        };
+        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
+        _dispatcher.RegisterEffect(effect);
+        _dispatcher.OnDispatch += c => commandList.Add(c);
+
+        _dispatcher.Dispatch(new DummyCommand());
+
+        Assert.AreEqual(3, commandList.Count);
+        Assert.AreEqual(typeof(DummyCommand), commandList[0].GetType());
+        Assert.AreEqual(typeof(OtherDummyCommand), commandList[1].GetType());
+        Assert.AreEqual(typeof(OtherOtherDummyCommand), commandList[2].GetType());
+        Assert.AreEqual(1, dummyEffect.callCount);
+    }
+
+    [Test]
+    public void Dispatch_WhenEffectDispatchesSameCommandEndlessly_ShouldThrow()
+    {
+        var count = 0;
+        _feature.SetState(new DummyState());
+        var dummyEffect = new DummyEffect();
+        dummyEffect.Action = () =>
+        {
+            _dispatcher.Dispatch(new DummyCommand());
+        };
+        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
+        _dispatcher.RegisterEffect(effect);
+        _dispatcher.OnDispatch += _ => count++;
+
 
         void Act() => _dispatcher.Dispatch(new DummyCommand());
 
@@ -175,7 +264,7 @@ public class DispatcherTests
         var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
         _dispatcher.RegisterEffect(effect);
 
-        var res =_dispatcher.GetAllEffectCommandTypes();
+        var res = _dispatcher.GetAllEffectCommandTypes();
         var innerRes = _dispatcher.GetAllEffectsForCommandType(res.First());
 
         Assert.AreEqual(1, res.Count);

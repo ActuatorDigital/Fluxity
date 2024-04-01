@@ -376,6 +376,7 @@ GameObject:
   - component: {fileID: 505040201}
   - component: {fileID: 505040200}
   - component: {fileID: 505040203}
+  - component: {fileID: 505040204}
   m_Layer: 5
   m_Name: Main_Panel
   m_TagString: Untagged
@@ -479,6 +480,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b58dca0b7e584f73bad18acdab47641d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _counterView: {fileID: 505040204}
+--- !u!114 &505040204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 505040198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c84330b2191fc44482f07acf0e1f958, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   uLabelText: {fileID: 2011377856}
