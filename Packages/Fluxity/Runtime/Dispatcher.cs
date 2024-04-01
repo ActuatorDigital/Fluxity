@@ -10,7 +10,7 @@ namespace AIR.Fluxity
         private const int MaxDequeueDispatches = 1000;
         private readonly Dictionary<Type, List<IEffect>> _effects = new();
         private readonly Queue<ICommand> _commandQueue = new();
-        private bool _isDequeing;
+        private bool _isDequeuing;
         private readonly IStore _store;
 
         public Dispatcher(IStore store)
@@ -34,14 +34,14 @@ namespace AIR.Fluxity
             where TCommand : ICommand
         {
             _commandQueue.Enqueue(command);
-            if (_isDequeing) return;
+            if (_isDequeuing) return;
 
             InnerDispatch(command);
         }
 
         private void InnerDispatch<TCommand>(TCommand command) where TCommand : ICommand
         {
-            _isDequeing = true;
+            _isDequeuing = true;
             var count = 0;
             while (_commandQueue.Count > 0)
             {
@@ -49,11 +49,12 @@ namespace AIR.Fluxity
                 ProcessCommand(nextCommand);
                 if (count++ > MaxDequeueDispatches)
                 {
-                    throw new DispatcherException($"Dispatcher is stuck in a loop. Check for circular dependencies in your effects. " +
-                        $"Current command '{nextCommand.GetType()}', exceeded '{MaxDequeueDispatches}' deque dispatches.");
+                    throw new DispatcherException($"Dispatcher has reached the {nameof(MaxDequeueDispatches)} ({MaxDequeueDispatches}). " +
+                        $"Check for circular dependencies in your effects. " +
+                        $"Current command '{nextCommand.GetType()}'.");
                 }
             }
-            _isDequeing = false;
+            _isDequeuing = false;
         }
 
         private void ProcessCommand<TCommand>(TCommand command) where TCommand : ICommand
