@@ -1,6 +1,7 @@
 ﻿using AIR.Fluxity;
 using AIR.Fluxity.Tests.DummyTypes;
 using NUnit.Framework;
+
 public class FeatureObserverTests
 {
     private IStore _store;
