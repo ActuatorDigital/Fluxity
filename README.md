@@ -40,6 +40,8 @@ FeatureObserver allows for registering on state change or at will polling of the
 
 The FeatureObserverAggregate is designed for the special case where you want to route the callback from a number of Features all to the same `Action`.
 
+FeatureHandle is the stripped-down version for when you just want to poll the state of the feature, and don't need on state change callbacks.
+
 ### Views
 
 Fluxity does not explicitly implement any Views, as the form the view takes is entirely dependent on the type of Unity
