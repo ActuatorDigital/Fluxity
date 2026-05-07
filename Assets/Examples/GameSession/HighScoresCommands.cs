@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using AIR.Fluxity;
+using Actuator.Fluxity;
 
 namespace Examples.GameSession
 {

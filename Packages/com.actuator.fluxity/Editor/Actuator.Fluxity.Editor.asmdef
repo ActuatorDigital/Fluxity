@@ -1,0 +1,20 @@
+{
+    "name": "Actuator.Fluxity.Editor",
+    "rootNamespace": "",
+    "references": [
+        "Unity.Settings.Editor",
+        "Actuator.Flume",
+        "Actuator.Fluxity"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

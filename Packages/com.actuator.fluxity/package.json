@@ -1,0 +1,22 @@
+{
+  "name": "com.actuator.fluxity",
+  "displayName": "Fluxity",
+  "version": "0.1.2",
+  "unity": "2020.3",
+  "author": {
+    "name": "Actuator Digital"
+  },
+  "homepage": "https://github.com/AnImaginedReality/Fluxity",
+  "keywords": [
+    "flux",
+    "Actuator"
+  ],
+  "dependencies": {
+    "com.actuator.flume": "0.1.0",
+    "com.unity.test-framework": "1.0.13",
+    "com.unity.ext.nunit": "1.0.0"
+  },
+  "relatedPackages": {},
+  "description": "It's the Flux pattern in Unity, using Flume.",
+  "type": "library"
+}

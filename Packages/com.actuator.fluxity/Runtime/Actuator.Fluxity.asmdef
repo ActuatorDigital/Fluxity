@@ -1,0 +1,16 @@
+{
+    "name": "Actuator.Fluxity",
+    "rootNamespace": "",
+    "references": [
+        "Actuator.Flume"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
