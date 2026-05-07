@@ -1,9 +1,11 @@
 {
-  "name": "com.air.fluxity",
+  "name": "com.actuator.fluxity",
   "displayName": "Fluxity",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "unity": "2020.3",
-  "author": "An Imagined Reality",
+  "author": {
+    "name": "Actuator Digital"
+  },
   "homepage": "https://github.com/AnImaginedReality/Fluxity",
   "keywords": [
     "flux",
@@ -11,7 +13,7 @@
     "AIR"
   ],
   "dependencies": {
-    "com.air.flume": "0.0.4",
+    "com.actuator.flume": "0.1.0",
     "com.unity.test-framework": "1.0.13",
     "com.unity.ext.nunit": "1.0.0"
   },
