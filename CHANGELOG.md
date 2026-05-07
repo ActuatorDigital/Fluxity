@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2]
+
+### Changed
+
+- Updated Flume dep version
+- Use Actuator namespace to match flume, namespaces and packages
+
+## [0.1.1]
+
 ### Added
 
 - Ability to set starting State of a feature, during `RegisterFeature`.
