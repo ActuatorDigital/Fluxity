@@ -48,14 +48,22 @@ public class FluxityRegisterContextTests
     }
 
     [Test]
-    public void Effect_WhenValid_ShouldHave1Effect()
+    public void Hooks_WhenBound_ShouldInvoke()
     {
+        var magicNumber = 123;
+        var pre = 0;
+        var post = 0;
         var store = new Store();
         var disp = new Dispatcher(store);
         var context = new FluxityRegisterContext(store, disp);
+        context
+            .OnPreDispatch<DummyCommand>(cmd => pre = cmd.Payload)
+            .OnPostDispatch<DummyCommand>(cmd => post = cmd.Payload)
+            ;
 
-        context.Effect<DummyCommand>((cmd, disp) => { });
+        disp.Dispatch(new DummyCommand { Payload = magicNumber });
 
-        Assert.AreEqual(1, disp.GetAllEffectCommandTypes().Count);
+        Assert.AreEqual(magicNumber, pre);
+        Assert.AreEqual(magicNumber, post);
     }
 }

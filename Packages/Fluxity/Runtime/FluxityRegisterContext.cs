@@ -15,6 +15,18 @@ namespace AIR.Fluxity
             _dispatcher = dispatcher;
         }
 
+        public FluxityRegisterContext OnPreDispatch<TCommand>(Action<TCommand> del) where TCommand : ICommand
+        {
+            _store.AddPreAction(del);
+            return this;
+        }
+
+        public FluxityRegisterContext OnPostDispatch<TCommand>(Action<TCommand> del) where TCommand : ICommand
+        {
+            _store.AddPostAction(del);
+            return this;
+        }
+
         public FluxityRegisterFeatureContext<TState> Feature<TState>(TState startingValue)
             where TState : struct
         {
@@ -31,30 +43,6 @@ namespace AIR.Fluxity
             var context = Feature(startingValue);
             createReducers(context);
             return context;
-        }
-
-        public FluxityRegisterContext Effect<TCommand>(IEffect<TCommand>.EffectDelegate effectAction)
-               where TCommand : ICommand
-        {
-            var effect = new EffectBinding<TCommand>(effectAction);
-            _dispatcher.RegisterEffect(effect);
-            return this;
-        }
-
-        public FluxityRegisterEffectContext<T> Effect<T>(T instanceContext)
-            where T : class
-        {
-            return new FluxityRegisterEffectContext<T>(_store, _dispatcher, instanceContext);
-        }
-
-        public FluxityRegisterEffectContext<T> Effect<T>(
-            T instanceContext,
-            Action<FluxityRegisterEffectContext<T>> createEffects)
-            where T : class
-        {
-            var effectContext = new FluxityRegisterEffectContext<T>(_store, _dispatcher, instanceContext);
-            createEffects(effectContext);
-            return effectContext;
         }
     }
 }

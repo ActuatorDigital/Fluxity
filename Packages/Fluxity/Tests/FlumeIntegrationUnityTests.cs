@@ -40,7 +40,6 @@ public class FlumeIntegrationUnityTests
         {
             context
                 .Feature(new DummyState(), DummyReducers.RegisterAll)
-                .Effect(new DummyCommandEffect(), RegisterDummyEffects)
                 ;
         }
 
@@ -49,13 +48,6 @@ public class FlumeIntegrationUnityTests
             container
                 .Register<IDummyService, DummyService>()
             ;
-        }
-
-        private static void RegisterDummyEffects(FluxityRegisterEffectContext<DummyCommandEffect> context)
-        {
-            context
-                .Method<DummyCommand>(x => x.DoEffect)
-                ;
         }
     }
 
@@ -74,18 +66,6 @@ public class FlumeIntegrationUnityTests
         public IDummyService DummyService { get; private set; }
 
         public void Inject(IDummyService dummyService) => DummyService = dummyService;
-    }
-
-    public class DummyCommandEffect : Dependent
-    {
-        private IDummyService _dummyService;
-
-        public void Inject(IDummyService dummyService) => _dummyService = dummyService;
-
-        public void DoEffect(DummyCommand command, IDispatcher _)
-        {
-            _dummyService.LastSignal = command.Payload;
-        }
     }
 
     [SetUp]
@@ -111,33 +91,6 @@ public class FlumeIntegrationUnityTests
 
         new DispatcherHandle().Dispatch(new DummyCommand() { Payload = PAYLOAD });
         var result = _presenter.TextContent;
-
-        Assert.AreEqual(EXPECTED, result);
-    }
-
-    [UnityTest]
-    public IEnumerator Effect_WhenBoundAndUnityStartedAndMatchingCommandDispatched_ShouldPutExpectedValueInInjectedService()
-    {
-        const int EXPECTED = 5;
-        var dummyServiceHandle = new DummyServiceHandle();
-        yield return null; //< give frame so start can be called
-
-        new DispatcherHandle().Dispatch(new DummyCommand() { Payload = EXPECTED });
-        var result = dummyServiceHandle.DummyService.LastSignal;
-
-        Assert.AreEqual(EXPECTED, result);
-    }
-
-    [UnityTest]
-    public IEnumerator Effect_WhenICommandDispatched_ShouldPutExpectedValueInInjectedService()
-    {
-        const int EXPECTED = 5;
-        var dummyServiceHandle = new DummyServiceHandle();
-        yield return null; //< give frame so start can be called
-        ICommand commandAsBase = new DummyCommand() { Payload = EXPECTED };
-
-        new DispatcherHandle().Dispatch(commandAsBase);
-        var result = dummyServiceHandle.DummyService.LastSignal;
 
         Assert.AreEqual(EXPECTED, result);
     }

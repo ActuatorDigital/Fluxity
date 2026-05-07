@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AIR.Fluxity
 {
@@ -17,5 +18,7 @@ namespace AIR.Fluxity
 
         IFeatureObservable<TState> GetFeatureObservable<TState>()
             where TState : struct;
+        void AddPreAction<TCommand>(Action<TCommand> action) where TCommand : ICommand;
+        void AddPostAction<TCommand>(Action<TCommand> action) where TCommand : ICommand;
     }
 }

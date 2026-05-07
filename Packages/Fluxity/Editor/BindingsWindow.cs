@@ -52,7 +52,6 @@ namespace AIR.Fluxity.Editor
             _dataColumnMapping = typeof(Binding).GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
             _dataMapperStringifiers = new Func<object, string>[]
             {
-                (x) => ((Binding.BindingElementType)x).ToString(),
                 (x) => ((Type)x)?.Name ?? NA_STRING,
                 (x) => ((Type)x)?.Name ?? NA_STRING,
                 (x) => $"{((MethodInfo)x).DeclaringType.Name}.{((MethodInfo)x).Name}",
@@ -165,7 +164,6 @@ namespace AIR.Fluxity.Editor
                     {
                         var binding = new Binding()
                         {
-                            BindingType = Binding.BindingElementType.Reducer,
                             Command = handler.CommandType,
                             Feature = feat.GetType().GenericTypeArguments[0],
                             Handler = handler.ReducerBindingInfo(),
@@ -179,25 +177,6 @@ namespace AIR.Fluxity.Editor
             var dispatcher = GetDispatcher();
             if (dispatcher == null)
                 return;
-
-            var allCommandsTypes = dispatcher.GetAllEffectCommandTypes();
-
-            foreach (var commandType in allCommandsTypes)
-            {
-                var allEffects = dispatcher.GetAllEffectsForCommandType(commandType);
-                foreach (var effect in allEffects)
-                {
-                    var binding = new Binding()
-                    {
-                        BindingType = Binding.BindingElementType.Effect,
-                        Command = commandType,
-                        Feature = null,
-                        Handler = effect.EffectBindingInfo(),
-                    };
-
-                    _cachedBindings.Add(binding);
-                }
-            }
         }
 
         internal class Filterable
@@ -207,13 +186,6 @@ namespace AIR.Fluxity.Editor
 
         internal class Binding : Filterable
         {
-            internal enum BindingElementType
-            {
-                Reducer,
-                Effect,
-            }
-
-            internal BindingElementType BindingType { get; set; }
             internal Type Command { get; set; }
             internal Type Feature { get; set; }
             internal MethodInfo Handler { get; set; }

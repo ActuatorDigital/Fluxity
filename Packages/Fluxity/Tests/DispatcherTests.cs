@@ -56,87 +56,10 @@ public class DispatcherTests
         Assert.AreEqual(1, _feature.State.value);
     }
 
-    [Test]
-    public void Dispatch_WhenMatchingEffectRegistered_ShouldInvoke()
+    private static DummyState DispatchDuringReduce(DummyState state, DummyCommand command)
     {
-        var payloadVal = 3;
-        var command = new DummyCommand() { Payload = payloadVal };
-        var dummyEffect = new DummyEffect();
-        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
-        _dispatcher.RegisterEffect(effect);
-
-        _dispatcher.Dispatch(command);
-
-        Assert.AreEqual(payloadVal, dummyEffect.accumPayload);
-    }
-
-    [Test]
-    public void Dispatch_WhenMatchingEffectRegisteredViaExtension_ShouldInvoke()
-    {
-        var payloadVal = 3;
-        var command = new DummyCommand() { Payload = payloadVal };
-        var dummyEffect = new DummyEffect();
-        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
-        _dispatcher.RegisterEffect(effect);
-
-        _dispatcher.Dispatch(command);
-
-        Assert.AreEqual(payloadVal, dummyEffect.accumPayload);
-    }
-
-    [Test]
-    public void Dispatch_WhenNonMatchingEffectRegistered_ShouldNotInvoke()
-    {
-        var command = new OtherDummyCommand();
-        var dummyEffect = new DummyEffect();
-        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
-        _dispatcher.RegisterEffect(effect);
-
-        _dispatcher.Dispatch(command);
-
-        Assert.AreEqual(0, dummyEffect.accumPayload);
-    }
-
-    [Test]
-    public void Dispatch_WhenMatchingReducerAndEffectRegistered_ShouldInvoke()
-    {
-        var state = new DummyState() { value = 1 };
-        _feature.SetState(state);
-        var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
-        _store.RegisterReducer(reducer);
-        var payloadVal = 2;
-        var command = new DummyCommand() { Payload = payloadVal };
-        var dummyEffect = new DummyEffect();
-        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
-        _dispatcher.RegisterEffect(effect);
-
-        _dispatcher.Dispatch(command);
-
-        Assert.AreEqual(3, _feature.State.value);
-        Assert.AreEqual(payloadVal, dummyEffect.accumPayload);
-    }
-
-    [Test]
-    public void Dispatch_WhenMultipleMatchingReducersAndEffectsRegistered_ShouldInvokeAll()
-    {
-        var state = new DummyState() { value = 1 };
-        _feature.SetState(state);
-        var reducer = new PureFunctionReducerBinder<DummyState, DummyCommand>(DummyReducers.Reduce);
-        //two of the same reducer
-        _store.RegisterReducer(reducer);
-        _store.RegisterReducer(reducer);
-        var payloadVal = 1;
-        var command = new DummyCommand() { Payload = payloadVal };
-        var dummyEffect = new DummyEffect();
-        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
-        //two of the same effect
-        _dispatcher.RegisterEffect(effect);
-        _dispatcher.RegisterEffect(effect);
-
-        _dispatcher.Dispatch(command);
-
-        Assert.AreEqual(3, _feature.State.value);
-        Assert.AreEqual(payloadVal * 2, dummyEffect.accumPayload);
+        _staticDispatcher.Dispatch(new OtherDummyCommand());
+        return state;
     }
 
     [Test]
@@ -156,126 +79,67 @@ public class DispatcherTests
     }
 
     [Test]
-    public void Dispatch_WhenEffectDispatchesSameButLimited_ShouldDispatchTwiceAndEffectInvokeTwice()
+    public void Dispatch_WhenCallbackDispatchesSameButLimited_ShouldDispatchTwiceAndInvokeTwice()
     {
         var count = 0;
+        var preCount = 0;
+        var postCount = 0;
         _feature.SetState(new DummyState());
-        var dummyEffect = new DummyEffect();
-        dummyEffect.Action = () =>
-        {
-            if (count < 2)
-                _dispatcher.Dispatch(new DummyCommand());
-        };
-        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
-        _dispatcher.RegisterEffect(effect);
         _dispatcher.OnDispatch += _ => count++;
+        _store.AddPreAction((DummyCommand cmd) =>
+        {
+            if (postCount == 0)
+            {
+                preCount++;
+            }
+        });
+        _store.AddPostAction((DummyCommand cmd) =>
+        {
+            postCount++;
+            if (count >= 2) return;
+            _dispatcher.Dispatch(new DummyCommand());
+        });
 
         _dispatcher.Dispatch(new DummyCommand());
 
         Assert.AreEqual(2, count);
-        Assert.AreEqual(2, dummyEffect.callCount);
+        Assert.AreEqual(1, preCount);
+        Assert.AreEqual(2, postCount);
+    }
+
+    [Test]
+    public void Dispatch_WhenEndlessNestedDispatch_ShouldThrow()
+    {
+        _feature.SetState(new DummyState());
+        _store.AddPostAction((DummyCommand cmd) =>
+        {
+            _dispatcher.Dispatch(new DummyCommand());
+        });
+
+        void Action ()
+        {
+            _dispatcher.Dispatch(new DummyCommand());
+        }
+
+        Assert.Throws<DispatcherException>(Action);
     }
 
     [Test]
     public void Dispatch_WhenEffectDispatchesOther_ShouldDispatchTwiceAndEffectInvokeOnce()
     {
         var count = 0;
+        var postCount = 0;
         _feature.SetState(new DummyState());
-        var dummyEffect = new DummyEffect();
-        dummyEffect.Action = () =>
-        {
-            _dispatcher.Dispatch(new OtherDummyCommand());
-        };
-        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
-        _dispatcher.RegisterEffect(effect);
         _dispatcher.OnDispatch += _ => count++;
+        _store.AddPostAction((DummyCommand cmd) =>
+        {
+            postCount++;
+            _dispatcher.Dispatch(new OtherDummyCommand());
+        });
 
         _dispatcher.Dispatch(new DummyCommand());
 
         Assert.AreEqual(2, count);
-        Assert.AreEqual(1, dummyEffect.callCount);
-    }
-
-    [Test]
-    public void Dispatch_WhenEffectDispatchesMultiple_ShouldDispatchSameCountAndInOrder()
-    {
-        var commandList = new List<ICommand>();
-        _feature.SetState(new DummyState());
-        var dummyEffect = new DummyEffect();
-        dummyEffect.Action = () =>
-        {
-            _dispatcher.Dispatch(new OtherDummyCommand());
-            _dispatcher.Dispatch(new OtherOtherDummyCommand());
-        };
-        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
-        _dispatcher.RegisterEffect(effect);
-        _dispatcher.OnDispatch += c => commandList.Add(c);
-
-        _dispatcher.Dispatch(new DummyCommand());
-
-        Assert.AreEqual(3, commandList.Count);
-        Assert.AreEqual(typeof(DummyCommand), commandList[0].GetType());
-        Assert.AreEqual(typeof(OtherDummyCommand), commandList[1].GetType());
-        Assert.AreEqual(typeof(OtherOtherDummyCommand), commandList[2].GetType());
-        Assert.AreEqual(1, dummyEffect.callCount);
-    }
-
-    [Test]
-    public void Dispatch_WhenEffectDispatchesSameCommandEndlessly_ShouldThrow()
-    {
-        var count = 0;
-        _feature.SetState(new DummyState());
-        var dummyEffect = new DummyEffect();
-        dummyEffect.Action = () =>
-        {
-            _dispatcher.Dispatch(new DummyCommand());
-        };
-        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
-        _dispatcher.RegisterEffect(effect);
-        _dispatcher.OnDispatch += _ => count++;
-
-
-        void Act() => _dispatcher.Dispatch(new DummyCommand());
-
-        Assert.Throws<DispatcherException>(Act);
-    }
-
-    private static DummyState DispatchDuringReduce(DummyState state, DummyCommand command)
-    {
-        _staticDispatcher.Dispatch(new OtherDummyCommand());
-        return state;
-    }
-
-    [Test]
-    public void Dispatch_WhenEffectDispatches_ShouldNotThrow()
-    {
-        var effect = new EffectBinding<DummyCommand>((DummyCommand dc, IDispatcher dispatcher) => _dispatcher.Dispatch(new OtherDummyCommand()));
-        _dispatcher.RegisterEffect(effect);
-
-        void Act() => _dispatcher.Dispatch(new DummyCommand());
-
-        Assert.DoesNotThrow(Act);
-    }
-
-    [Test]
-    public void Dispatch_WhenEffectRegistered_ShouldReturn1()
-    {
-        var dummyEffect = new DummyEffect();
-        var effect = new EffectBinding<DummyCommand>(dummyEffect.DoEffect);
-        _dispatcher.RegisterEffect(effect);
-
-        var res = _dispatcher.GetAllEffectCommandTypes();
-        var innerRes = _dispatcher.GetAllEffectsForCommandType(res.First());
-
-        Assert.AreEqual(1, res.Count);
-        Assert.AreEqual(1, innerRes.Count);
-    }
-
-    [Test]
-    public void Dispatch_WhenNoEffectsRegistered_ShouldReturn0()
-    {
-        var res = _dispatcher.GetAllEffectCommandTypes();
-
-        Assert.AreEqual(0, res.Count);
+        Assert.AreEqual(1, postCount);
     }
 }

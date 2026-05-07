@@ -10,8 +10,6 @@ namespace Examples.DataCommand
             context
                 .Feature(new CounterState())
                     .Reducer<ChangeCountCommand>(CounterReducer.Change)
-                .Effect(new ChangeCounterEffect())
-                    .Method<ChangeCountCommand>(x => x.DoEffect)
                 ;
         }
 

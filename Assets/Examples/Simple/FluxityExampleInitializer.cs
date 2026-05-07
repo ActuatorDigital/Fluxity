@@ -9,8 +9,6 @@ namespace Examples.Simple
         {
             context
                 .Feature(new CounterState(), CounterReducer.RegisterAll)
-                .Effect<IncrementCountCommand>(CounterEffects.DoIncrementEffect)
-                .Effect<DecrementCountCommand>(CounterEffects.DoDecrementEffect)
                 ;
         }
 
