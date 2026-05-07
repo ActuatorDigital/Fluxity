@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace AIR.Fluxity
+namespace Actuator.Fluxity
 {
     public interface IReducer<TState, TCommand> : IReducer<TState>
         where TState : struct

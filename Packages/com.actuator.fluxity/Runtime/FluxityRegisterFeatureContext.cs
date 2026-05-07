@@ -1,4 +1,4 @@
-﻿namespace AIR.Fluxity
+﻿namespace Actuator.Fluxity
 {
     public sealed class FluxityRegisterFeatureContext<TState> : FluxityRegisterContext
         where TState : struct

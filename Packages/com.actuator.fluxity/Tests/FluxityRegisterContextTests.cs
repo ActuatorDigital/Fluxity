@@ -1,6 +1,6 @@
 ﻿using System;
-using AIR.Fluxity;
-using AIR.Fluxity.Tests.DummyTypes;
+using Actuator.Fluxity;
+using Actuator.Fluxity.Tests.DummyTypes;
 using NUnit.Framework;
 
 public class FluxityRegisterContextTests

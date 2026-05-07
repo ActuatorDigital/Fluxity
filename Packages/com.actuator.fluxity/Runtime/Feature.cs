@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AIR.Fluxity
+namespace Actuator.Fluxity
 {
     public sealed class Feature<TState> : IFeature<TState>
         where TState : struct

@@ -1,7 +1,7 @@
-﻿using AIR.Flume;
+﻿using Actuator.Flume;
 using UnityEngine;
 
-namespace AIR.Fluxity
+namespace Actuator.Fluxity
 {
     [DefaultExecutionOrder(-1)]
     [RequireComponent(typeof(FlumeServiceContainer))]

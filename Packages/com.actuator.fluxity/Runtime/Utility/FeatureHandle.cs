@@ -1,6 +1,6 @@
-using AIR.Flume;
+using Actuator.Flume;
 
-namespace AIR.Fluxity
+namespace Actuator.Fluxity
 {
     public sealed class FeatureHandle<TState> : Dependent, IFeatureView<TState>
         where TState : struct

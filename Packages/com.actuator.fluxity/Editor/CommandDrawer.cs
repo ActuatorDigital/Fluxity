@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-namespace AIR.Fluxity.Editor
+namespace Actuator.Fluxity.Editor
 {
     internal class CommandDrawer
     {

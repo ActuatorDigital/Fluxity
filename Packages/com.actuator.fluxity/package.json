@@ -9,8 +9,7 @@
   "homepage": "https://github.com/AnImaginedReality/Fluxity",
   "keywords": [
     "flux",
-    "An Imagined Reality",
-    "AIR"
+    "Actuator"
   ],
   "dependencies": {
     "com.actuator.flume": "0.1.0",

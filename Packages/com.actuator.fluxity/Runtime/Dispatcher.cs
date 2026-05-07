@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AIR.Fluxity
+namespace Actuator.Fluxity
 {
     public sealed class Dispatcher : IDispatcher
     {

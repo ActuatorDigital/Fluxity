@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace AIR.Fluxity
+namespace Actuator.Fluxity
 {
     public sealed class EffectBinding<TCommand> : IEffect<TCommand>
         where TCommand : ICommand

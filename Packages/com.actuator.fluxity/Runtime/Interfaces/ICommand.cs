@@ -1,4 +1,4 @@
-namespace AIR.Fluxity
+namespace Actuator.Fluxity
 {
     public interface ICommand
     {

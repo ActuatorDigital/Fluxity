@@ -2,7 +2,7 @@
 using UnityEditor;
 using System;
 
-namespace AIR.Fluxity.Editor
+namespace Actuator.Fluxity.Editor
 {
     internal class TwoPanelUtility
     {

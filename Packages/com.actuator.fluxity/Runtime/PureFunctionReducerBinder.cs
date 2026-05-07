@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace AIR.Fluxity
+namespace Actuator.Fluxity
 {
     public sealed class PureFunctionReducerBinder<TState, TCommand> : IReducer<TState, TCommand>
         where TState : struct

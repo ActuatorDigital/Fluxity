@@ -1,8 +1,8 @@
-﻿using AIR.Flume;
+﻿using Actuator.Flume;
 using UnityEditor;
 using UnityEngine;
 
-namespace AIR.Fluxity.Editor
+namespace Actuator.Fluxity.Editor
 {
     internal class FluxityRuntimeEditorWindow : EditorWindow, IHasCustomMenu
     {

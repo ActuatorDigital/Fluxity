@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace AIR.Fluxity.Editor
+namespace Actuator.Fluxity.Editor
 {
     internal class BindingsWindow : FluxityRuntimeEditorWindow
     {

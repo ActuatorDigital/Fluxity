@@ -2,7 +2,7 @@
 
 <img src="https://img.shields.io/badge/unity-2021.3-green.svg?style=flat-square" alt="unity 2021.3">
 
-AIR's Flux pattern implementation for Unity.
+Actuator Digital's Flux pattern implementation for Unity.
 
 ## What is it and why should I use it?
 
@@ -49,7 +49,7 @@ object being used; this hands-off approach to the pattern implementation allows 
 
 ## Dependencies
 
-- [AIR.Flume](https://github.com/AnImaginedReality/Flume) - Unity dependency injection package (Git package).
+- [Actuator.Flume](https://github.com/ActuatorDigital/Flume) - Unity dependency injection package (Git package).
 
 ## Installation / Minimum required Setup
 
@@ -85,8 +85,8 @@ Requires Flume and Fluxity need to be referenced in a link.xml file
 
 ```xml
 <linker>
-  <assembly fullname="AIR.Flume" preserve="all"></assembly>
-  <assembly fullname="AIR.Fluxity" preserve="all"></assembly>
+  <assembly fullname="Actuator.Flume" preserve="all"></assembly>
+  <assembly fullname="Actuator.Fluxity" preserve="all"></assembly>
 </linker>
 ```
 

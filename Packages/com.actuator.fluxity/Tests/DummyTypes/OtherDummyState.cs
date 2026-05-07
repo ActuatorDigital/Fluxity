@@ -1,4 +1,4 @@
-﻿namespace AIR.Fluxity.Tests.DummyTypes
+﻿namespace Actuator.Fluxity.Tests.DummyTypes
 {
     public struct OtherDummyState { }
 

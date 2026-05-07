@@ -3,7 +3,7 @@ using UnityEditor;
 using System.Linq;
 using System;
 
-namespace AIR.Fluxity.Editor
+namespace Actuator.Fluxity.Editor
 {
     internal class StoreWindow : FluxityRuntimeEditorWindow
     {

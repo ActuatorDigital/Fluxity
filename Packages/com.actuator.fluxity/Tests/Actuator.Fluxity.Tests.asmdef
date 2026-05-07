@@ -1,11 +1,11 @@
 {
-    "name": "AIR.Fluxity.Tests",
+    "name": "Actuator.Fluxity.Tests",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "AIR.Fluxity",
-        "AIR.Flume"
+        "Actuator.Flume",
+        "Actuator.Fluxity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,8 +1,8 @@
 {
-    "name": "AIR.Fluxity",
+    "name": "Actuator.Fluxity",
     "rootNamespace": "",
     "references": [
-        "AIR.Flume"
+        "Actuator.Flume"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

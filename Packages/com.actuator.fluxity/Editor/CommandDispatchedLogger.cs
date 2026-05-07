@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace AIR.Fluxity.Editor
+namespace Actuator.Fluxity.Editor
 {
     internal sealed class CommandDispatchedLogger : IDisposable
     {

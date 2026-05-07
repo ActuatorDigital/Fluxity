@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace AIR.Fluxity.Editor
+namespace Actuator.Fluxity.Editor
 {
     internal class ObjectWalker
     {

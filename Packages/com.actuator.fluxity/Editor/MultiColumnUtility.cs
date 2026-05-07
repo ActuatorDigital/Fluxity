@@ -4,7 +4,7 @@ using System;
 using UnityEditor.IMGUI.Controls;
 using System.Linq;
 
-namespace AIR.Fluxity.Editor
+namespace Actuator.Fluxity.Editor
 {
     //Invaluable help from https://gamedev.stackexchange.com/questions/188771/creating-a-custom-editor-window-using-a-multi-column-header
     internal class MultiColumnUtility

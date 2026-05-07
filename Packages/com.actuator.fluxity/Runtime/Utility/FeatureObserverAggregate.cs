@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using AIR.Flume;
+using Actuator.Flume;
 
-namespace AIR.Fluxity
+namespace Actuator.Fluxity
 {
     public sealed class FeatureObserverAggregate : Dependent, IDisposable
     {

@@ -1,4 +1,4 @@
-﻿using AIR.Fluxity.Tests.DummyTypes;
+﻿using Actuator.Fluxity.Tests.DummyTypes;
 using NUnit.Framework;
 
 public class DummyEffectTests

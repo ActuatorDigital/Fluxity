@@ -1,11 +1,11 @@
 ﻿using UnityEditor;
 using UnityEditor.SettingsManagement;
 
-namespace AIR.Fluxity.Editor
+namespace Actuator.Fluxity.Editor
 {
     internal class FluxityEditorSettings
     {
-        internal const string SETTINGS_KEY = "com.air.fluxity.editor.settings";
+        internal const string SETTINGS_KEY = "com.actuator.fluxity.editor.settings";
 
         static Settings _instance;
 

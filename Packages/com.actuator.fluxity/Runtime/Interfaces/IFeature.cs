@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AIR.Fluxity
+namespace Actuator.Fluxity
 {
     public interface IFeature<TState> : IFeatureObservable<TState>, IFeature
         where TState : struct

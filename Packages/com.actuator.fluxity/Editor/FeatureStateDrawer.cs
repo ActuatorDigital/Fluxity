@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using System.Reflection;
 
-namespace AIR.Fluxity.Editor
+namespace Actuator.Fluxity.Editor
 {
     internal sealed class FeatureStateDrawer
     {

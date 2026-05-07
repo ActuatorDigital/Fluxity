@@ -1,7 +1,7 @@
 ﻿using System;
-using AIR.Flume;
+using Actuator.Flume;
 
-namespace AIR.Fluxity
+namespace Actuator.Fluxity
 {
     public sealed class FeatureObserver<TState> : Dependent, IFeatureView<TState>, IDisposable
         where TState : struct

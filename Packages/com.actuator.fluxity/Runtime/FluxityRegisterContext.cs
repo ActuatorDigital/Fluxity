@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AIR.Fluxity
+namespace Actuator.Fluxity
 {
     public class FluxityRegisterContext
     {

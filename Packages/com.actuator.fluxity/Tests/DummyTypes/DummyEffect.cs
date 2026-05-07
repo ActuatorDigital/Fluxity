@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AIR.Fluxity.Tests.DummyTypes
+namespace Actuator.Fluxity.Tests.DummyTypes
 {
     internal class DummyEffect
     {

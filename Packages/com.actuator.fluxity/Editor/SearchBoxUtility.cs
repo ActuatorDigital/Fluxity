@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEditor.IMGUI.Controls;
 
-namespace AIR.Fluxity.Editor
+namespace Actuator.Fluxity.Editor
 {
     internal class SearchBoxUtility
     {

@@ -1,21 +1,21 @@
 {
   "dependencies": {
-    "com.air.flume": {
-      "version": "https://github.com/AnImaginedReality/Flume.git",
+    "com.actuator.flume": {
+      "version": "https://github.com/ActuatorDigital/Flume.git",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.test-framework": "1.0.13",
         "com.unity.ext.nunit": "1.0.0"
       },
-      "hash": "130b0c511b24d538f7aa88744cc8e7c988bb6e2d"
+      "hash": "e6717e46926f8c7d3f4be7bca446c5a122da5a77"
     },
-    "com.air.fluxity": {
-      "version": "file:Fluxity",
+    "com.actuator.fluxity": {
+      "version": "file:com.actuator.fluxity",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.air.flume": "0.0.4",
+        "com.actuator.flume": "0.1.0",
         "com.unity.test-framework": "1.0.13",
         "com.unity.ext.nunit": "1.0.0"
       }

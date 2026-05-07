@@ -1,10 +1,10 @@
 {
-    "name": "AIR.Fluxity.Editor",
+    "name": "Actuator.Fluxity.Editor",
     "rootNamespace": "",
     "references": [
-        "AIR.Flume",
-        "AIR.Fluxity",
-        "Unity.Settings.Editor"
+        "Unity.Settings.Editor",
+        "Actuator.Flume",
+        "Actuator.Fluxity"
     ],
     "includePlatforms": [
         "Editor"

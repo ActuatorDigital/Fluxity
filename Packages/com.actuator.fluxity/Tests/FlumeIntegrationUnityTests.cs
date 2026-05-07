@@ -1,7 +1,7 @@
 ﻿using System.Collections;
-using AIR.Flume;
-using AIR.Fluxity;
-using AIR.Fluxity.Tests.DummyTypes;
+using Actuator.Flume;
+using Actuator.Fluxity;
+using Actuator.Fluxity.Tests.DummyTypes;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
