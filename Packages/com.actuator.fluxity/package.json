@@ -14,7 +14,8 @@
   "dependencies": {
     "com.actuator.flume": "0.1.0",
     "com.unity.test-framework": "1.0.13",
-    "com.unity.ext.nunit": "1.0.0"
+    "com.unity.ext.nunit": "1.0.0",
+    "com.unity.settings-manager": "2.1.1"
   },
   "relatedPackages": {},
   "description": "It's the Flux pattern in Unity, using Flume.",
